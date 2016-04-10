@@ -1,3 +1,5 @@
+// TODO: split this file to match relevant .js files
+
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import chai from 'chai';
@@ -50,7 +52,7 @@ describe('## Misc', () => {
                 })
                 .expect(httpStatus.BAD_REQUEST)
                 .then(res => {
-                    expect(res.body.message).to.equal(`"username" is required`);
+                    expect(res.body.message).to.equal('"username" is required');
                     done();
                 });
         });
