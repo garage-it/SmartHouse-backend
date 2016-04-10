@@ -13,7 +13,6 @@
     "build": "gulp",
     "lint": "gulp lint",
     "test": "gulp mocha",
-    "commit": "git-cz",
     "report-coverage": "coveralls < ./coverage/lcov.info"
   },
   "repository": {
@@ -58,9 +57,7 @@
     "babel-preset-es2015": "6.5.0",
     "babel-preset-stage-2": "6.5.0",
     "chai": "^3.4.1",
-    "commitizen": "2.5.0",
     "coveralls": "^2.11.6",
-    "cz-conventional-changelog": "1.1.5",
     "del": "^2.2.0",
     "eslint": "^2.7.0",
     "eslint-config-standard": "^5.1.0",
@@ -81,8 +78,7 @@
     "mocha": "^2.3.4",
     "run-sequence": "^1.1.5",
     "supertest": "^1.1.0",
-    "supertest-as-promised": "^2.0.2",
-    "validate-commit-msg": "2.0.0"
+    "supertest-as-promised": "^2.0.2"
   },
   "license": "MIT",
   "bugs": {
@@ -91,11 +87,7 @@
   "homepage": "https://github.com/garage-it/SmartHouse-backend#readme",
   "config": {
     "ghooks": {
-      "pre-commit": "npm run lint && npm test",
-      "commit-msg": "validate-commit-msg"
-    },
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "pre-commit": "npm run lint && npm test"
     }
   },
   "babel": {
