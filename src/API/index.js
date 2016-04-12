@@ -1,3 +1,6 @@
+// NOTE: this is a starter kit file
+// TODO: refactor
+
 import express from 'express';
 import userRoutes from './users/user.routes.js';
 

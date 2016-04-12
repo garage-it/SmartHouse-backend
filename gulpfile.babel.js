@@ -9,9 +9,9 @@ import * as isparta from 'isparta';
 const plugins = gulpLoadPlugins();
 
 const paths = {
-    js: ['./**/*.js', '!dist/**', '!node_modules/**', '!coverage/**'],
+    js: ['./src/**/*.js'],
     nonJs: ['./package.json', './.gitignore'],
-    tests: './server/**/*.test.js'
+    tests: './src/**/*.test.js'
 };
 
 const options = {
@@ -77,7 +77,7 @@ gulp.task('babel', () =>
 // Start server with restart on file changes
 gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
     plugins.nodemon({
-        script: path.join('dist', 'index.js'),
+        script: path.join('dist', 'src', 'index.js'),
         ext: 'js',
         ignore: ['node_modules/**/*.js', 'dist/**/*.js'],
         tasks: ['lint', 'copy', 'babel']

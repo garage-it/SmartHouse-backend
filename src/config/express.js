@@ -9,9 +9,9 @@ import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
 import expressValidation from 'express-validation';
 import winstonInstance from './winston';
-import routes from '../server/index';
+import routes from '../API/index';
 import config from './env';
-import APIError from '../server/helpers/APIError';
+import APIError from '../API/helpers/APIError';
 
 const app = express();
 
