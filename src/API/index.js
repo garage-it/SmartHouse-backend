@@ -3,8 +3,10 @@
 
 import express from 'express';
 import userRoutes from './users/user.routes.js';
+import sensorRoutes from './sensors/sensor.routes.js';
 
 const router = express.Router();    // eslint-disable-line new-cap
+
 
 /** GET /health-check - Check service health */
 router.get('/health-check', (req, res) =>
@@ -13,5 +15,6 @@ router.get('/health-check', (req, res) =>
 
 // mount user routes at /users
 router.use('/users', userRoutes);
+router.use('/sensors', sensorRoutes);
 
 export default router;
