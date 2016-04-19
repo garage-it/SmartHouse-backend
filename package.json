@@ -49,7 +49,8 @@
     "mongoose": "^4.3.7",
     "morgan": "~1.6.1",
     "mqtt": "^1.8.0",
-    "rxjs": "^5.0.0-beta.5",
+    "rxjs": "^5.0.0-beta.6",
+    "socket.io": "^1.4.5",
     "winston": "^2.1.1"
   },
   "devDependencies": {
@@ -80,7 +81,11 @@
     "gulp-util": "^3.0.7",
     "isparta": "4.0.0",
     "mocha": "^2.3.4",
+    "proxyquire": "^1.7.4",
     "run-sequence": "^1.1.5",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
+    "socket-io-mocks": "^0.1.4",
     "supertest": "^1.1.0",
     "supertest-as-promised": "^2.0.2"
   },
