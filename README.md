@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/garage-it/SmartHouse-backend.svg?branch=SH-33-Travis_CI_BE_Integration)](https://travis-ci.org/garage-it/SmartHouse-backend)
+
 ## Commands
 
 Install dependencies:
