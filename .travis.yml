@@ -8,8 +8,12 @@ cache:
   directories:
   - node_modules
 git:
-  depth: 3
+  depth: 5
 before_script:
   - npm prune
+script:
+  - npm run lint
+  - npm test
+  - npm run build
 after_script:
   - npm run report-coverage
