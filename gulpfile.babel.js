@@ -5,13 +5,16 @@ import del from 'del';
 import runSequence from 'run-sequence';
 import babelCompiler from 'babel-core/register';
 import * as isparta from 'isparta';
+import {format} from 'util';
+import {exec} from 'child_process';
 
 const plugins = gulpLoadPlugins();
 
 const paths = {
     js: ['./src/**/*.js'],
     nonJs: ['./package.json', './.gitignore'],
-    tests: './src/**/*.test.js'
+    tests: './src/**/*.test.js',
+    dbPath: './db'
 };
 
 const options = {
@@ -23,6 +26,13 @@ const options = {
         }
     }
 };
+
+gulp.task('start-mongo', function (cb) {
+    let command = format('start cmd /c %mongo_home%\\mongod.exe --dbpath %s', paths.dbPath);
+    exec(command, function (err, stdout, stderr) {
+        cb(err);
+    });
+});
 
 // Clean up dist and coverage directory
 gulp.task('clean', () =>

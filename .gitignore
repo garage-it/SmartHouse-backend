@@ -221,4 +221,5 @@ node/
 ### Project ###
 
 dist/
+db/
 
