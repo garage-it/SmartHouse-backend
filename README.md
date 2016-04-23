@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/garage-it/SmartHouse-backend.svg?branch=master)](https://travis-ci.org/garage-it/SmartHouse-backend)
+[![codecov.io](https://codecov.io/github/garage-it/SmartHouse-backend/coverage.svg?branch=master)](https://codecov.io/github/garage-it/SmartHouse-backend?branch=master)
 
 ## Commands
 
