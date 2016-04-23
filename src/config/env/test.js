@@ -1,5 +1,5 @@
 export default {
     env: 'test',
-    db: 'mongodb://localhost/express-mongoose-es6-rest-api-test',
+    db: 'mongodb://localhost/db',
     port: 3000
 };

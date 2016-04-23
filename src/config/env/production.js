@@ -1,5 +1,5 @@
 export default {
     env: 'production',
-    db: 'mongodb://localhost/express-mongoose-es6-rest-api-production',
+    db: 'mongodb://localhost/db',
     port: 3000
 };
