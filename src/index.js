@@ -5,6 +5,9 @@ import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import config from './config/env';
 import app from './config/express';
+import * as seed from './config/seed';
+
+const debug = require('debug')('Smart House Back-end');
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -15,7 +18,10 @@ mongoose.connection.on('error', () => {
     throw new Error(`unable to connect to database: ${config.db}`);
 });
 
-const debug = require('debug')('db:index');
+if (config.seedDB) {
+    debug('populating seed data');
+    seed.populateSensors();
+}
 
 // listen on port config.port
 app.listen(config.port, () => {

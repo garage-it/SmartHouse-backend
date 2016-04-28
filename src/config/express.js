@@ -12,6 +12,7 @@ import winstonInstance from './winston';
 import routes from '../API/index';
 import config from './env';
 import APIError from '../API/helpers/APIError';
+import ExtendableError from '../API/helpers/ExtendableError';
 
 const app = express();
 
@@ -55,7 +56,7 @@ app.use((err, req, res, next) => {
         const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
         const error = new APIError(unifiedErrorMessage, err.status, true);
         return next(error);
-    } else if (!(err instanceof APIError)) {
+    } else if (!(err instanceof ExtendableError)) {
         const apiError = new APIError(err.message, err.status, err.isPublic);
         return next(apiError);
     }

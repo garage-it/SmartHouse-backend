@@ -1,11 +1,7 @@
-import httpStatus from 'http-status';
 import ExtendableError from './ExtendableError';
-/**
- * Class representing an API error.
- * @extends ExtendableError
- */
+import httpStatus from 'http-status';
 
-class APIError extends ExtendableError {
+class MethodNotAllowedError extends ExtendableError {
     /**
      * Creates an API error.
      * @param {string} message - Error message.
@@ -13,9 +9,9 @@ class APIError extends ExtendableError {
      * @param {boolean} isPublic - Whether the message should be visible to user or not.
      */
 
-    constructor(message, status = httpStatus.INTERNAL_SERVER_ERROR, isPublic = false) {
+    constructor(message, status = httpStatus.METHOD_NOT_ALLOWED, isPublic = true) {
         super(message, status, isPublic);
     }
 }
 
-export default APIError;
+export default MethodNotAllowedError;
