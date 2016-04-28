@@ -1,5 +1,26 @@
 /**
  * @file provides an API for WS clients to subscribe to device events
+ * 
+ * USAGE EXAMPLE
+ * ```
+ * var socket = io('ws://localhost:3000');
+ * 
+ * socket.on('connect', ()=>log('connect'));
+ * socket.on('event', (event)=>log(event));
+ * 
+ * // immediately subscribes to an 'iddqd' device
+ * subscribe('iddqd');
+ * // subscribes to 'primary' in 5 seconds
+ * setTimeout(()=>{ subscribe('primary'); }, 5000);
+ * 
+ * function log(message){
+ *    console.log(`t ${ +new Date }`, message);
+ *  }
+ * 
+ * function subscribe(device){
+ *   socket.emit('subscribe', { device });
+ * }
+ * ``` 
  */
 
 import input from '../../data-streams/input';
