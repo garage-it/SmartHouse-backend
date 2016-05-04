@@ -1,5 +1,4 @@
 import express from 'express';
-import MethodNotAllowedError from '../helpers/MethodNotAllowedError';
 import sensorCtrl from './sensor.controller.js';
 
 const router = express.Router();    // eslint-disable-line new-cap
@@ -9,8 +8,7 @@ router.route('/')
     .get(sensorCtrl.query)
 
     /** POST /api/sensors - Create new sensor */
-    .post(sensorCtrl.create)
-    .all((req, res, next) => next(new MethodNotAllowedError(`${req.method} is not supported`)));
+    .post(sensorCtrl.create);
 
 router.route('/:id')
     /** GET /api/sensors/:sensorId - Get sensor */
@@ -20,8 +18,9 @@ router.route('/:id')
     .put(sensorCtrl.update)
 
     /** DELETE /api/sensors/:sensorId - Delete sensor */
-    .delete(sensorCtrl.remove)
-    .all((req, res, next) => next(new MethodNotAllowedError(`${req.method} is not supported`)));
+    .delete(sensorCtrl.remove);
 
+/** Load sensor when API with id route parameter is hit */
+router.param('id', sensorCtrl.load);
 
 export default router;
