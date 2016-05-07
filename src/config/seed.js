@@ -6,8 +6,11 @@
 'use strict';
 
 const Sensor = require('../API/sensors/sensor.model');
+const Scenario = require('../API/scenarios/scenario.model');
 
 const sensors = [];
+const scenarios = [];
+
 
 sensors.push(new Sensor({
     description: 'some description',
@@ -21,10 +24,33 @@ sensors.push(new Sensor({
     mqttId: '2'
 }));
 
+scenarios.push(new Scenario({
+    name: 'some name',
+    description: 'some description',
+    body: 'alert(\'hello\');'
+}));
+
+scenarios.push(new Scenario({
+    name: 'some other name',
+    description: 'some other description',
+    body: 'alert(\'hello\');'
+}));
+
+const seedData = {
+    sensors: sensors.map((sensor) => sensor.toObject()),
+    scenarios: scenarios.map((sensor) => sensor.toObject())
+};
+
 function populateSensors() {
     Sensor.find({}).remove(function() {
-        Sensor.create.apply(Sensor, sensors);
+        Sensor.create(...sensors);
     });
 }
 
-export {populateSensors};
+function populateScenarios() {
+    Scenario.find({}).remove(function() {
+        Scenario.create(...scenarios);
+    });
+}
+
+export {populateSensors, populateScenarios, seedData};
