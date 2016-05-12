@@ -49,6 +49,7 @@
     "mongoose": "^4.3.7",
     "morgan": "~1.6.1",
     "mqtt": "^1.8.0",
+    "node-red": "^0.13.4",
     "rxjs": "^5.0.0-beta.6",
     "socket.io": "^1.4.5",
     "winston": "^2.1.1"

@@ -12,6 +12,8 @@ import app from './config/express';
 import * as seed from './config/seed';
 import './mqtt-client/client.js';
 
+import nodered from './config/node-red-config';
+
 import Debugger from 'debug';
 const debug = Debugger('Smart House Back-end');
 
@@ -36,8 +38,11 @@ let server = http.createServer(app);
 let io = socketio(server);
 socketApi(io);
 
+nodered.init(server);
+
 // listen on port config.port
 server.listen(config.port, () => {
+    nodered.start();
     debug(`server started on port ${config.port} (${config.env})`);
 });
 

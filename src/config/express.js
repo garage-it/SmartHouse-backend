@@ -13,6 +13,7 @@ import routes from '../API/index';
 import config from './env';
 import APIError from '../API/helpers/APIError';
 import ExtendableError from '../API/helpers/ExtendableError';
+import nodered from './node-red-config';
 
 const app = express();
 
@@ -48,6 +49,8 @@ if (config.env === 'development') {
 
 // mount all routes on /api path
 app.use('/api', routes);
+
+nodered.useRoutes(app);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
