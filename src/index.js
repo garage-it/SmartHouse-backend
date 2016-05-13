@@ -12,6 +12,8 @@ import app from './config/express';
 import * as seed from './config/seed';
 import './mqtt-client/client.js';
 
+import showConnectedSensors from  './API/sensors/sensorConnected.js';
+
 import Debugger from 'debug';
 const debug = Debugger('Smart House Back-end');
 
@@ -34,10 +36,11 @@ if (config.seedDB) {
 let server = http.createServer(app);
 let io = socketio(server);
 socketApi(io);
-
 // listen on port config.port
 server.listen(config.port, () => {
     debug(`server started on port ${config.port} (${config.env})`);
 });
+
+showConnectedSensors();
 
 export default app;

@@ -11,6 +11,7 @@ import input from '../data-streams/input';
 const debug = Debugger('mqtt-client');
 
 const EVENT_NAME = 'event';
+const DEVICE_CONNECTED_EVENT = 'device-connected';
 
 // Create a client connection
 const client = mqtt.connect({
@@ -23,6 +24,7 @@ client.on('connect', onConnect);
 
 function onConnect() {
     client.subscribe(EVENT_NAME, onSubscribed);
+    client.subscribe(DEVICE_CONNECTED_EVENT, onDeviceConnected);
 }
 
 function onSubscribed() {
@@ -30,5 +32,14 @@ function onSubscribed() {
         let message = JSON.parse(rawMessage);
         debug(`got message: topic '${topic}', message: '${message}'`);
         input.write(message);
+
+    });
+}
+
+function onDeviceConnected() {
+    client.on('message', function (topic, message) {
+        let device = JSON.parse(message);
+        device.event = DEVICE_CONNECTED_EVENT;
+        input.write(device);
     });
 }
