@@ -1,10 +1,17 @@
 import Sensor from './sensor.model';
 
-function get(req, res, next) {
-    Sensor.get(req.params.id).then((sensor) => {
-        res.json(sensor);
+/**
+ * Load sensor and append to req.
+ */
+function load(req, res, next, id) {
+    Sensor.get(id).then((sensor) => {
+        req.sensor = sensor;
         return next();
-    }).error(next);
+    }).error((e) => next(e));
+}
+
+function get(req, res) {
+    return res.json(req.sensor);
 }
 
 function create(req, res, next) {
@@ -19,10 +26,7 @@ function update(req, res, next) {
     Sensor.findByIdAndUpdateAsync(req.params.id, req.body, {
         new: true
     })
-        .then(sensor => {
-            res.json(sensor);
-            return next();
-        })
+        .then(sensor => res.json(sensor))
         .error(next);
 }
 
@@ -37,11 +41,8 @@ function remove(req, res, next) {
 
 function query(req, res, next) {
     Sensor.findAsync({})
-        .then(sensors => {
-            res.json(sensors);
-            next();
-        })
+        .then(sensors => res.json(sensors))
         .error(next);
 }
 
-export default {get, create, update, query, remove};
+export default {load, get, create, update, query, remove};

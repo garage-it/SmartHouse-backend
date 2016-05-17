@@ -4,7 +4,7 @@
  */
 
 'use strict';
-
+const mongoose = require('mongoose');
 const Sensor = require('../API/sensors/sensor.model');
 const Scenario = require('../API/scenarios/scenario.model');
 
@@ -13,6 +13,7 @@ const scenarios = [];
 
 
 sensors.push(new Sensor({
+    _id: mongoose.Types.ObjectId('41224d776a326fb40f000001'),
     description: 'some description',
     type: 'some type',
     mqttId: '1'
