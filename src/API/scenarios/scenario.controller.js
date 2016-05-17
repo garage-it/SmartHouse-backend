@@ -1,4 +1,4 @@
-import Scenario from './scenario.model';
+import Scenario from '../../scenarios/scenario.model';
 
 function get(req, res, next) {
     Scenario.get(req.params.id).then((scenario) => {

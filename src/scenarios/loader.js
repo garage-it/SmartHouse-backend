@@ -15,8 +15,8 @@ scenarios.forEach(scenario=>{
     const sandbox = {
         console,
         stream: {
-          input: input_stream,
-          output: output_stream
+            input: input_stream,
+            output: output_stream
         }
     };
 

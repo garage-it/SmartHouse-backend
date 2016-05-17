@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
+// import httpStatus from 'http-status';
+// import APIError from '../helpers/APIError';
 
 /**
  * Scenario Schema
@@ -41,8 +41,10 @@ ScenarioSchema.statics = {
                 if (scenario) {
                     return scenario;
                 }
-                const err = new APIError('No such scenario exists!', httpStatus.NOT_FOUND);
-                return Promise.reject(err);
+                // const err = new APIError('No such scenario exists!', httpStatus.NOT_FOUND);
+                // return Promise.reject(err);
+
+                return Promise.reject();
             });
     }
 };

@@ -6,7 +6,7 @@
 'use strict';
 const mongoose = require('mongoose');
 const Sensor = require('../API/sensors/sensor.model');
-const Scenario = require('../API/scenarios/scenario.model');
+const Scenario = require('../scenarios/scenario.model');
 
 const sensors = [];
 const scenarios = [];
