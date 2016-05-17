@@ -32,7 +32,7 @@ function onSubscribed() {
             device: topic.split('/').pop(),
             value: rawMessage.toString()
         };
-        
+
         console.log(`got message: topic '${topic}', message: '${rawMessage.toString()}'`); // eslint-disable-line
         debug(`got message: topic '${topic}', message: '${message}'`);
         input.write(message);

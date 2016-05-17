@@ -17,7 +17,8 @@ describe('## scenario APIs', () => {
                 .then(res => {
                     expect(res.body).to.deep.equal(seedData.scenarios[0]);
                     done();
-                });
+                })
+                .catch(done);
         });
     });
 
@@ -29,7 +30,8 @@ describe('## scenario APIs', () => {
                 .then(res => {
                     expect(res.body).to.deep.equal(seedData.scenarios);
                     done();
-                });
+                })
+                .catch(done);
         });
     });
 

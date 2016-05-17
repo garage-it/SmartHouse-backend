@@ -11,6 +11,7 @@ import config from './config/env';
 import app from './config/express';
 import * as seed from './config/seed';
 import './mqtt-client/client.js';
+import './scenarios';
 
 import Debugger from 'debug';
 const debug = Debugger('Smart House Back-end');
