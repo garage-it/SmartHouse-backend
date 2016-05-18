@@ -4,9 +4,13 @@
  */
 
 'use strict';
+
 const mongoose = require('mongoose');
-const Sensor = require('../API/sensors/sensor.model');
-const Scenario = require('../scenarios/scenario.model');
+const Sensor = require('../../API/sensors/sensor.model');
+
+import scenarioModel from '../../scenarios/scenario.model';
+import scenarioManager from '../../scenarios/scenario-manager.js';
+import scenario_01 from './scenario_01';
 
 const sensors = [];
 const scenarios = [];
@@ -25,21 +29,17 @@ sensors.push(new Sensor({
     mqttId: '2'
 }));
 
-scenarios.push(new Scenario({
+scenarios.push({
     name: 'some name',
     description: 'some description',
-    body: 'alert(\'hello\');'
-}));
+    body: 'console.log("Hello Scripto World");'
+});
 
-scenarios.push(new Scenario({
-    name: 'some other name',
-    description: 'some other description',
-    body: 'alert(\'hello\');'
-}));
+scenarios.push(scenario_01);
 
 const seedData = {
     sensors: sensors.map((sensor) => sensor.toObject()),
-    scenarios: scenarios.map((sensor) => sensor.toObject())
+    scenarios
 };
 
 function populateSensors() {
@@ -49,8 +49,9 @@ function populateSensors() {
 }
 
 function populateScenarios() {
-    Scenario.find({}).remove(function() {
-        Scenario.create(...scenarios);
+    scenarioModel.find({}).remove(function() {
+        console.log('CLEANED SCENARIOS');
+        scenarios.forEach(scenarioManager.add);
     });
 }
 
