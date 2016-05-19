@@ -79,12 +79,6 @@ describe('# MQTT client', () => {
                 expect(input.write).to.have.been.calledWith(mqttEventData);
             });
         });
-
-        context('when its not a OUT topic', () => {
-            it('should not publish any', () => {
-                expect(input.write).to.have.not.been.called;
-            });
-        });
     });
 
 });

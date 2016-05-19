@@ -10,7 +10,7 @@ import input from '../data-streams/input';
 
 const debug = Debugger('mqtt-client');
 
-const EVENT_NAME = '/smart-home/#';
+const EVENT_NAME = '/smart-home/out/#';
 
 // Create a client connection
 
@@ -28,15 +28,11 @@ function onConnect() {
 
 function onSubscribed() {
     client.on('message', function(topic, rawMessage) {
-
-        if (!/OUT/i.test(topic)) {
-            return;
-        }
-
         let message = {
             device: topic.split('/').pop(),
             value: rawMessage.toString()
         };
+        
         console.log(`got message: topic '${topic}', message: '${rawMessage.toString()}'`); // eslint-disable-line
         debug(`got message: topic '${topic}', message: '${message}'`);
         input.write(message);
