@@ -1,9 +1,14 @@
-/*eslint-disable */
+// TODO: merge input and output streams into one with different topics
 
-function write(topic, message){
-    console.log('TOPIC: ', topic, 'MESSAGE', message);
+import Rx from 'rxjs/Rx';
+
+let stream = new Rx.Subject();
+
+function write(event){
+    stream.next(event);
 }
 
 export default {
+    stream,
     write
-}
+};
