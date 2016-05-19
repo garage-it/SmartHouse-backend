@@ -16,13 +16,19 @@ sensors.push(new Sensor({
     _id: mongoose.Types.ObjectId('41224d776a326fb40f000001'),
     description: 'some description',
     type: 'some type',
-    mqttId: '1'
+    mqttId: 'distance'
 }));
 
 sensors.push(new Sensor({
-    description: 'some other description',
+    description: 'temperature',
     type: 'some other type',
-    mqttId: '2'
+    mqttId: 'temperature'
+}));
+
+sensors.push(new Sensor({
+    description: 'humidity',
+    type: 'some other type',
+    mqttId: 'humidity'
 }));
 
 scenarios.push(new Scenario({

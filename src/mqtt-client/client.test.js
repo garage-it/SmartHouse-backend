@@ -35,15 +35,15 @@ describe('# MQTT client', () => {
         };
 
         input = {
-            write: sinon.spy()
+            write: sinon.stub()
         };
 
         config = {
             mqtt: {
                 port: 1883,
-                host: 'sputnik',
-                user: 'UsErNaMe',
-                pass: 'PaSsWoRd'
+                hostname: 'sputnik',
+                username: 'UsErNaMe',
+                password: 'PaSsWoRd'
             }
         };
 
@@ -60,18 +60,30 @@ describe('# MQTT client', () => {
     describe('# Event Subscription', () => {
         it('will connect to broker', function(){
             expect(mqtt.connect).to.have.been.calledWith({
-                port: 1883,
-                host: 'sputnik',
-                auth: 'UsErNaMe:PaSsWoRd'
+                host: config.mqtt.hostname,
+                port: config.mqtt.port,
+                auth: `${config.mqtt.username}:${config.mqtt.password}`
             });
         });
 
-        it('should subscribe to an event', () => {
-            let topic = 'event';
-            let mqttEventData = { device: 'iddqd' };
-            let mockMessage = JSON.stringify(mqttEventData);
-            client.publish(topic, mockMessage);
-            expect(input.write).to.have.been.calledWith(mqttEventData);
+        context('when its OUT topic', () => {
+            it('should subscribe to an event', () => {
+                let device = 'temperature';
+                let topic = `/smart-home/OUT/${device}`;
+                let mockMessage = 'Its a mock message';
+                let mqttEventData = {
+                    device,
+                    value: mockMessage
+                };
+                client.publish(topic, mockMessage);
+                expect(input.write).to.have.been.calledWith(mqttEventData);
+            });
+        });
+
+        context('when its not a OUT topic', () => {
+            it('should not publish any', () => {
+                expect(input.write).to.have.not.been.called;
+            });
         });
     });
 
