@@ -23,8 +23,7 @@ const ScenarioSchema = new mongoose.Schema({
 /**
  * Methods
  */
-ScenarioSchema.method({
-});
+ScenarioSchema.method({});
 
 /**
  * Statics
@@ -47,20 +46,14 @@ ScenarioSchema.statics = {
     }
 };
 
-ScenarioSchema.options.toJSON = {
-    transform: function(doc, ret) {
+ScenarioSchema.options.toJSON = ScenarioSchema.options.toObject = {
+    transform: function (doc, ret) {
         delete ret.__v;
-        ret._id = doc._id.toString();
+        delete ret._id;
+        ret.id = doc._id.toString();
         return ret;
     }
 };
 
-ScenarioSchema.options.toObject = {
-    transform: function(doc, ret) {
-        delete ret.__v;
-        ret._id = doc._id.toString();
-        return ret;
-    }
-};
 
 export default mongoose.model('Scenario', ScenarioSchema);

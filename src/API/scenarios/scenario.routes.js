@@ -5,10 +5,14 @@ const router = express.Router();    // eslint-disable-line new-cap
 
 router.route('/')
     /** GET /api/scenarios - Get list of scenarios */
-    .get(scenarioCtrl.query);
+    .get(scenarioCtrl.query)
+    .post(scenarioCtrl.create);
 
 router.route('/:id')
     /** GET /api/scenarios/:scenarioId - Get scenario */
-    .get(scenarioCtrl.get);
+    .get(scenarioCtrl.get)
+    .put(scenarioCtrl.update);
+
+router.param('id', scenarioCtrl.load);
 
 export default router;
