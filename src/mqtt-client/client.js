@@ -13,7 +13,6 @@ const debug = Debugger('mqtt-client');
 
 const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
 const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
-
 // Create a client connection
 
 const client = mqtt.connect({
@@ -25,7 +24,8 @@ const client = mqtt.connect({
 client.on('connect', onConnect);
 
 function onConnect() {
-    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
+
+    client.subscribe(MQTT_INPUT_TOPIC_PREFIX + '#', onSubscribed);
 
     output.stream.subscribe(event => {
         client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value);
@@ -36,11 +36,22 @@ function onSubscribed() {
     client.on('message', function(topic, rawMessage) {
         debug(`got message: topic '${topic}', message: '${rawMessage.toString()}'`);
 
-        let event = {
-            device: topic.split('/').pop(),
-            value: rawMessage.toString()
-        };
-        input.write(event);
+        let message = JSON.parse(rawMessage);
+        let isDeviceInfo = typeof message === 'object';
+        let event;
 
+        if (isDeviceInfo) {
+            event  = {
+                event: 'add',
+                value: message
+            };
+        }
+        else {
+            event = {
+                device: topic.split('/').pop(),
+                value: rawMessage.toString()
+            };
+        }
+        input.write(event);
     });
 }
