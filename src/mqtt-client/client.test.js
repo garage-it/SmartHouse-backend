@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
+import output from '../data-streams/output';
 
 chai.use(sinonChai);
 chai.config.includeStack = true;
@@ -18,7 +19,9 @@ describe('# MQTT client', () => {
         client = {
             subscribe: (topic, cb)=>cb(),
             publish: (topic, message)=>{
-                subscriptors.forEach(cb=>cb(topic, message));
+                if(topic === 'event') {
+                    subscriptors.forEach(cb=>cb(topic, message));
+                }
             },
             on: (name, cb)=>{
                 if ('connect' === name){
@@ -49,6 +52,8 @@ describe('# MQTT client', () => {
 
         sinon.spy(mqtt, 'connect');
         sinon.spy(client, 'subscribe');
+        sinon.spy(client, 'on');
+        sinon.spy(client, 'publish');
 
         proxyquire('./client', {
             mqtt,
@@ -64,14 +69,27 @@ describe('# MQTT client', () => {
                 host: 'sputnik',
                 auth: 'UsErNaMe:PaSsWoRd'
             });
+
+            expect(client.on).to.have.been.called;
         });
 
         it('should subscribe to an event', () => {
+            expect(client.subscribe).to.have.been.called;
+
             let topic = 'event';
             let mqttEventData = { device: 'iddqd' };
             let mockMessage = JSON.stringify(mqttEventData);
             client.publish(topic, mockMessage);
             expect(input.write).to.have.been.calledWith(mqttEventData);
+        });
+
+        it('should send messages to the mqtt', function() {
+            let mqttEventData = { device: 'iddqd', data: 'test' };
+            let mqttDevice = '/smart-home/in/' + mqttEventData.device;
+            let mqttData = mqttEventData.data;
+
+            output.write(mqttEventData);
+            expect(client.publish).to.have.been.calledWith(mqttDevice, mqttData);
         });
     });
 
