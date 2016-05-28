@@ -11,7 +11,7 @@ import output from '../data-streams/output';
 
 const debug = Debugger('mqtt-client');
 
-const MQTT_INPUT_TOPIC_FILTER = '/smart-home/out/#';
+const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
 const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
 
 // Create a client connection
@@ -25,7 +25,7 @@ const client = mqtt.connect({
 client.on('connect', onConnect);
 
 function onConnect() {
-    client.subscribe(MQTT_INPUT_TOPIC_FILTER, onSubscribed);
+    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
 
     output.stream.subscribe(event => {
         client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value);

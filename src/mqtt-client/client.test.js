@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
+import Rx from 'rxjs/Rx';
 
 chai.use(sinonChai);
 chai.config.includeStack = true;
@@ -11,6 +12,7 @@ describe('# MQTT client', () => {
     let mqtt;
     let client;
     let input;
+    let output;
     let config;
 
     beforeEach(function(){
@@ -38,6 +40,10 @@ describe('# MQTT client', () => {
             write: sinon.stub()
         };
 
+        output = {
+            stream: new Rx.Subject()
+        };
+
         config = {
             mqtt: {
                 port: 1883,
@@ -49,10 +55,12 @@ describe('# MQTT client', () => {
 
         sinon.spy(mqtt, 'connect');
         sinon.spy(client, 'subscribe');
+        sinon.spy(client, 'publish');
 
         proxyquire('./client', {
             mqtt,
             '../data-streams/input': input,
+            '../data-streams/output': output,
             '../config/env': config
         });
     });
@@ -66,8 +74,8 @@ describe('# MQTT client', () => {
             });
         });
 
-        context('when its OUT topic', () => {
-            it('should subscribe to an event', () => {
+        context('when its device state event', () => {
+            it('will parse and write event to inner stream', () => {
                 let device = 'temperature';
                 let topic = `/smart-home/OUT/${device}`;
                 let mockMessage = 'Its a mock message';
@@ -79,6 +87,20 @@ describe('# MQTT client', () => {
                 expect(input.write).to.have.been.calledWith(mqttEventData);
             });
         });
+
+    });
+
+    describe('# Event Outputting To MQTT', ()=>{
+
+        it('will write event to MQTT when raised in inner output stream', ()=>{
+            let event = {
+                device: 'event_device_id',
+                value: 'event_value'
+            };
+            output.stream.next(event);
+            expect(client.publish).to.have.been.calledWith(`/smart-home/in/${event.device}`, event.value);
+        });
+
     });
 
 });
