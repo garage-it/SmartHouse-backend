@@ -19,9 +19,9 @@ function load(req, res, next, id) {
     Scenario.get(id).then((scenario) => {
         req.scenario = scenario;
         return next();
-    }).error((e) => {
+    }).error(() => {
         const err = new APIError('No such scenario exists!', httpStatus.NOT_FOUND);
-        return next(e);
+        return next(err);
     });
 }
 
