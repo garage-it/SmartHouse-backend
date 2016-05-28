@@ -13,8 +13,6 @@ function run(scenario){
         }
     };
 
-    console.log('running ', scenario.name); // eslint-disable-line
-
     // TODO: run this in a separate thread
     // according to https://nodejs.org/api/vm.html#vm_vm_runinnewcontext_code_sandbox_options
     // safely running untrusted code requires a separate process.
