@@ -31,6 +31,13 @@ sensors.push(new Sensor({
     mqttId: 'humidity'
 }));
 
+sensors.push(new Sensor({
+    description: 'blinds',
+    type: 'some other type',
+    mqttId: 'blinds',
+    executor: true
+}));
+
 scenarios.push(new Scenario({
     name: 'some name',
     description: 'some description',
