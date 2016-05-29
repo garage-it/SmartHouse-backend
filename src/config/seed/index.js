@@ -5,12 +5,7 @@
 
 'use strict';
 
-import { scenarios, populateScenarios } from './scenarios';
-import { devices, populateDevices } from './devices';
+import { populateScenarios } from './scenarios';
+import { populateDevices } from './devices';
 
-const seedData = {
-    sensors: devices.map(dev=>dev.toObject()), // TODO: rename sensors to devices
-    scenarios: scenarios.map(s=>s.toObject())
-};
-
-export { populateDevices as populateSensors, populateScenarios, seedData };
+export { populateDevices as populateSensors, populateScenarios };
