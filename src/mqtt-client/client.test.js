@@ -14,16 +14,18 @@ describe('# MQTT client', () => {
     let input;
     let output;
     let config;
+    let inputFilterStub;
+    let inputSubscribeStub;
 
-    beforeEach(function(){
+    beforeEach(() => {
         let subscriptors = [];
         client = {
             subscribe: (topic, cb)=>cb(),
-            publish: (topic, message)=>{
+            publish: (topic, message)=> {
                 subscriptors.forEach(cb=>cb(topic, message));
             },
-            on: (name, cb)=>{
-                if ('connect' === name){
+            on: (name, cb)=> {
+                if ('connect' === name) {
                     cb();
                 } else if ('message' === name) {
                     subscriptors.push(cb);
@@ -36,8 +38,12 @@ describe('# MQTT client', () => {
             connect: ()=>client
         };
 
+        inputSubscribeStub = {subscribe: sinon.stub()};
+        inputFilterStub = sinon.stub().returns(inputSubscribeStub);
+
         input = {
-            write: sinon.stub()
+            write: sinon.stub(),
+            stream: {filter: inputFilterStub}
         };
 
         output = {
@@ -66,7 +72,7 @@ describe('# MQTT client', () => {
     });
 
     describe('# Event Subscription', () => {
-        it('will connect to broker', function(){
+        it('will connect to broker', () => {
             expect(mqtt.connect).to.have.been.calledWith({
                 host: config.mqtt.hostname,
                 port: config.mqtt.port,

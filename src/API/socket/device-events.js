@@ -23,8 +23,10 @@
  * ``` 
  */
 
-import input from '../../data-streams/input';
 import Debugger from 'debug';
+
+import input from '../../data-streams/input';
+const DEVICE_IN_EVENT = '/smart-home/in';
 
 const debug = Debugger('device-events');
 
@@ -38,8 +40,10 @@ export default function(io){
         socket.on('subscribe', onSubscribe);
         socket.on('unsubscribe', onUnsubscribe);
         socket.on('disconnect', onDisconnect);
+        socket.on('switch', onSwitch);
 
         let subscriber = input.stream
+            .filter(m=>!m.publish)
             .filter(m=>subscribedDevices.has(m.device))
             .subscribe(onEvent, onError);
 
@@ -49,6 +53,17 @@ export default function(io){
 
         function onUnsubscribe(config){
             subscribedDevices.delete(config.device);
+        }
+
+        function onSwitch(config){
+            const topic = `${DEVICE_IN_EVENT}/${config.device}`;
+            const message = config.command.toString();
+
+            input.write({
+                topic,
+                message,
+                publish: true
+            });
         }
 
         function onEvent(event) {

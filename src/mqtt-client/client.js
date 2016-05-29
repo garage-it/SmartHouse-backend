@@ -13,6 +13,7 @@ const debug = Debugger('mqtt-client');
 
 const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
 const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
+
 // Create a client connection
 
 const client = mqtt.connect({
@@ -24,16 +25,15 @@ const client = mqtt.connect({
 client.on('connect', onConnect);
 
 function onConnect() {
-
-    client.subscribe(MQTT_INPUT_TOPIC_PREFIX + '#', onSubscribed);
+    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
 
     output.stream.subscribe(event => {
-        client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value);
+        client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value, onEventPublished);
     });
 }
 
 function onSubscribed() {
-    client.on('message', function(topic, rawMessage) {
+    client.on('message', function (topic, rawMessage) {
         debug(`got message: topic '${topic}', message: '${rawMessage.toString()}'`);
 
         let message = JSON.parse(rawMessage);
@@ -55,3 +55,19 @@ function onSubscribed() {
         input.write(event);
     });
 }
+
+function onEventPublished(config) {
+    console.log(`>>[SWITCH] Send message: topic '${config.topic}', message: '${config.message}'`);// eslint-disable-line
+    debug(`>>[SWITCH] Send message: topic '${config.topic}', message: '${config.message}'`);
+    let message = {
+        device: config.topic.split('/').pop(),
+        value: config.message === 'true' ? 'ON' : 'OFF'
+    };
+    input.write(message);
+}
+
+function onError(err) {
+    console.log(`Something went wrong: ${err.message}`);// eslint-disable-line
+}
+
+export default client;
