@@ -1,4 +1,6 @@
-import Scenario from './scenario.model';
+import httpStatus from 'http-status';
+import Scenario from '../../scenarios/scenario.model';
+import APIError from '../helpers/APIError';
 
 function get(req, res) {
     return res.json(req.scenario);
@@ -17,7 +19,10 @@ function load(req, res, next, id) {
     Scenario.get(id).then((scenario) => {
         req.scenario = scenario;
         return next();
-    }).error((e) => next(e));
+    }).error(() => {
+        const err = new APIError('No such scenario exists!', httpStatus.NOT_FOUND);
+        return next(err);
+    });
 }
 
 function create(req, res, next) {
