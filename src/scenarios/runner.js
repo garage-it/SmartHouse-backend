@@ -1,23 +1,30 @@
-import vm from 'vm';
+var vm = require('vm');
+var Rx = require('rxjs');
 
-import { stream as input_stream } from '../data-streams/input';
-import { write as output_stream } from '../data-streams/output';
 
-function run(scenario){
+var input_stream = new Rx.Subject();
+var output_stream = new Rx.Subject();
 
-    const sandbox = {
-        console,
-        stream: {
-            input: input_stream,
-            output: output_stream
-        }
-    };
+output_stream.subscribe((data) => {
+    process.send({
+        type: 'message',
+        content: data
+    });
+});
 
-    // TODO: run this in a separate thread
-    // according to https://nodejs.org/api/vm.html#vm_vm_runinnewcontext_code_sandbox_options
-    // safely running untrusted code requires a separate process.
-    vm.runInNewContext(scenario.body, sandbox);
+const sandbox = {
+    console,
+    stream: {
+        input: input_stream,
+        output: output_stream.next.bind(output_stream)
+    }
+};
 
-}
-
-export default { run };
+process.on('message', (message) => {
+    if (message.type === 'start') {
+        vm.runInNewContext(message.content, sandbox);
+    }
+    else if (message.type === 'message') {
+        input_stream.next(message.content);
+    }
+});

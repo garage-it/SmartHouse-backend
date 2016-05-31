@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { run } from './runner';
+import { start } from './scenario.manager';
 
 import Scenario from './scenario.model';
 
@@ -15,7 +15,7 @@ mongoose.connection.on('connected', function() {
 
     function runAll(scenarios){
         scenarios.forEach(scenario=>{
-            run(scenario);
+            start(scenario);
         });
     }
 
