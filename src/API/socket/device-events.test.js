@@ -11,6 +11,7 @@ chai.config.includeStack = true;
 
 describe('# Socket Device Events', () => {
     let input;
+    let output;
     let socket;
 
     beforeEach(function(){
@@ -18,13 +19,17 @@ describe('# Socket Device Events', () => {
         socket = new socketIoMocks.socket();
         sinon.spy(socket, 'on');
 
-        input = {
+        let streamConfig = {
             stream: new Rx.Subject(),
             write: sinon.stub()
         };
 
+        input = streamConfig;
+        output = streamConfig;
+
         let sut = proxyquire('./device-events', {
-            '../../data-streams/input': input
+            '../../data-streams/input': input,
+            '../../data-streams/output': output
         });
 
         let io = socketIoMocks.server()();
@@ -56,19 +61,13 @@ describe('# Socket Device Events', () => {
             expect(socket.emit).not.to.have.been.calledWith('event', { device: 'a', value: 2 });
         });
 
-        it('will not subscribe to the publish event', () => {
-            socket._handlers.subscribe({ device: 'a' });
-            input.stream.next({ device: 'a', value: 1, publish: true });
-            expect(socket.emit).to.not.have.been.calledWith('event', { device: 'a', value: 1 });
-        });
-
         it('will write event to the stream', () => {
             let config = {
                 device: 'mockDev',
                 command: 'mockCommand'
             };
             socket.on.lastCall.args[1](config);
-            expect(input.write).to.have.been.called;
+            expect(output.write).to.have.been.calledWith({ device: config.device, value: config.command });
         });
 
     });

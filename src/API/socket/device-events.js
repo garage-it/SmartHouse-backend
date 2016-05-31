@@ -26,7 +26,7 @@
 import Debugger from 'debug';
 
 import input from '../../data-streams/input';
-const DEVICE_IN_EVENT = '/smart-home/in';
+import output from '../../data-streams/output';
 
 const debug = Debugger('device-events');
 
@@ -43,7 +43,6 @@ export default function(io){
         socket.on('switch', onSwitch);
 
         let subscriber = input.stream
-            .filter(m=>!m.publish)
             .filter(m=>subscribedDevices.has(m.device))
             .subscribe(onEvent, onError);
 
@@ -56,13 +55,9 @@ export default function(io){
         }
 
         function onSwitch(config){
-            const topic = `${DEVICE_IN_EVENT}/${config.device}`;
-            const message = config.command.toString();
-
-            input.write({
-                topic,
-                message,
-                publish: true
+            output.write({
+                device: config.device,
+                value: config.command.toString()
             });
         }
 

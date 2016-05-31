@@ -28,7 +28,8 @@ function onConnect() {
     client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
 
     output.stream.subscribe(event => {
-        client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value, onEventPublished);
+        client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value,
+            {}, () => onEventPublished(event));
     });
 }
 
@@ -57,17 +58,9 @@ function onSubscribed() {
 }
 
 function onEventPublished(config) {
-    console.log(`>>[SWITCH] Send message: topic '${config.topic}', message: '${config.message}'`);// eslint-disable-line
-    debug(`>>[SWITCH] Send message: topic '${config.topic}', message: '${config.message}'`);
-    let message = {
-        device: config.topic.split('/').pop(),
-        value: config.message === 'true' ? 'ON' : 'OFF'
-    };
-    input.write(message);
-}
-
-function onError(err) {
-    console.log(`Something went wrong: ${err.message}`);// eslint-disable-line
+    console.log(`>>[SWITCH] Send message: topic '${config.device}', message: '${config.value}'`);// eslint-disable-line
+    debug(`>>[SWITCH] Send message: topic '${config.device}', message: '${config.value}'`);
+    input.write(config);
 }
 
 export default client;
