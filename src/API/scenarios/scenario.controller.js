@@ -8,10 +8,7 @@ function get(req, res) {
 
 function query(req, res, next) {
     Scenario.findAsync({})
-        .then(scenarios => {
-            res.json(scenarios);
-            next();
-        })
+        .then((scenarios) => res.json(scenarios))
         .error(next);
 }
 
@@ -41,4 +38,12 @@ function update(req, res, next) {
         .error(next);
 }
 
-export default {get, query, load, create, update};
+function remove(req, res, next) {
+    req.scenario.removeAsync()
+        .then(() => {
+            res.end();
+        })
+        .error(next);
+}
+
+export default {get, query, load, create, update, remove};

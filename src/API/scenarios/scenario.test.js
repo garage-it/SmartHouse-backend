@@ -93,5 +93,15 @@ describe('## scenario APIs', () => {
         });
     });
 
-
+    describe('# DELETE /api/scenarios/:id', () => {
+        it('should delete scenario', (done) => {
+            request(app)
+                .delete(`/api/scenarios/${scenarios[0].id}`)
+                .expect(httpStatus.OK)
+                .then(() => {
+                    done();
+                })
+                .catch(done);
+        });
+    });
 });
