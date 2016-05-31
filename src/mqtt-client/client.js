@@ -50,7 +50,7 @@ function publishEvent(config) {
         debug(`>>[SWITCH] Send message: topic '${config.topic}', message: '${config.message}'`);
         let message = {
             device: config.topic.split('/').pop(),
-            value: config.message === 'true' ? 'ON': 'OFF'
+            value: config.message
         };
         input.write(message);
     });
