@@ -1,5 +1,6 @@
 import config from '../config/env';
 import mongoose from 'mongoose';
+import Promise from 'bluebird';
 
 beforeEach(function (done) {
 
@@ -17,11 +18,12 @@ beforeEach(function (done) {
 
 
     function clearDB() {
-        for (var i in mongoose.connection.collections) {
-            mongoose.connection.collections[i].remove(function() {});
-        }
+        let removals = Object.keys(mongoose.connection.collections)
+            .map(key=>mongoose.connection.collections[key])
+            .map(collection=>collection.remove());
 
-        return done();
+        Promise.all(removals)
+            .finally(()=>done());
     }
 
 });
