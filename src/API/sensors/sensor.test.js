@@ -3,15 +3,57 @@ import httpStatus from 'http-status';
 import chai from 'chai';
 import { expect } from 'chai';
 import app from '../../index';
+import SensorModel from './sensor.model';
 
 chai.config.includeStack = true;
 
 describe('## Sensor APIs', () => {
-    let sensor = {
-        description: 'desc',
-        type: 'some type',
-        mqttId: 'some mqtt id'
-    };
+
+    let sensor;
+    let devices;
+
+    beforeEach((done)=>{
+
+        sensor = {
+            description: 'desc',
+            type: 'some type',
+            mqttId: 'some mqtt id'
+        };
+
+        const raw_devices = [];
+
+        raw_devices.push(new SensorModel({
+            description: 'some description',
+            type: 'some type',
+            mqttId: 'distance'
+        }));
+
+        raw_devices.push(new SensorModel({
+            description: 'temperature',
+            type: 'some other type',
+            mqttId: 'temperature'
+        }));
+
+        raw_devices.push(new SensorModel({
+            description: 'humidity',
+            type: 'some other type',
+            mqttId: 'humidity'
+        }));
+
+        SensorModel.create(...raw_devices)
+            .then(()=>{
+
+                devices = raw_devices
+                    .map(dev=>dev.toObject())
+                    .map(dev=> {
+                        dev._id = dev._id.toString();
+                        return dev;
+                    });
+                done();
+            })
+            .catch(done);
+
+    });
 
     describe('# POST /api/sensors', () => {
 
@@ -22,7 +64,6 @@ describe('## Sensor APIs', () => {
                 .expect(httpStatus.OK)
                 .then(res => {
                     expect(res.body).to.contain(sensor);
-                    sensor = res.body;
                     done();
                 });
         });
@@ -30,7 +71,11 @@ describe('## Sensor APIs', () => {
         it('should not create a new sensor with existing mqtt id', (done) => {
             request(app)
                 .post('/api/sensors')
-                .send(sensor)
+                .send({
+                    description: 'desc',
+                    type: 'some type',
+                    mqttId: 'distance'
+                })
                 .then(res => {
                     expect(res.status).to.be.above(400);
                     done();
@@ -54,17 +99,17 @@ describe('## Sensor APIs', () => {
     describe('# GET /api/sensors/:sensorId', () => {
         it('should get sensor details', (done) => {
             request(app)
-                .get(`/api/sensors/${sensor._id}`)
+                .get(`/api/sensors/${devices[0]._id}`)
                 .expect(httpStatus.OK)
                 .then(res => {
-                    expect(res.body).to.contain(sensor);
+                    expect(res.body).to.contain(devices[0]);
                     done();
                 });
         });
 
         it('should report error with message - Not found, when sensor does not exists', (done) => {
             request(app)
-                .get('/api/sensors/56c787ccc67fc16ccc1a5e92')
+                .get('/api/sensors/ffffffffffffffffffffffff')
                 .expect(httpStatus.NOT_FOUND)
                 .then(res => {
                     expect(res.body.message).to.equal('Not Found');
@@ -76,8 +121,9 @@ describe('## Sensor APIs', () => {
     describe('# PUT /api/sensors/:sensorId', () => {
         it('should update sensor details', (done) => {
             let description = 'new desc';
+
             request(app)
-                .put(`/api/sensors/${sensor._id}`)
+                .put(`/api/sensors/${devices[0]._id}`)
                 .send({description})
                 .expect(httpStatus.OK)
                 .then(res => {
@@ -102,11 +148,12 @@ describe('## Sensor APIs', () => {
     describe('# DELETE /api/sensors/', () => {
         it('should delete sensor', (done) => {
             request(app)
-                .delete(`/api/sensors/${sensor._id}`)
+                .delete(`/api/sensors/${devices[0]._id}`)
                 .expect(httpStatus.OK)
                 .then(() => {
                     done();
-                });
+                })
+                .catch(done);
         });
     });
 
@@ -119,7 +166,8 @@ describe('## Sensor APIs', () => {
                 .then(res => {
                     expect(res.body.message).to.equal('Internal Server Error');
                     done();
-                });
+                })
+                .catch(done);
         });
 
         it('should handle error - type is required', (done) => {
@@ -132,7 +180,8 @@ describe('## Sensor APIs', () => {
                 .then(res => {
                     expect(res.body.message).to.equal('Internal Server Error');
                     done();
-                });
+                })
+                .catch(done);
         });
     });
 });
