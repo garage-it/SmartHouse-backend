@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
+import {expect} from 'chai';
 import proxyquire from 'proxyquire';
 import '../test/mongo';
 import mongoose from 'mongoose';
@@ -11,24 +11,25 @@ chai.config.includeStack = true;
 
 describe('# Scenario Model', () => {
     let sut;
-    let runner;
+    let scenarioManager;
 
-    beforeEach(function(){
+    beforeEach(function () {
 
-        // NOTE: deleting 
+        // NOTE: deleting
         delete mongoose.models.Scenario;
         delete mongoose.modelSchemas.Scenario;
 
-        runner = {
-            run: sinon.spy()
+        scenarioManager = {
+            start: sinon.spy(),
+            stop: sinon.spy()
         };
 
         sut = proxyquire('./scenario.model', {
-            './runner': runner
+            './scenario.manager': scenarioManager
         });
     });
 
-    it('will execute script', function(done){
+    it('will execute script', function (done) {
         const script = {
             name: 'test-name',
             body: 'console.log("test-body")'
@@ -37,8 +38,8 @@ describe('# Scenario Model', () => {
         const instance = new sut(script);
 
         instance.saveAsync()
-            .then(()=>{
-                expect(runner.run).to.have.been.calledWithMatch({
+            .then(()=> {
+                expect(scenarioManager.start).to.have.been.calledWithMatch({
                     id: sinon.match.string,
                     active: sinon.match.bool,
                     name: script.name,
@@ -50,4 +51,18 @@ describe('# Scenario Model', () => {
 
     });
 
+    describe('#Remove', () => {
+        it('should stop running scenario', (done) => {
+            let instance;
+
+            instance = new sut({name: 'some name'});
+            instance.saveAsync()
+                .then((doc) => doc.removeAsync())
+                .then(() => {
+                    expect(scenarioManager.stop).to.have.been.calledWith(instance);
+                    done();
+                })
+                .catch(done);
+        });
+    });
 });

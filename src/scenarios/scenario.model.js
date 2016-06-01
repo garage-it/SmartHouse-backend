@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
-import { run } from './runner';
+import { start, stop } from './scenario.manager';
 
 /**
  * Scenario Schema
@@ -54,8 +54,12 @@ ScenarioSchema.options.toJSON = ScenarioSchema.options.toObject = {
     }
 };
 
-ScenarioSchema.post('save', function(doc) {
-    run(doc);
+ScenarioSchema.post('save', function(scenario) {
+    start(scenario);
+});
+
+ScenarioSchema.post('remove', function(scenario){
+    stop(scenario);
 });
 
 export default mongoose.model('Scenario', ScenarioSchema);

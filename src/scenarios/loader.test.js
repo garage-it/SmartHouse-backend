@@ -11,7 +11,7 @@ chai.config.includeStack = true;
 describe('# Scenario loader', () => {
     let Scenario;
     let mongoose;
-    let runner;
+    let scenarioManager;
     let promise;
 
     let scripts;
@@ -19,8 +19,8 @@ describe('# Scenario loader', () => {
     beforeEach(function(){
         scripts = ['a', 'b', 'c'];
 
-        runner = {
-            run: sinon.spy()
+        scenarioManager = {
+            start: sinon.spy()
         };
 
         promise = new Promise(resolve=>{
@@ -39,16 +39,16 @@ describe('# Scenario loader', () => {
 
         proxyquire('./loader', {
             'mongoose': mongoose ,
-            './runner': runner, 
+            './scenario.manager': scenarioManager,
             './scenario.model': Scenario
         });
     });
 
     it('will load all scripts', function(done){
         promise.then(()=>{
-            expect(runner.run).to.have.been.calledWith('a');
-            expect(runner.run).to.have.been.calledWith('b');
-            expect(runner.run).to.have.been.calledWith('c');
+            expect(scenarioManager.start).to.have.been.calledWith('a');
+            expect(scenarioManager.start).to.have.been.calledWith('b');
+            expect(scenarioManager.start).to.have.been.calledWith('c');
             done();
         });
     });
