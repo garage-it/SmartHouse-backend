@@ -54,8 +54,8 @@ ScenarioSchema.options.toJSON = ScenarioSchema.options.toObject = {
     }
 };
 
-ScenarioSchema.post('save', function(doc) {
-    start(doc);
+ScenarioSchema.post('save', function(scenario) {
+    start(scenario);
 });
 
 ScenarioSchema.post('remove', function(scenario){

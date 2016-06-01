@@ -75,7 +75,7 @@ describe('#Scenario manager', () => {
                 done();
             });
 
-            childProcess.on.callArgWith(1, {
+            childProcess.on.withArgs('message').callArgWith(1, {
                 type: 'message',
                 content: message
             });
@@ -87,5 +87,14 @@ describe('#Scenario manager', () => {
         sut.stop(scenario);
 
         expect(childProcess.kill).to.have.been.called;
+    });
+
+    it('will stop sending messages to scenario after it closes', () => {
+        sut.start(scenario);
+        childProcess.send.reset();
+        childProcess.on.withArgs('exit').callArg(1);
+        inputStream.next();
+
+        expect(childProcess.send).not.to.have.been.called;
     });
 });

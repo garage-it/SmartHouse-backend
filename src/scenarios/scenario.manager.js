@@ -19,6 +19,8 @@ function start(scenario) {
             output_stream.next(content);
         }
     });
+
+    scenarioProcess.on('exit', () => runningScenarios.delete(scenario.id));
 }
 
 function notifyScenarios(message) {
@@ -34,7 +36,6 @@ function stop(scenario) {
     let scenarioProcess = runningScenarios.get(scenario.id);
     if (scenarioProcess) {
         scenarioProcess.kill();
-        runningScenarios.delete(scenario.id);
     }
 }
 
