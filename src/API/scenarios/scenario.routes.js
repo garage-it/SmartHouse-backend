@@ -11,6 +11,7 @@ router.route('/')
 router.route('/:id')
     /** GET /api/scenarios/:scenarioId - Get scenario */
     .get(scenarioCtrl.get)
+    .delete(scenarioCtrl.remove)
     .put(scenarioCtrl.update);
 
 router.param('id', scenarioCtrl.load);
