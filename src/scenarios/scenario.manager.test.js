@@ -80,6 +80,14 @@ describe('#Scenario manager', () => {
                 content: message
             });
         });
+
+        it('should stop scenario before starting if it is already running', function () {
+            fork.reset();
+            sut.start(scenario);
+            childProcess.on.withArgs('exit').callArg(1);
+
+            expect(fork).to.have.been.calledAfter(childProcess.kill);
+        });
     });
 
     it('should stop scenario', () => {
