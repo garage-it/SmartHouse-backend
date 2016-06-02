@@ -13,15 +13,15 @@ describe('# Scenario Model', () => {
     let sut;
     let scenarioManager;
 
-    beforeEach(function () {
+    beforeEach(() => {
 
         // NOTE: deleting
         delete mongoose.models.Scenario;
         delete mongoose.modelSchemas.Scenario;
 
         scenarioManager = {
-            start: sinon.spy(),
-            stop: sinon.spy()
+            start: sinon.stub(),
+            stop: sinon.stub()
         };
 
         sut = proxyquire('./scenario.model', {
@@ -29,26 +29,36 @@ describe('# Scenario Model', () => {
         });
     });
 
-    it('will execute script', function (done) {
-        const script = {
-            name: 'test-name',
-            body: 'console.log("test-body")'
-        };
+    describe('#Save/Update', () => {
+        let instance;
 
-        const instance = new sut(script);
+        it('will start active scenario', (done) => {
+            instance = new sut({
+                active: true,
+                name: 'some name'
+            });
 
-        instance.saveAsync()
-            .then(()=> {
-                expect(scenarioManager.start).to.have.been.calledWithMatch({
-                    id: sinon.match.string,
-                    active: sinon.match.bool,
-                    name: script.name,
-                    body: script.body
-                });
-                done();
-            })
-            .catch(done);
+            instance.saveAsync()
+                .then(() => {
+                    expect(scenarioManager.start).to.have.been.calledWith(instance);
+                    done();
+                })
+                .catch(done);
+        });
 
+        it('will stop inactive scenario', (done) => {
+            instance = new sut({
+                active: false,
+                name: 'some name'
+            });
+
+            instance.saveAsync()
+                .then(() => {
+                    expect(scenarioManager.stop).to.have.been.calledWith(instance);
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('#Remove', () => {

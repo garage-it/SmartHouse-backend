@@ -6,7 +6,7 @@ const runningScenarios = new Map();
 
 input_stream.subscribe(notifyScenarios);
 
-function start(scenario) {
+function run(scenario) {
     let scenarioProcess = fork(__dirname + '/runner');
     runningScenarios.set(scenario.id, scenarioProcess);
     scenarioProcess.send({
@@ -21,6 +21,21 @@ function start(scenario) {
     });
 
     scenarioProcess.on('exit', () => runningScenarios.delete(scenario.id));
+}
+
+function isRunning(scenario) {
+    return runningScenarios.has(scenario.id);
+}
+
+function start(scenario) {
+    if (isRunning(scenario)) {
+        let scenarioProcess = runningScenarios.get(scenario.id);
+
+        stop(scenario);
+        scenarioProcess.on('exit', () => run(scenario));
+    } else {
+        run(scenario);
+    }
 }
 
 function notifyScenarios(message) {
