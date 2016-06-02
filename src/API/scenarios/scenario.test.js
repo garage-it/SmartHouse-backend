@@ -56,7 +56,8 @@ describe('## scenario APIs', () => {
                 .get('/api/scenarios')
                 .expect(httpStatus.OK)
                 .then(res => {
-                    expect(res.body).to.deep.equal(scenarios);
+                    let sort_function = (a,b)=>a.id < b.id;
+                    expect(res.body.sort(sort_function)).to.deep.equal(scenarios.sort(sort_function));
                     done();
                 })
                 .catch(done);
