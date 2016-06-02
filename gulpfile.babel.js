@@ -22,7 +22,7 @@ const options = {
         reporters: ['lcov', 'text-summary'],
         thresholds: {
             global: { statements: 80, branches: 80, functions: 80, lines: 80 },
-            each: { statements: 50, branches: 50, functions: 50, lines: 50 }
+            each: { statements: 20, branches: 20, functions: 20, lines: 20 }
         }
     }
 };
