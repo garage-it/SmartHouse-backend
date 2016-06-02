@@ -18,11 +18,13 @@ beforeEach(function (done) {
 
 
     function clearDB() {
+        console.log('CLEANING'); //eslint-disable-line
         let removals = Object.keys(mongoose.connection.collections)
             .map(key=>mongoose.connection.collections[key])
             .map(collection=>collection.remove());
 
         Promise.all(removals)
+            .finally(()=>console.log('CLEANED')) //eslint-disable-line
             .finally(()=>done());
     }
 

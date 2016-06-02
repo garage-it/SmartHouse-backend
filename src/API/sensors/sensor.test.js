@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import chai from 'chai';
 import { expect } from 'chai';
 import app from '../../index';
+import '../../test/mongo';
 import SensorModel from './sensor.model';
 
 chai.config.includeStack = true;
@@ -40,9 +41,10 @@ describe('## Sensor APIs', () => {
             mqttId: 'humidity'
         }));
 
+        console.log('FILLING WITH SENSORS'); //eslint-disable-line
         SensorModel.create(...raw_devices)
             .then(()=>{
-
+                console.log('FULFILLED WITH SENSORS'); //eslint-disable-line
                 devices = raw_devices
                     .map(dev=>dev.toObject())
                     .map(dev=> {
