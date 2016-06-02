@@ -1,5 +1,5 @@
 export default {
-    env: 'development',
+    env: 'cloud',
     db: 'mongodb://localhost/db',
     port: 3000,
     seedDB: true,
