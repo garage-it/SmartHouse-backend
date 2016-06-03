@@ -40,7 +40,7 @@ export default function(io){
         socket.on('subscribe', onSubscribe);
         socket.on('unsubscribe', onUnsubscribe);
         socket.on('disconnect', onDisconnect);
-        socket.on('switch', onSwitch);
+        socket.on('pushEvent', onEventRaised);
 
         let subscriber = input.stream
             .filter(m=>subscribedDevices.has(m.device))
@@ -54,10 +54,10 @@ export default function(io){
             subscribedDevices.delete(config.device);
         }
 
-        function onSwitch(config){
+        function onEventRaised(config){
             output.write({
                 device: config.device,
-                value: config.command.toString()
+                value: config.value.toString()
             });
         }
 

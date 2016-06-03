@@ -64,10 +64,10 @@ describe('# Socket Device Events', () => {
         it('will write event to the stream', () => {
             let config = {
                 device: 'mockDev',
-                command: 'mockCommand'
+                value: 'mockCommand'
             };
             socket.on.lastCall.args[1](config);
-            expect(output.write).to.have.been.calledWith({ device: config.device, value: config.command });
+            expect(output.write).to.have.been.calledWith({ device: config.device, value: config.value });
         });
 
     });

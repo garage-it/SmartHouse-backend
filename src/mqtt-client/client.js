@@ -36,8 +36,12 @@ function onConnect() {
 function onSubscribed() {
     client.on('message', function (topic, rawMessage) {
         debug(`got message: topic '${topic}', message: '${rawMessage.toString()}'`);
-
-        let message = JSON.parse(rawMessage);
+        let message = '';
+        try {
+            message = JSON.parse(rawMessage);
+        } catch (e) {
+            message = rawMessage.toString();
+        }
         let isDeviceInfo = typeof message === 'object';
         let event;
 

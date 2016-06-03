@@ -38,8 +38,8 @@ describe('# MQTT client', () => {
             connect: ()=>client
         };
 
-        inputSubscribeStub = { subscribe: sinon.stub() };
-        outputStreamStub = { subscribe: sinon.stub(), next: sinon.stub() } ;
+        inputSubscribeStub = {subscribe: sinon.stub()};
+        outputStreamStub = {subscribe: sinon.stub(), next: sinon.stub()};
         inputFilterStub = sinon.stub().returns(inputSubscribeStub);
 
         input = {
@@ -87,50 +87,51 @@ describe('# MQTT client', () => {
 
         context('when its device state event', () => {
 
-        it('will parse and write event to inner stream when its device STATE event', () => {
-            let device = 'temperature';
-            let topic = `/smart-home/out/${device}`;
-            let mockMessage = JSON.stringify('Its a mock message');
-            let mqttEventData = {
-                device,
-                value: mockMessage
-            };
-            client.publish(topic, mockMessage);
-            expect(input.write).to.have.been.calledWith(mqttEventData);
+            it('will parse and write event to inner stream when its device STATE event', () => {
+                let device = 'temperature';
+                let topic = `/smart-home/out/${device}`;
+                let mockMessage = JSON.stringify('Its a mock message');
+                let mqttEventData = {
+                    device,
+                    value: mockMessage
+                };
+                client.publish(topic, mockMessage);
+                expect(input.write).to.have.been.calledWith(mqttEventData);
+            });
+
+            it('will parse and write event to inner stream when its device INFO event', () => {
+                let device = 'temperature';
+                let topic = `/smart-home/out/${device}`;
+                let mockMessage = JSON.stringify({type: 'sensor'});
+                let mqttEventData = {
+                    event: 'add',
+                    value: JSON.parse(mockMessage)
+                };
+                client.publish(topic, mockMessage);
+                expect(input.write).to.have.been.calledWith(mqttEventData);
+            });
         });
 
-        it('will parse and write event to inner stream when its device INFO event', () => {
-            let device = 'temperature';
-            let topic = `/smart-home/out/${device}`;
-            let mockMessage = JSON.stringify({type: 'sensor'});
-            let mqttEventData = {
-                event: 'add',
-                value: JSON.parse(mockMessage)
-            };
-            client.publish(topic, mockMessage);
-            expect(input.write).to.have.been.calledWith(mqttEventData);
+        context('when its IN topic', () => {
+            let publishFn;
+            let config;
+            beforeEach(() => {
+                client.publish = sinon.stub();
+                publishFn = outputStreamStub.subscribe.lastCall.args[0];
+                config = {device: 'mock', value: 'mock'};
+                publishFn(config);
+            });
+
+            it('should publish event', () => {
+                expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
+                    {}, sinon.match.func);
+            });
+
+            it('should write message to the strean', () => {
+                client.publish.lastCall.args[3]();
+                expect(input.write).to.have.been.called;
+            });
         });
+
     });
-
-    context('when its IN topic', () => {
-        let publishFn;
-        let config;
-        beforeEach(() => {
-            client.publish = sinon.stub();
-            publishFn = outputStreamStub.subscribe.lastCall.args[0];
-            config = {device: 'mock', value: 'mock'};
-            publishFn(config);
-        });
-
-        it('should publish event', () => {
-            expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
-                {}, sinon.match.func);
-        });
-
-        it('should write message to the strean', () => {
-            client.publish.lastCall.args[3]();
-            expect(input.write).to.have.been.called;
-        });
-    });
-
 });
