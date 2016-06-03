@@ -83,6 +83,7 @@
     "proxyquire": "^1.7.4",
     "run-sequence": "^1.1.5",
     "sinon": "^1.17.3",
+    "sinon-as-promised": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "socket-io-mocks": "^0.1.4",
     "supertest": "^1.1.0",
