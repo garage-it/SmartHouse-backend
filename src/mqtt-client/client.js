@@ -62,7 +62,6 @@ function onSubscribed() {
 }
 
 function onEventPublished(config) {
-    console.log(`>>[SWITCH] Send message: topic '${config.device}', message: '${config.value}'`);// eslint-disable-line
     debug(`>>[SWITCH] Send message: topic '${config.device}', message: '${config.value}'`);
     input.write(config);
 }
