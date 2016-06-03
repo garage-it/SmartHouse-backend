@@ -15,6 +15,7 @@ import './scenarios';
 
 import Debugger from 'debug';
 const debug = Debugger('Smart House Back-end');
+import trackDeviceConnection from  './devices/deviceConnected';
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -42,4 +43,6 @@ server.listen(config.port, () => {
     debug(`server started on port ${config.port} (${config.env})`);
 });
 
+
+trackDeviceConnection();
 export default app;

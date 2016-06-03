@@ -74,33 +74,41 @@ describe('# MQTT client', () => {
             });
         });
 
-        context('when its device state event', () => {
-            it('will parse and write event to inner stream', () => {
-                let device = 'temperature';
-                let topic = `/smart-home/OUT/${device}`;
-                let mockMessage = 'Its a mock message';
-                let mqttEventData = {
-                    device,
-                    value: mockMessage
-                };
-                client.publish(topic, mockMessage);
-                expect(input.write).to.have.been.calledWith(mqttEventData);
-            });
+
+        it('will parse and write event to inner stream when its device STATE event', () => {
+            let device = 'temperature';
+            let topic = `/smart-home/out/${device}`;
+            let mockMessage = JSON.stringify('Its a mock message');
+            let mqttEventData = {
+                device,
+                value: mockMessage
+            };
+            client.publish(topic, mockMessage);
+            expect(input.write).to.have.been.calledWith(mqttEventData);
         });
 
+        it('will parse and write event to inner stream when its device INFO event', () => {
+            let device = 'temperature';
+            let topic = `/smart-home/out/${device}`;
+            let mockMessage = JSON.stringify({type: 'sensor'});
+            let mqttEventData = {
+                event: 'add',
+                value: JSON.parse(mockMessage)
+            };
+            client.publish(topic, mockMessage);
+            expect(input.write).to.have.been.calledWith(mqttEventData);
+        });
     });
 
     describe('# Event Outputting To MQTT', ()=>{
-
         it('will write event to MQTT when raised in inner output stream', ()=>{
             let event = {
                 device: 'event_device_id',
-                value: 'event_value'
+                value: JSON.stringify('event_value')
             };
             output.stream.next(event);
             expect(client.publish).to.have.been.calledWith(`/smart-home/in/${event.device}`, event.value);
         });
-
     });
 
 });
