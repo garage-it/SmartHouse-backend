@@ -7,7 +7,7 @@ const runningScenarios = new Map();
 input_stream.subscribe(notifyScenarios);
 
 function run(scenario) {
-    let scenarioProcess = fork(__dirname + '/runner');
+    let scenarioProcess = fork(__dirname + '/scenario-runner/runner');
     runningScenarios.set(scenario.id, scenarioProcess);
     scenarioProcess.send({
         type: 'start',

@@ -47,7 +47,7 @@ describe('#Scenario manager', () => {
         });
 
         it('should for a runner process', () => {
-            expect(fork).to.have.been.calledWith(__dirname + '/runner');
+            expect(fork).to.have.been.calledWith(__dirname + '/scenario-runner/runner');
         });
 
         it('should start executing scenario body in child process', () => {

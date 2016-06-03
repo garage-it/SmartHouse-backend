@@ -7,43 +7,57 @@ import proxyquire from 'proxyquire';
 chai.use(sinonChai);
 chai.config.includeStack = true;
 
-describe('# Scenario Runner', () => {
-    let mockVm;
-
+describe('Scenario Runner', () => {
     beforeEach(function () {
-
         sinon.spy(process, 'on');
         process.send = sinon.stub();
-
-        mockVm = {
-            runInNewContext: sinon.stub()
-        };
-
-        proxyquire('./runner', {
-            'vm': mockVm
-        });
     });
 
-    it('will start script execution', function () {
-        let script = 'allert()';
+    describe('Starting vm', ()=>{
+        let mockVm;
 
-        process.on.callArgWith(1, {
-            type: 'start',
-            content: script
+        beforeEach(function () {
+            mockVm = {
+                runInNewContext: sinon.stub()
+            };
+
+            proxyquire('./runner', {
+                'vm': mockVm
+            });
         });
 
-        expect(mockVm.runInNewContext).to.have.been.calledWith(script);
+        it('will start script execution', function () {
+            let script = 'allert()';
+
+            process.on.callArgWith(1, {
+                type: 'start',
+                content: script
+            });
+
+            expect(mockVm.runInNewContext).to.have.been.calledWith(script);
+        });
     });
 
     describe('#Messaging', function () {
         beforeEach(function () {
-            proxyquire('./runner', {});
+            let scenarioApiManager = {
+                create: function(inputStream, outputStream){
+                    return {
+                        fake_input: inputStream,
+                        fake_output: outputStream
+                    };
+                }
+            };
+
+            proxyquire('./runner', {
+                './scenario-api.manager': scenarioApiManager
+            });
         });
 
         it('will send a output to parent process', () => {
             let message = 'asd';
 
-            let script = `stream.output('${message}')`;
+            let script = `SMART_HOUSE.fake_output.next('${message}')`;
 
             process.on.callArgWith(1, {
                 type: 'start',
@@ -60,9 +74,9 @@ describe('# Scenario Runner', () => {
             let message = 'asd';
 
             let script = `
-                    stream
-                    .input
-                    .subscribe(stream.output)
+                    SMART_HOUSE
+                        .fake_input
+                        .subscribe(SMART_HOUSE.fake_output.next.bind(SMART_HOUSE.fake_output))
                 `;
 
             process.on.callArgWith(1, {
