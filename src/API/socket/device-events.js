@@ -23,8 +23,10 @@
  * ``` 
  */
 
-import input from '../../data-streams/input';
 import Debugger from 'debug';
+
+import input from '../../data-streams/input';
+import output from '../../data-streams/output';
 
 const debug = Debugger('device-events');
 
@@ -38,6 +40,7 @@ export default function(io){
         socket.on('subscribe', onSubscribe);
         socket.on('unsubscribe', onUnsubscribe);
         socket.on('disconnect', onDisconnect);
+        socket.on('pushEvent', onEventRaised);
 
         let subscriber = input.stream
             .filter(m=>subscribedDevices.has(m.device))
@@ -49,6 +52,13 @@ export default function(io){
 
         function onUnsubscribe(config){
             subscribedDevices.delete(config.device);
+        }
+
+        function onEventRaised(config){
+            output.write({
+                device: config.device,
+                value: config.value.toString()
+            });
         }
 
         function onEvent(event) {

@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
-import Rx from 'rxjs/Rx';
 
 chai.use(sinonChai);
 chai.config.includeStack = true;
@@ -14,16 +13,19 @@ describe('# MQTT client', () => {
     let input;
     let output;
     let config;
+    let inputFilterStub;
+    let outputStreamStub;
+    let inputSubscribeStub;
 
-    beforeEach(function(){
+    beforeEach(() => {
         let subscriptors = [];
         client = {
             subscribe: (topic, cb)=>cb(),
-            publish: (topic, message)=>{
+            publish: (topic, message)=> {
                 subscriptors.forEach(cb=>cb(topic, message));
             },
-            on: (name, cb)=>{
-                if ('connect' === name){
+            on: (name, cb)=> {
+                if ('connect' === name) {
                     cb();
                 } else if ('message' === name) {
                     subscriptors.push(cb);
@@ -36,12 +38,17 @@ describe('# MQTT client', () => {
             connect: ()=>client
         };
 
+        inputSubscribeStub = {subscribe: sinon.stub()};
+        outputStreamStub = {subscribe: sinon.stub(), next: sinon.stub()};
+        inputFilterStub = sinon.stub().returns(inputSubscribeStub);
+
         input = {
-            write: sinon.stub()
+            write: sinon.stub(),
+            stream: {filter: inputFilterStub}
         };
 
         output = {
-            stream: new Rx.Subject()
+            stream: outputStreamStub
         };
 
         config = {
@@ -66,7 +73,7 @@ describe('# MQTT client', () => {
     });
 
     describe('# Event Subscription', () => {
-        it('will connect to broker', function(){
+        it('will connect to broker', () => {
             expect(mqtt.connect).to.have.been.calledWith({
                 host: config.mqtt.hostname,
                 port: config.mqtt.port,
@@ -74,41 +81,57 @@ describe('# MQTT client', () => {
             });
         });
 
-
-        it('will parse and write event to inner stream when its device STATE event', () => {
-            let device = 'temperature';
-            let topic = `/smart-home/out/${device}`;
-            let mockMessage = JSON.stringify('Its a mock message');
-            let mqttEventData = {
-                device,
-                value: mockMessage
-            };
-            client.publish(topic, mockMessage);
-            expect(input.write).to.have.been.calledWith(mqttEventData);
+        it('will subscribe on publish events', () => {
+            expect(outputStreamStub.subscribe).to.have.been.called;
         });
 
-        it('will parse and write event to inner stream when its device INFO event', () => {
-            let device = 'temperature';
-            let topic = `/smart-home/out/${device}`;
-            let mockMessage = JSON.stringify({type: 'sensor'});
-            let mqttEventData = {
-                event: 'add',
-                value: JSON.parse(mockMessage)
-            };
-            client.publish(topic, mockMessage);
-            expect(input.write).to.have.been.calledWith(mqttEventData);
+        context('when its device state event', () => {
+
+            it('will parse and write event to inner stream when its device STATE event', () => {
+                let device = 'temperature';
+                let topic = `/smart-home/out/${device}`;
+                let mockMessage = JSON.stringify('Its a mock message');
+                let mqttEventData = {
+                    device,
+                    value: mockMessage
+                };
+                client.publish(topic, mockMessage);
+                expect(input.write).to.have.been.calledWith(mqttEventData);
+            });
+
+            it('will parse and write event to inner stream when its device INFO event', () => {
+                let device = 'temperature';
+                let topic = `/smart-home/out/${device}`;
+                let mockMessage = JSON.stringify({type: 'sensor'});
+                let mqttEventData = {
+                    event: 'add',
+                    value: JSON.parse(mockMessage)
+                };
+                client.publish(topic, mockMessage);
+                expect(input.write).to.have.been.calledWith(mqttEventData);
+            });
         });
+
+        context('when its IN topic', () => {
+            let publishFn;
+            let config;
+            beforeEach(() => {
+                client.publish = sinon.stub();
+                publishFn = outputStreamStub.subscribe.lastCall.args[0];
+                config = {device: 'mock', value: 'mock'};
+                publishFn(config);
+            });
+
+            it('should publish event', () => {
+                expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
+                    {}, sinon.match.func);
+            });
+
+            it('should write message to the strean', () => {
+                client.publish.lastCall.args[3]();
+                expect(input.write).to.have.been.called;
+            });
+        });
+
     });
-
-    describe('# Event Outputting To MQTT', ()=>{
-        it('will write event to MQTT when raised in inner output stream', ()=>{
-            let event = {
-                device: 'event_device_id',
-                value: JSON.stringify('event_value')
-            };
-            output.stream.next(event);
-            expect(client.publish).to.have.been.calledWith(`/smart-home/in/${event.device}`, event.value);
-        });
-    });
-
 });
