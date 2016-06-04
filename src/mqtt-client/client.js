@@ -26,7 +26,7 @@ const client = mqtt.connect({
 let other_stream = new Rx.Subject();
 other_stream
     .asObservable()
-    .debounceTime(100)
+    .debounceTime(300)
     .subscribe((event)=>{ 
         input.write(event);
     });

@@ -5,12 +5,14 @@ const scenarioApiManager = require('./scenario-api.manager');
 const inputStream = new Rx.Subject();
 const outputStream = new Rx.Subject();
 
-outputStream.subscribe((data) => {
-    process.send({
-        type: 'message',
-        content: data
+outputStream
+    .debounceTime(500)
+    .subscribe((data) => {
+        process.send({
+            type: 'message',
+            content: data
+        });
     });
-});
 
 const SMART_HOUSE = scenarioApiManager.create(inputStream, outputStream);
 
