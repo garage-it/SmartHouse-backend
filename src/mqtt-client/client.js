@@ -8,6 +8,7 @@ import mqtt from 'mqtt';
 import Debugger from 'debug';
 import input from '../data-streams/input';
 import output from '../data-streams/output';
+import Rx from 'rxjs/Rx';
 
 const debug = Debugger('mqtt-client');
 
@@ -21,6 +22,15 @@ const client = mqtt.connect({
     port: config.mqtt.port,
     auth: `${config.mqtt.username}:${config.mqtt.password}`
 });
+
+let other_stream = new Rx.Subject();
+other_stream
+    .asObservable()
+    .debounceTime(100)
+    .subscribe((event)=>{ 
+        input.write(event);
+    });
+        
 
 client.on('connect', onConnect);
 
@@ -57,7 +67,7 @@ function onSubscribed() {
                 value: rawMessage.toString()
             };
         }
-        input.write(event);
+        other_stream.next(event);
     });
 }
 
