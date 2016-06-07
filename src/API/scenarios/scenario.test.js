@@ -99,7 +99,8 @@ describe('## scenario APIs', () => {
             request(app)
                 .delete(`/api/scenarios/${scenarios[0].id}`)
                 .expect(httpStatus.OK)
-                .then(() => {
+                .then(res => {
+                    expect(res.body).to.deep.equal(scenarios[0]);
                     done();
                 })
                 .catch(done);
