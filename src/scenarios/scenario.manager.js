@@ -1,5 +1,6 @@
 import {fork} from 'child_process';
-import {stream as input_stream} from '../data-streams/input';
+
+import {stream as input_stream} from '../data-streams/filtered.input';
 import {stream as output_stream} from '../data-streams/output';
 
 const runningScenarios = new Map();

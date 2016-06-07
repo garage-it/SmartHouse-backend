@@ -36,7 +36,7 @@ describe('#Scenario manager', () => {
     beforeEach(() => {
         sut = proxyquire('./scenario.manager', {
             'child_process': {fork},
-            '../data-streams/input': {stream: inputStream},
+            '../data-streams/filtered.input': {stream: inputStream},
             '../data-streams/output': {stream: outputStream}
         });
     });

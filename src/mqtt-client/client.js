@@ -22,6 +22,13 @@ const client = mqtt.connect({
     auth: `${config.mqtt.username}:${config.mqtt.password}`
 });
 
+let other_stream = new Rx.Subject();
+other_stream
+    .subscribe((event)=>{
+        input.write(event);
+    });
+
+
 client.on('connect', onConnect);
 
 function onConnect() {
