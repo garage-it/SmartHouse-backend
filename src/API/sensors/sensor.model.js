@@ -19,10 +19,6 @@ const SensorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    status: {
-        type: Boolean,
-        default: false
-    },
     mqttId: {
         type: 'String',
         unique : true,
