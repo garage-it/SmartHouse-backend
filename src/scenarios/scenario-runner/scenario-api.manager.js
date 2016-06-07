@@ -116,4 +116,4 @@ function create(inputStream, outputStream){
     }
 }
 
-export default { create };
+module.exports = { create };
