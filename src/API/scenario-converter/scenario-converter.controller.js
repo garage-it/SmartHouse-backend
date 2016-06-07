@@ -11,6 +11,12 @@ function getConvertedScenario(req, res, next) {
 
     const scenarioConfig = JSON.parse(req.query.scenarioConfig);
 
+    if (!scenarioConfig.conditions || !scenarioConfig.actions || !scenarioConfig.logicalOperator) {
+        const err = new APIError('Incorrect scenario JSON received!', httpStatus.BAD_REQUEST);
+
+        return next(err);
+    }
+
     res.json(ScenarioConverter.convertScenario(scenarioConfig));
 }
 

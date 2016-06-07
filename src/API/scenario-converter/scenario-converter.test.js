@@ -10,7 +10,7 @@ describe('## scenario-converter APIs', () => {
     const SCENARIO_JSON = {
         conditions: [],
         actions: [],
-        logicalOperator: ''
+        logicalOperator: 'logicalOperator'
     };
 
     const SCENARIO_EMPTY_JS = `if (
@@ -31,9 +31,17 @@ describe('## scenario-converter APIs', () => {
                 .catch(done);
         });
 
-        it('should return Bad Request on JSON not send', (done) => {
+        it('should return Bad Request on JSON NOT send', (done) => {
             request(app)
                 .get('/api/scenario-converter?scenarioConfig=')
+                .expect(httpStatus.BAD_REQUEST);
+
+            done();
+        });
+
+        it('should return Bad Request on incorrect JSON send', (done) => {
+            request(app)
+                .get('/api/scenario-converter?scenarioConfig={}')
                 .expect(httpStatus.BAD_REQUEST);
 
             done();
