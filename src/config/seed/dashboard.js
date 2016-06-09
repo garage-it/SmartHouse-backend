@@ -4,11 +4,11 @@ import dashboardModel from '../../API/dashboard/dashboard.model';
 export default { populateDashboard };
 
 function populateDashboard() {
-    sensorModel.findAsync({}).then(function(widgets) {
-        const ids = widgets.map(widget => widget._id.toString());
+    sensorModel.findAsync({}).then(function(devices) {
+        const ids = devices.map(device => device._id.toString());
         dashboardModel.find({}).remove(function() {
             dashboardModel.create(new dashboardModel({
-                widgets: ids
+                devices: ids
             }));
         });
     });

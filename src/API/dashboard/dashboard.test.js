@@ -10,21 +10,21 @@ chai.config.includeStack = true;
 
 describe('## Dashboard APIs', () => {
 
-    let widget;
-    let dashboard;
+    let device;
+    let deviceId;
 
     beforeEach(done => {
 
-        widget = {
+        device = {
             description: 'desc',
             type: 'some type',
             mqttId: 'some mqtt id'
         };
 
-        SensorModel.create(widget).then(widget => {
-            DashboardModel.create({widgets: [widget._id]})
-                .then(dash => {
-                    dashboard = dash;
+        SensorModel.create(device).then(device => {
+            deviceId = device._id;
+            DashboardModel.create({devices: [device._id]})
+                .then(() => {
                     done();
                 })
                 .catch(done);
@@ -44,59 +44,38 @@ describe('## Dashboard APIs', () => {
                 });
         });
 
-        it('should populate dashboard with widget', (done) => {
+        it('should populate dashboard with device', (done) => {
             request(app)
                 .get('/api/dashboard')
                 .then(res => {
-                    expect(res.body.widgets.length).equals(1);
-                    expect(res.body.widgets[0].mqttId).equals(widget.mqttId);
+                    expect(res.body.devices.length).equals(1);
+                    expect(res.body.devices[0].mqttId).equals(device.mqttId);
                     done();
                 });
         });
     });
 
-    describe('# POST /api/dashboard', () => {
-
-        let widgets = [];
-        let dashboard = {
-            widgets
-        };
-
-        it('should create a new dashboard', (done) => {
-            request(app)
-                .post('/api/dashboard')
-                .send(dashboard)
-                .expect(httpStatus.OK)
-                .then(res => {
-                    expect(res.body.widgets).to.deep.equal(widgets);
-                    done();
-                });
-        });
-    });
-
-    describe('# PUT /api/dashboard/:dashboardId', () => {
+    describe('# PUT /api/dashboard', () => {
         it('should update dashboard', done => {
 
             request(app)
-                .put(`/api/dashboard/${dashboard._id}`)
-                .send({widgets: []})
+                .put('/api/dashboard')
+                .send({devices: []})
                 .expect(httpStatus.OK)
                 .then(res => {
-                    expect(res.body.widgets).to.deep.equal([]);
+                    expect(res.body.devices).to.deep.equal([]);
                     done();
                 });
         });
-    });
+        it('should populate updated dashboard with device', done => {
 
-    describe('# DELETE /api/dashboard/', () => {
-        it('should delete dashboard', done => {
             request(app)
-                .delete(`/api/dashboard/${dashboard._id}`)
-                .expect(httpStatus.OK)
-                .then(() => {
+                .put('/api/dashboard')
+                .send({devices: [deviceId]})
+                .then(res => {
+                    expect(res.body.devices[0].mqttId).to.equal(device.mqttId);
                     done();
-                })
-                .catch(done);
+                });
         });
     });
 
