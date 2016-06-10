@@ -11,15 +11,21 @@ chai.config.includeStack = true;
 describe('# Filtered input', () => {
     let sut;
     let inputStream;
+    sinon.stub(Rx.Subject.prototype, 'sampleTime').returnsThis();
+    /*
+        NOTE: there is a better way of testing rx - http://www.mostovenko.com/posts/2016-05-21-testing-with-rxjs.html
+        but in rxjs 5 ReactiveTest is missing - https://github.com/ReactiveX/rxjs/tree/master/src/testing
+     */
 
-    beforeEach(function () {
+    beforeEach(() => {
         inputStream = new Rx.Subject();
         sut = proxyquire('./filtered.input', {
-            './input': {stream: inputStream}
+            './input': {stream: inputStream},
+            'rxjs': Rx
         }).stream;
     });
 
-    it('will filter distinct events for the same device', function () {
+    it('will filter distinct events for the same device', () => {
         const subscriber = sinon.stub();
         const events = [
             {
@@ -36,14 +42,14 @@ describe('# Filtered input', () => {
             }
         ];
 
-        const subscription = sut.subscribe(subscriber);
+        sut.subscribe(subscriber);
         events.forEach((ev) => inputStream.next(ev));
 
         expect(subscriber.withArgs(events[0])).to.have.been.calledOnce;
         expect(subscriber.withArgs(events[2])).to.have.been.calledOnce;
     });
 
-    it('will filter distinct events for the multiple devices', function () {
+    it('will filter distinct events for the multiple devices', () => {
         const subscriber = sinon.stub();
         const firstA = {
             device: 'a',
@@ -63,7 +69,7 @@ describe('# Filtered input', () => {
         };
         const events = [firstA, firstA, firstB, firstA, firstB, secondB, secondA, secondA];
 
-        const subscription = sut.subscribe(subscriber);
+        sut.subscribe(subscriber);
         events.forEach((ev) => inputStream.next(ev));
 
         expect(subscriber.withArgs(firstA)).to.have.been.calledOnce;

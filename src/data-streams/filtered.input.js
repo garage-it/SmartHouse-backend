@@ -3,7 +3,9 @@ import Rx from 'rxjs/Rx';
 
 const deviceStreams = new Map();
 const mergedFilteredStream = new Rx.Subject();
-export { mergedFilteredStream as stream };
+const INPUT_STREAM_DELAY = 500;
+
+export {mergedFilteredStream as stream};
 
 inputMessages
     .subscribe((event) => {
@@ -14,12 +16,15 @@ inputMessages
 function createDeviceStream(device) {
     const deviceStream = new Rx.Subject();
 
-    deviceStream.distinctUntilChanged().subscribe((value) => {
-        mergedFilteredStream.next({
-            device,
-            value
+    deviceStream
+        .distinctUntilChanged()
+        .sampleTime(INPUT_STREAM_DELAY)
+        .subscribe((value) => {
+            mergedFilteredStream.next({
+                device,
+                value
+            });
         });
-    });
     deviceStreams.set(device, deviceStream);
 }
 
