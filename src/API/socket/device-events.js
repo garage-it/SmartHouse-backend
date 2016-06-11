@@ -28,7 +28,7 @@ import Debugger from 'debug';
 import input from '../../data-streams/input';
 import output from '../../data-streams/output';
 
-const debug = Debugger('device-events');
+const debug = Debugger('SH_BE:device-events');
 
 export default function(io){
 
@@ -43,7 +43,9 @@ export default function(io){
         socket.on('pushEvent', onEventRaised);
 
         let subscriber = input.stream
-            .filter(m=>subscribedDevices.has(m.device))
+            .filter(m => {
+                return isAllowedEventToSend(m.event) && subscribedDevices.has(m.device);
+            })
             .subscribe(onEvent, onError);
 
         function onSubscribe(config){
@@ -56,6 +58,7 @@ export default function(io){
 
         function onEventRaised(config){
             output.write({
+                event: 'status',
                 device: config.device,
                 value: config.value.toString()
             });
@@ -74,6 +77,10 @@ export default function(io){
             debug('Socket disconnected');
         }
 
-    }
+        function isAllowedEventToSend(event) {
+            let allowedEvents = ['status', 'device-add'];
 
+            return allowedEvents.indexOf(event) !== -1;
+        }
+    }
 }

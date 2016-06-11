@@ -5,7 +5,7 @@ import Scenario from './scenario.model';
 
 import Debugger from 'debug';
 
-const debug = Debugger('scenarios:loader');
+const debug = Debugger('SH_BE:scenarios:loader');
 
 mongoose.connection.on('connected', function() {
 
