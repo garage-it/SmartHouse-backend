@@ -40,8 +40,9 @@ function update(req, res, next) {
 
 function remove(req, res, next) {
     req.scenario.removeAsync()
-        .then(() => {
-            res.end();
+        .then(sensor => {
+            res.json(sensor);
+            return next();
         })
         .error(next);
 }
