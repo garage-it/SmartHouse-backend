@@ -12,15 +12,15 @@ export default function trackDeviceConnection() {
         .filter(message => message.event === DEVICE_INFO_EVENT)
         .subscribe(saveDevice, onError);
 
-    function saveDevice (data) {
+    function saveDevice(data) {
 
         Sensor.find({
-            mqttId : data.device
+            mqttId: data.device
         }, function (error, records) {
-            
-            if (records.length){
+
+            if (records.length) {
                 debug('Device already added');
-            }else{
+            } else {
                 let sensorModel = Object.assign({
                     mqttId: data.device
                 }, data.value);
@@ -35,12 +35,12 @@ export default function trackDeviceConnection() {
 
     }
 
-    function onDeviceAdded (device) {
+    function onDeviceAdded(device) {
         debug(`Added device: '${device}' to db`);
-        
+
         input.write({
             event: 'device-add',
-            data: device            
+            data: device
         });
     }
 

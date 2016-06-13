@@ -48,15 +48,14 @@ describe('# Socket Device Events', () => {
 
         it('will subscribe to \'device-add\' device events and pass it to socket', () => {
             socket._handlers.subscribe({ device: 'a' });
-            input.stream.next({ event: 'device-add', device: 'a' });
+            input.stream.next({ event: 'device-add', device: 'b' });
             
-            expect(socket.emit).to.have.been.calledWith('event', { event: 'device-add', device: 'a'});
+            expect(socket.emit).to.have.been.calledWith('event', { event: 'device-add', device: 'b'});
         });
 
         it('will filter out other device events', () => {
             socket._handlers.subscribe({ device: 'a' });
             input.stream.next({ event: 'status', device: 'c'});
-            input.stream.next({ event: 'device-add', device: 'd'});
             input.stream.next({ event: 'faked', device: 'a'});
             
             expect(socket.emit).not.to.have.been.called;

@@ -44,7 +44,8 @@ export default function(io){
 
         let subscriber = input.stream
             .filter(m => {
-                return isAllowedEventToSend(m.event) && subscribedDevices.has(m.device);
+                return m.event === 'device-add' || 
+                    m.event === 'status' && subscribedDevices.has(m.device);
             })
             .subscribe(onEvent, onError);
 
@@ -75,12 +76,6 @@ export default function(io){
         function onDisconnect(){
             subscriber.unsubscribe();
             debug('Socket disconnected');
-        }
-
-        function isAllowedEventToSend(event) {
-            let allowedEvents = ['status', 'device-add'];
-
-            return allowedEvents.indexOf(event) !== -1;
         }
     }
 }
