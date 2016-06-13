@@ -91,6 +91,7 @@ describe('## scenario APIs', () => {
         it('should update scenario', (done) => {
             const scenario = Object.assign({}, scenarios[0]);
             delete scenario.id;
+
             request(app)
                 .post('/api/scenarios')
                 .send(scenario)

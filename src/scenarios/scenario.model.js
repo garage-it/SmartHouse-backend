@@ -12,11 +12,11 @@ const ScenarioSchema = new mongoose.Schema({
         required: true
     },
     description: String,
-    active: {
+    isConvertible: {
         type: Boolean,
         default: false
     },
-    isConvertible: {
+    active: {
         type: Boolean,
         default: false
     },
