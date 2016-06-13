@@ -22,7 +22,8 @@ export default function trackDeviceConnection() {
                 debug('Device already added');
             } else {
                 let sensorModel = Object.assign({
-                    mqttId: data.device
+                    mqttId: data.device,
+                    executor: isExecutor(data.type)
                 }, data.value);
 
                 let device = new Sensor(sensorModel);
@@ -46,5 +47,10 @@ export default function trackDeviceConnection() {
 
     function onError(error) {
         debug(`Error: '${error}' occured`);
+    }
+    
+    function isExecutor(type) {
+        let exectorTypes = ['device', 'servo'];
+        return  exectorTypes.indexOf(type) !== -1;
     }
 }
