@@ -93,6 +93,7 @@ describe('# MQTT client', () => {
                 let mockMessage = JSON.stringify('Its a mock message');
                 let mqttEventData = {
                     device,
+                    event: 'status',
                     value: mockMessage
                 };
                 client.publish(topic, mockMessage);
@@ -104,7 +105,8 @@ describe('# MQTT client', () => {
                 let topic = `/smart-home/out/${device}`;
                 let mockMessage = JSON.stringify({type: 'sensor'});
                 let mqttEventData = {
-                    event: 'add',
+                    device,
+                    event: 'device-info',
                     value: JSON.parse(mockMessage)
                 };
                 client.publish(topic, mockMessage);
@@ -112,26 +114,75 @@ describe('# MQTT client', () => {
             });
         });
 
-        context('when its IN topic', () => {
+        context('when its INPUT topic', () => {
             let publishFn;
             let config;
             beforeEach(() => {
                 client.publish = sinon.stub();
                 publishFn = outputStreamStub.subscribe.lastCall.args[0];
-                config = {device: 'mock', value: 'mock'};
-                publishFn(config);
             });
 
-            it('should publish event', () => {
-                expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
-                    {}, sinon.match.func);
+            context('and status event came', () => {
+                beforeEach(() => {
+                    config = {
+                        event: 'status', 
+                        device: 'mockDevice', 
+                        value: 'mock'
+                    };
+                    publishFn(config);
+                });
+
+                it('will publish event', () => {
+                    expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
+                        {}, sinon.match.func);
+                });
+
+                it('will write report message to the stream', () => {
+                    client.publish.lastCall.args[3]();
+                    expect(input.write).to.have.been.calledWith({ 
+                        event: 'status-report', 
+                        message: 'mock', 
+                        topic: '/smart-home/in/mockDevice' 
+                    });
+                });
             });
 
-            it('should write message to the strean', () => {
-                client.publish.lastCall.args[3]();
-                expect(input.write).to.have.been.called;
+            context('and device-info event came', () => {
+                beforeEach(() => {
+                    config = {event: 'device-info', device: 'mock'};
+                    publishFn(config);
+                });
+
+                it('will publish event', () => {
+                    expect(client.publish).to.have.been.calledWith('/smart-home/in/device-info', config.device,
+                        {}, sinon.match.func);
+                });
+
+                it('will write report message to the stream', () => {
+                    client.publish.lastCall.args[3]();
+                    expect(input.write).to.have.been.calledWith({ 
+                        event: 'device-info-report',
+                        message: 'mock',
+                        topic: '/smart-home/in/device-info'
+                    });
+                });
+            });
+
+            context('and unknown event came', () => {
+                beforeEach(() => {
+                    config = {event: 'unknown', device: 'mock'};
+                    publishFn(config);
+                });
+
+                it('will NOT publish event', () => {
+                    expect(client.publish).not.to.have.been.called;
+                });
+
+                it('will NOT write report message to the stream', () => {
+                    client.publish.lastCall && client.publish.lastCall.args[3]();
+                    expect(input.write).not.to.have.been.called;
+                });
             });
         });
-
     });
 });

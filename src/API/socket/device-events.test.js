@@ -39,18 +39,26 @@ describe('# Socket Device Events', () => {
 
     describe('# Event Subscription', () => {
 
-        it('will subscribe to specific device events', () => {
+        it('will subscribe to \'status\' device events and pass it to socket', () => {
             socket._handlers.subscribe({ device: 'a' });
-            input.stream.next({ device: 'a', value: 1 });
-            expect(socket.emit).to.have.been.calledWith('event', { device: 'a', value: 1 });
+            input.stream.next({ event: 'status', device: 'a' });
+            
+            expect(socket.emit).to.have.been.calledWith('event', { event: 'status', device: 'a'});
+        });
+
+        it('will subscribe to \'device-add\' device events and pass it to socket', () => {
+            socket._handlers.subscribe({ device: 'a' });
+            input.stream.next({ event: 'device-add', device: 'b' });
+            
+            expect(socket.emit).to.have.been.calledWith('event', { event: 'device-add', device: 'b'});
         });
 
         it('will filter out other device events', () => {
             socket._handlers.subscribe({ device: 'a' });
-            input.stream.next({ device: 'a', value: 1 });
-            input.stream.next({ device: 'c', value: 2 });
-            input.stream.next({ device: 'a', value: 3 });
-            expect(socket.emit).not.to.have.been.calledWith('event', { device: 'c', value: 2 });
+            input.stream.next({ event: 'status', device: 'c'});
+            input.stream.next({ event: 'faked', device: 'a'});
+            
+            expect(socket.emit).not.to.have.been.called;
         });
 
         it('will unsubscribe from events', () => {
@@ -58,6 +66,7 @@ describe('# Socket Device Events', () => {
             input.stream.next({ device: 'a', value: 1 });
             socket._handlers.unsubscribe({ device: 'a' });
             input.stream.next({ device: 'c', value: 2 });
+            
             expect(socket.emit).not.to.have.been.calledWith('event', { device: 'a', value: 2 });
         });
 
@@ -67,7 +76,12 @@ describe('# Socket Device Events', () => {
                 value: 'mockCommand'
             };
             socket.on.lastCall.args[1](config);
-            expect(output.write).to.have.been.calledWith({ device: config.device, value: config.value });
+            
+            expect(output.write).to.have.been.calledWith({
+                event: 'status',
+                device: config.device,
+                value: config.value
+            });
         });
 
     });

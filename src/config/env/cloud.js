@@ -2,7 +2,7 @@ export default {
     env: 'cloud',
     db: 'mongodb://localhost/db',
     port: 3000,
-    seedDB: true,
+    seedDB: false,
     mqtt: {
         port: 12787,
         hostname: 'm21.cloudmqtt.com',

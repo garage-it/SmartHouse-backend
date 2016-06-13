@@ -9,7 +9,7 @@ import Debugger from 'debug';
 import input from '../data-streams/input';
 import output from '../data-streams/output';
 
-const debug = Debugger('mqtt-client');
+const debug = Debugger('SH_BE:mqtt-client');
 
 const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
 const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
@@ -28,14 +28,31 @@ function onConnect() {
     client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
 
     output.stream.subscribe(event => {
-        client.publish(MQTT_OUTPUT_TOPIC_PREFIX + event.device, event.value,
-            {}, () => onEventPublished(event));
+        let message, topic = MQTT_OUTPUT_TOPIC_PREFIX;
+
+        if ( event.event === 'status') {
+            message = event.value;
+            topic += event.device;
+        } else  if (event.event === 'device-info') {
+            message = event.device;
+            topic += 'device-info';
+        } else {
+            debug(`Unknown output stream event received: '${JSON.stringify(event)}'`);
+            return;
+        }
+
+        client.publish(topic, message,
+            {}, () => onEventPublished({
+                event: event.event,
+                topic: topic, 
+                message: message
+            }));
     });
 }
 
 function onSubscribed() {
     client.on('message', function (topic, rawMessage) {
-        debug(`got message: topic '${topic}', message: '${rawMessage.toString()}'`);
+        debug(`MQTT >>. Got message: topic '${topic}', message: '${rawMessage.toString()}'`);
         let message = '';
         try {
             message = JSON.parse(rawMessage);
@@ -43,27 +60,35 @@ function onSubscribed() {
             message = rawMessage.toString();
         }
         let isDeviceInfo = typeof message === 'object';
-        let event;
+        let event,
+            deviceName = topic.split('/').pop();
 
         if (isDeviceInfo) {
             event  = {
-                event: 'add',
+                event: 'device-info',
+                device: deviceName,
                 value: message
             };
         }
         else {
             event = {
-                device: topic.split('/').pop(),
+                event: 'status',
+                device: deviceName,
                 value: rawMessage.toString()
             };
         }
         input.write(event);
+        debug(`Added to input stream event: '${JSON.stringify(event)}'`);
     });
 }
 
-function onEventPublished(config) {
-    debug(`>>[SWITCH] Send message: topic '${config.device}', message: '${config.value}'`);
-    input.write(config);
+function onEventPublished(event) {
+    debug(`Output stream >> MQTT. Send message: event '${event.topic}', message: '${event.message}'`);
+    
+    let reportEvent = Object.assign({}, event);
+    reportEvent.event += '-report';
+    
+    input.write(reportEvent);
 }
 
 export default client;

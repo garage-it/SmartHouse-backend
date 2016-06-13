@@ -29,7 +29,8 @@ describe('#Device connected', () => {
 
     beforeEach(function () {
         input = {
-            stream: new Rx.Subject()
+            stream: new Rx.Subject(),
+            write: sinon.spy()
         };
 
         saveAsync = sinon.stub();
@@ -63,36 +64,55 @@ describe('#Device connected', () => {
 
     it('will save device to  db if record was NOT  found in  db', function () {
         setup(true, 'device');
-        input.stream.next({ value: 'a', event: 'add' });
+        input.stream.next({ value: 'a', event: 'device-info' });
         let findDeviceCallback =  findStub.getCall(0).args[1];
         findDeviceCallback('error', []);
+
         expect(saveAsync).to.have.been.called.once;
+    });
+
+    it('will add \'device-add\' to input stream after addition to db', function (done) {
+        setup(true, {deviceData: 'faked'});
+        input.stream.next({ value: 'a', event: 'device-info' });
+        let findDeviceCallback =  findStub.getCall(0).args[1];
+        findDeviceCallback('error', []);
+        
+        saveAsyncPromise.then(() => {
+            expect(input.write).to.have.been.calledWith({ 
+                event: 'device-add', 
+                data: {deviceData: 'faked'}
+            });
+            done();
+        }).catch(done);
     });
 
     it('will NOT save device to  db if record was  found in  db', function () {
         setup(true, 'device');
-        input.stream.next({ value: 'a', event: 'add' });
+        input.stream.next({ value: 'a', event: 'device-info' });
         let findDeviceCallback =  findStub.getCall(0).args[1];
         findDeviceCallback('error', ['device1']);
+
         expect(saveAsync).not.to.have.been.called;
     });
 
     it('will call success callback on  succesful save', function (done) {
         setup(true, 'someDevice');
-        input.stream.next({ value: 'a', event: 'add' });
+        input.stream.next({ value: 'a', event: 'device-info' });
         let findDeviceCallback =  findStub.getCall(0).args[1];
         findDeviceCallback('error', []);
+
         saveAsyncPromise.then(function (device) {
-            expect(debug.firstCall.args[0]).to.equal(`added device: '${device}' to db`);
+            expect(debug.firstCall.args[0]).to.equal(`Added device: '${device}' to db`);
             done();
         }).catch(done);
     });
 
     it('will call error callback on  Error saving to  db', function (done) {
         setup(false, 'someError');
-        input.stream.next({ value: 'a', event: 'add' });
+        input.stream.next({ value: 'a', event: 'device-info' });
         let findDeviceCallback =  findStub.getCall(0).args[1];
         findDeviceCallback('error', []);
+
         saveAsyncPromise.catch(function (error) {
             expect(debug.firstCall.args[0]).to.equal(`Error: '${error}' occured`);
             done();

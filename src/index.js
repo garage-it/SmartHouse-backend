@@ -14,8 +14,9 @@ import './mqtt-client/client.js';
 import './scenarios';
 
 import Debugger from 'debug';
-const debug = Debugger('Smart House Back-end');
+const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
+import handleUnknownDeviceData from  './devices/newDeviceHandler';
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -42,6 +43,7 @@ server.listen(config.port, () => {
     debug(`server started on port ${config.port} (${config.env})`);
 });
 
-
 trackDeviceConnection();
+handleUnknownDeviceData();
+
 export default app;
