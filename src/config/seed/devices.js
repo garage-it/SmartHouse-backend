@@ -29,7 +29,7 @@ devices.push(new sensorModel({
 
 
 function populateDevices() {
-    sensorModel.find({}).remove(function() {
+    return sensorModel.find({}).remove(function() {
         sensorModel.create(...devices);
     });
 }

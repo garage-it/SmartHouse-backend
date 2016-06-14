@@ -30,7 +30,8 @@ mongoose.connection.on('error', () => {
 // Prepopulate data
 if (config.seedDB) {
     debug('populating seed data');
-    seed.populateSensors();
+    seed.populateSensors()
+        .then(seed.populateDashboard);
 }
 
 // Create websocket server

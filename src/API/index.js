@@ -3,9 +3,10 @@
 
 import express from 'express';
 
-import sensorRoutes from './sensors/sensor.routes.js';
-import scenarioRoutes from './scenarios/scenario.routes.js';
+import sensorRoutes from './sensors/sensor.routes';
+import scenarioRoutes from './scenarios/scenario.routes';
 import scenarioConverterRoutes from './scenario-converter/scenario-converter.routes.js';
+import dashboardRoutes from './dashboard/dashboard.routes';
 
 const router = express.Router();    // eslint-disable-line new-cap
 
@@ -18,5 +19,6 @@ router.get('/health-check', (req, res) =>
 router.use('/sensors', sensorRoutes);
 router.use('/scenarios', scenarioRoutes);
 router.use('/scenario-converter', scenarioConverterRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 export default router;
