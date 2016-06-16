@@ -125,25 +125,15 @@ describe('# MQTT client', () => {
             context('and status event came', () => {
                 beforeEach(() => {
                     config = {
-                        event: 'status', 
-                        device: 'mockDevice', 
+                        event: 'status',
+                        device: 'mockDevice',
                         value: 'mock'
                     };
                     publishFn(config);
                 });
 
                 it('will publish event', () => {
-                    expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value,
-                        {}, sinon.match.func);
-                });
-
-                it('will write report message to the stream', () => {
-                    client.publish.lastCall.args[3]();
-                    expect(input.write).to.have.been.calledWith({ 
-                        event: 'status-report', 
-                        message: 'mock', 
-                        topic: '/smart-home/in/mockDevice' 
-                    });
+                    expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value);
                 });
             });
 
@@ -154,17 +144,7 @@ describe('# MQTT client', () => {
                 });
 
                 it('will publish event', () => {
-                    expect(client.publish).to.have.been.calledWith('/smart-home/in/device-info', config.device,
-                        {}, sinon.match.func);
-                });
-
-                it('will write report message to the stream', () => {
-                    client.publish.lastCall.args[3]();
-                    expect(input.write).to.have.been.calledWith({ 
-                        event: 'device-info-report',
-                        message: 'mock',
-                        topic: '/smart-home/in/device-info'
-                    });
+                    expect(client.publish).to.have.been.calledWith('/smart-home/in/device-info', config.device);
                 });
             });
 
@@ -176,11 +156,6 @@ describe('# MQTT client', () => {
 
                 it('will NOT publish event', () => {
                     expect(client.publish).not.to.have.been.called;
-                });
-
-                it('will NOT write report message to the stream', () => {
-                    client.publish.lastCall && client.publish.lastCall.args[3]();
-                    expect(input.write).not.to.have.been.called;
                 });
             });
         });
