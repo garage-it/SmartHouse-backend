@@ -1,6 +1,7 @@
 import Sensor from '../API/sensors/sensor.model';
 import input from '../data-streams/input';
 import Debugger from 'debug';
+import config from '../config/env';
 
 const debug = Debugger('SH_BE:device-connected');
 
@@ -23,7 +24,7 @@ export default function trackDeviceConnection() {
             } else {
                 let sensorModel = Object.assign({
                     mqttId: data.device,
-                    executor: isExecutor(data.type)
+                    executor: isExecutor(data.value.type)
                 }, data.value);
 
                 let device = new Sensor(sensorModel);
@@ -39,10 +40,12 @@ export default function trackDeviceConnection() {
     function onDeviceAdded(device) {
         debug(`Added device: '${device}' to db`);
 
-        input.write({
-            event: 'device-add',
-            data: device
-        });
+        if (config.plugAndPlay) {
+            input.write({
+                event: 'device-add',
+                data: device
+            });
+        }
     }
 
     function onError(error) {
@@ -50,7 +53,7 @@ export default function trackDeviceConnection() {
     }
     
     function isExecutor(type) {
-        let exectorTypes = ['device', 'servo'];
+        let exectorTypes = ['relay', 'servo'];
         return  exectorTypes.indexOf(type) !== -1;
     }
 }

@@ -45,6 +45,10 @@ server.listen(config.port, () => {
 });
 
 trackDeviceConnection();
-handleUnknownDeviceData();
+
+// Enable Plug-n-Play
+if (config.plugAndPlay) {
+    handleUnknownDeviceData();
+}
 
 export default app;
