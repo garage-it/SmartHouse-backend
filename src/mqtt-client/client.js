@@ -41,12 +41,7 @@ function onConnect() {
             return;
         }
 
-        client.publish(topic, message,
-            {}, () => onEventPublished({
-                event: event.event,
-                topic: topic, 
-                message: message
-            }));
+        client.publish(topic, message);
     });
 }
 
@@ -80,15 +75,6 @@ function onSubscribed() {
         input.write(event);
         debug(`Added to input stream event: '${JSON.stringify(event)}'`);
     });
-}
-
-function onEventPublished(event) {
-    debug(`Output stream >> MQTT. Send message: event '${event.topic}', message: '${event.message}'`);
-    
-    let reportEvent = Object.assign({}, event);
-    reportEvent.event += '-report';
-    
-    input.write(reportEvent);
 }
 
 export default client;
