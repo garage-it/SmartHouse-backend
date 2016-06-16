@@ -73,7 +73,8 @@ function create(inputStream, outputStream){
         function send(outValue){
             outputStream.next({
                 device: deviceId,
-                value: outValue
+                value: outValue,
+                event: 'status'
             });
         }
     }

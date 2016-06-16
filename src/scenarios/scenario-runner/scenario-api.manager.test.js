@@ -50,7 +50,11 @@ describe('Scenario API manager', () => {
                 let spy = sinon.spy();
                 outputStream.subscribe(spy);
                 api.device.get(DEVICE_ID).send(OUT_VALUE);
-                expect(spy).to.have.been.calledWith({ device: DEVICE_ID, value: OUT_VALUE });
+                expect(spy).to.have.been.calledWith({
+                    device: DEVICE_ID,
+                    value: OUT_VALUE,
+                    event: 'status'
+                });
             });
 
             it('will store current device value', ()=>{
