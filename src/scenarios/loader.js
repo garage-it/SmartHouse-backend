@@ -9,9 +9,13 @@ const debug = Debugger('SH_BE:scenarios:loader');
 
 mongoose.connection.on('connected', function() {
 
-    Scenario.findAsync({})
-        .then(runAll)
-        .error(logError);
+    const AUTORUNNING_SCRIPTS = false;  
+
+    if (AUTORUNNING_SCRIPTS){
+        Scenario.findAsync({})
+            .then(runAll)
+            .error(logError);
+    }
 
     function runAll(scenarios){
         scenarios.forEach(scenario=>{

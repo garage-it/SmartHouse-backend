@@ -8,7 +8,7 @@ import Promise from 'bluebird';
 chai.use(sinonChai);
 chai.config.includeStack = true;
 
-describe('# Scenario loader', () => {
+xdescribe('# Scenario loader', () => {
     let Scenario;
     let mongoose;
     let scenarioManager;
