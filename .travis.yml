@@ -20,6 +20,8 @@ deploy:
   provider: heroku
   api_key:
     secure: LZUT2N961Yb7Wjp3jkrPOtBT803z8O6KVenrdFeFwt7+GD4vVgywR0wrBYw6n1yLzzkuJOdvjZe2dmEj6DNH8TkxOi/DemaSxDz8XzbYWdoB8ietVikzAoDfrcXuyrnz9qn5gzLH5RnPJ/Z5zzgnONimgDuUlqb2avTPyrUMZ2DE6opBEMQqfIAjKsAlF1UXpWX255BIdwnf2FEtHp8cYd2BNga9nuXJ6AfCVapfiD9H06cDxOR6tub4jOTdd9k6mJ72ShdHz/3tSLESSnFqo+m0wxnVw7SpMEj4CBw5V2mS/k3K9DIiPO2bQcTxUHYnG/OH7J97aS6eZecbM7rqxgyggQj9TcvwnO6PGnRxmy1XE5pOVcjVzUO1weqJtLXlomzi31JQaiUsKu3XqqMMZ5705ja0r9mB2Qr+OGgiCZbbjERdtkwQCHBAgiGe2WJN/bvl25r9WvO9lPC43W1sGIurlnhGiawU+m0WcfE76zsYjyXbHyHvjbVLeIH9V94FYU/fNEY3f0J/T403NIthQKyFekHCrGu7sFnAFwbeQTdl9eKPD6dsJiU09AQEuCzIRK4QiSEExnft5TDFWHg52ojT0+vQOd6sbxiBdMLERvR7ZQirY0FBSXxRBNWaUVSJuzxiz6/g15CmMWvcvKQ4zwZfmV0wc1HtruiYUrTYJro=
-  app: garage-it-smart-house-api
+  app:
+    master: garage-it-smart-house-api
+    master: garage-it-smart-house-api-qa
   on:
     repo: garage-it/SmartHouse-backend
