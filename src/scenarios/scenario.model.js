@@ -16,7 +16,12 @@ const ScenarioSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    body: String
+    body: String,           // holds javascript content
+    wizard: Object,         // holds wizard content
+    isConvertable: {
+        type: Boolean,
+        default: false
+    }
 });
 
 /**

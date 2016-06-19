@@ -19,6 +19,7 @@ describe('## scenario APIs', () => {
             _id: mongoose.Types.ObjectId('000000000000000000000000'),
             name: 'Greeting script',
             description: 'will greet you in a brand new world',
+            active: true,
             body: 'console.log("Hello Scripto World!");'
         }));
 
@@ -83,6 +84,7 @@ describe('## scenario APIs', () => {
         it('should update scenario', (done) => {
             const scenario = Object.assign({}, scenarios[0]);
             delete scenario.id;
+
             request(app)
                 .post('/api/scenarios')
                 .send(scenario)
