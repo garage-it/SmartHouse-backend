@@ -36,7 +36,7 @@ gulp.task('start-mongo', function (cb) {
 
 // Clean up dist and coverage directory
 gulp.task('clean', () =>
-    del(['dist/**', 'coverage/**', '!dist', '!coverage'])
+    del(['dist/**', '!dist', '!coverage'])
 );
 
 // Set env variables
