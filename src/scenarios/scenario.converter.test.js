@@ -6,27 +6,54 @@ chai.config.includeStack = true;
 describe('# Scenario converter', () => {
     let sut;
     let scenario;
-    let convertedScenario;
 
-    const SCENARIO_EMPTY_JS = `if (
-            
-        ) {
-            
-        }`;
+    const NO_SCENARIO_ERROR_MESSAGE = 'No scenario JSON received!';
+    const INCORRECT_SCENARIO_ERROR_MESSAGE = 'Incorrect scenario JSON received!';
+    const NO_LOGICAL_OPERATOR_ERROR_MESSAGE = 'Missing logical operator!';
 
     beforeEach(function () {
         sut = require('./scenario.converter');
     });
 
-    it('will return formatted string', function (done) {
+    it('will return error message if scenario object is not passed', function (done) {
+        sut
+            .convertScenario()
+            .catch((errorMessage) => {
+                expect(errorMessage).to.equal(NO_SCENARIO_ERROR_MESSAGE);
+                done();
+            });
+    });
+
+    it('will return error message if there are no conditions and actions', function (done) {
         scenario = {
             conditions: [],
-            actions: [],
+            actions: []
+        };
+
+        sut
+            .convertScenario(scenario)
+            .catch((errorMessage) => {
+                expect(errorMessage).to.equal(INCORRECT_SCENARIO_ERROR_MESSAGE);
+                done();
+            });
+    });
+
+    it('will return error message if there are more than two conditions and logical operator is missing', function (done) {
+        scenario = {
+            conditions: [
+                {device: 'any', condition: 'LESS_THAN_OR_EQUAL_TO', value: '123'},
+                {device: 'any other', condition: 'EQUAL_TO', value: '321'}
+            ],
+            actions: [{device: 'any', value: 'ON'}],
             logicalOperator: ''
         };
 
-        expect(sut.convertScenario(scenario)).to.equal(SCENARIO_EMPTY_JS);
-        done();
+        sut
+            .convertScenario(scenario)
+            .catch((errorMessage) => {
+                expect(errorMessage).to.equal(NO_LOGICAL_OPERATOR_ERROR_MESSAGE);
+                done();
+            });
     });
 
     it('will replace all conditions in string', function (done) {
@@ -35,20 +62,22 @@ describe('# Scenario converter', () => {
                 {device: 'any', condition: 'LESS_THAN_OR_EQUAL_TO', value: '123'},
                 {device: 'any other', condition: 'EQUAL_TO', value: '321'}
             ],
-            actions: [],
-            logicalOperator: ''
+            actions: [{device: 'any', value: 'ON'}],
+            logicalOperator: 'OR'
         };
 
-        convertedScenario = sut.convertScenario(scenario);
-
-        expect(convertedScenario).to.include('api.device.get(\'any\').value <= 123');
-        expect(convertedScenario).to.include('api.device.get(\'any other\').value === 321');
-        done();
+        sut
+            .convertScenario(scenario)
+            .then((jsBody) => {
+                expect(jsBody).to.include('api.device.get(\'any\').value <= 123');
+                expect(jsBody).to.include('api.device.get(\'any other\').value === 321');
+                done();
+            });
     });
 
     it('will replace all actions in string', function (done) {
         scenario = {
-            conditions: [],
+            conditions: [{device: 'any', condition: 'LESS_THAN_OR_EQUAL_TO', value: '123'}],
             actions: [
                 {device: 'any', value: 'ON'},
                 {device: 'any other', value: 'OFF'}
@@ -56,11 +85,13 @@ describe('# Scenario converter', () => {
             logicalOperator: ''
         };
 
-        convertedScenario = sut.convertScenario(scenario);
-
-        expect(convertedScenario).to.contain('api.device.get(\'any\').send(\'ON\')');
-        expect(convertedScenario).to.include('api.device.get(\'any other\').send(\'OFF\')');
-        done();
+        sut
+            .convertScenario(scenario)
+            .then((jsBody) => {
+                expect(jsBody).to.include('api.device.get(\'any\').send(\'ON\')');
+                expect(jsBody).to.include('api.device.get(\'any other\').send(\'OFF\')');
+                done();
+            });
     });
 
     it('will paste logical operator in string', function (done) {
@@ -69,13 +100,33 @@ describe('# Scenario converter', () => {
                 {device: '1', condition: 'LESS_THAN_OR_EQUAL_TO', value: '1'},
                 {device: '2', condition: 'EQUAL_TO', value: '2'}
             ],
-            actions: [],
+            actions: [{device: 'any', value: 'ON'}],
             logicalOperator: 'OR'
         };
 
-        convertedScenario = sut.convertScenario(scenario);
+        sut
+            .convertScenario(scenario)
+            .then((jsBody) => {
+                expect(jsBody).to.include('||');
+                done();
+            });
+    });
 
-        expect(convertedScenario).to.include('||');
-        done();
+    it('will add all condition devices in string', function (done) {
+        scenario = {
+            conditions: [
+                {device: '1', condition: 'LESS_THAN_OR_EQUAL_TO', value: '1'},
+                {device: '2', condition: 'EQUAL_TO', value: '2'}
+            ],
+            actions: [{device: 'any', value: 'ON'}],
+            logicalOperator: 'OR'
+        };
+
+        sut
+            .convertScenario(scenario)
+            .then((jsBody) => {
+                expect(jsBody).to.include('[\'1\', \'2\']');
+                done();
+            });
     });
 });

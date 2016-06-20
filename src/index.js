@@ -30,6 +30,7 @@ mongoose.connection.on('error', () => {
 // Prepopulate data
 if (config.seedDB) {
     debug('populating seed data');
+    seed.populateScenarios();
     seed.populateSensors()
         .then(seed.populateDashboard);
 }
