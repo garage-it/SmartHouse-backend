@@ -12,14 +12,35 @@ const LOGICAL_OPERATORS = {
     'OR': '||'
 };
 
-function convertScenario(scenarioJSON) {
-    return (
-        `if (
-            ${ getConditions(scenarioJSON.conditions, scenarioJSON.logicalOperator) }
-        ) {
-            ${ getActions(scenarioJSON.actions) }
-        }`
-    );
+function convertScenario(scenario) {
+    return new Promise(function (resolve, reject) {
+        if (!scenario) {
+            return reject('No scenario JSON received!');
+        }
+
+        if (!scenario.conditions || !scenario.conditions.length || !scenario.actions || !scenario.actions.length) {
+            return reject('Incorrect scenario JSON received!');
+        }
+
+        if (scenario.conditions.length >= 2 && !scenario.logicalOperator) {
+            return reject('Missing logical operator!');
+        }
+
+        return resolve(
+            `SMART_HOUSE
+                .get_api('0.0.1')
+                .then(function(api){
+                    api.on('message', [${ getDeviceList(scenario.conditions) }], function () {
+                        if (
+                            ${ getConditions(scenario.conditions, scenario.logicalOperator) }
+                        ) {
+                            ${ getActions(scenario.actions) }
+                        }
+                    });
+                });`
+        );
+    });
+
 }
 
 function getConditions(conditions, logicalOperator) {
@@ -37,6 +58,12 @@ function getActions(actions) {
     return actions.reduce((actionsString, action) => {
         return actionsString + `api.device.get('${ action.device }').send('${ action.value }');\n`;
     }, '');
+}
+
+function getDeviceList(list) {
+    return list
+        .map(listItem => `\'${ listItem.device }\'`)
+        .join(', ');
 }
 
 export default {convertScenario};
