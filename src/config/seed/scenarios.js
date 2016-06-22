@@ -4,6 +4,8 @@ import scenarioModel from '../../scenarios/scenario.model';
 
 export default { populateScenarios };
 
+/* istanbul ignore next */
+
 const scenarios = [];
 
 scenarios.push(scenarioModel({

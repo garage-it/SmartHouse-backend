@@ -3,6 +3,7 @@ import dashboardModel from '../../API/dashboard/dashboard.model';
 
 export default { populateDashboard };
 
+/* istanbul ignore next */
 function populateDashboard() {
     sensorModel.findAsync({})
         .then(function(devices) {

@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 import sensorModel from '../../API/sensors/sensor.model';
 
-export default { populateDevices }; 
+export default { populateDevices };
 
 const devices = [];
+
+/* istanbul ignore next */
 
 devices.push(new sensorModel({
     _id: mongoose.Types.ObjectId('41224d776a326fb40f000001'),
