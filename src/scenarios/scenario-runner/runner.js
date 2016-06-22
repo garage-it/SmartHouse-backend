@@ -5,6 +5,9 @@ const scenarioApiManager = require('./scenario-api.manager');
 const inputStream = new Rx.Subject();
 const outputStream = new Rx.Subject();
 
+//0 comand arg is node, 1 is path to file
+const argvScenarioBodyIndex = 2;
+
 outputStream.subscribe((data) => {
     process.send({
         type: 'message',
@@ -20,11 +23,4 @@ const sandbox = {
     SMART_HOUSE
 };
 
-process.on('message', (message) => {
-    if (message.type === 'start') {
-        vm.runInNewContext(message.content, sandbox);
-    }
-    else if (message.type === 'message') {
-        inputStream.next(message.content);
-    }
-});
+vm.runInNewContext(process.argv[argvScenarioBodyIndex], sandbox);

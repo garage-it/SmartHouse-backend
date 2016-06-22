@@ -8,12 +8,8 @@ const runningScenarios = new Map();
 input_stream.subscribe(notifyScenarios);
 
 function run(scenario) {
-    let scenarioProcess = fork(__dirname + '/scenario-runner/runner');
+    let scenarioProcess = fork(__dirname + '/scenario-runner/runner', [scenario.body]);
     runningScenarios.set(scenario.id, scenarioProcess);
-    scenarioProcess.send({
-        type: 'start',
-        content: scenario.body
-    });
 
     scenarioProcess.on('message', ({type, content}) => {
         if (type === 'message') {
@@ -21,7 +17,18 @@ function run(scenario) {
         }
     });
 
-    scenarioProcess.on('exit', () => runningScenarios.delete(scenario.id));
+    scenarioProcess.on('exit', (code) => {
+        //when we end the process manually, we do not send an error code, but it is present if the process ends itself
+        var isKilledManually = code === null;
+
+        runningScenarios.delete(scenario.id);
+
+        if (!isKilledManually) {
+            //update without callbacks returns a query. we can get rid of exec() if we pass some callback here or
+            // use updateAsync, but we don`t need any callbacks here
+            scenario.update({active: false}).exec();
+        }
+    });
 }
 
 function isRunning(scenario) {
