@@ -20,11 +20,4 @@ const sandbox = {
     SMART_HOUSE
 };
 
-process.on('message', (message) => {
-    if (message.type === 'start') {
-        vm.runInNewContext(message.content, sandbox);
-    }
-    else if (message.type === 'message') {
-        inputStream.next(message.content);
-    }
-});
+vm.runInNewContext(process.argv[2], sandbox);

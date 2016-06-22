@@ -8,12 +8,8 @@ const runningScenarios = new Map();
 input_stream.subscribe(notifyScenarios);
 
 function run(scenario) {
-    let scenarioProcess = fork(__dirname + '/scenario-runner/runner');
+    let scenarioProcess = fork(__dirname + '/scenario-runner/runner', [scenario.body]);
     runningScenarios.set(scenario.id, scenarioProcess);
-    scenarioProcess.send({
-        type: 'start',
-        content: scenario.body
-    });
 
     scenarioProcess.on('message', ({type, content}) => {
         if (type === 'message') {
@@ -21,7 +17,14 @@ function run(scenario) {
         }
     });
 
-    scenarioProcess.on('exit', () => runningScenarios.delete(scenario.id));
+    scenarioProcess.on('exit', (code) => {
+        var isKilledManually = code === null;
+
+        runningScenarios.delete(scenario.id);
+        if (!isKilledManually) {
+            console.log('i`m done. Or i`m dead');
+        }
+    });
 }
 
 function isRunning(scenario) {
