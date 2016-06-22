@@ -6,7 +6,7 @@ const inputStream = new Rx.Subject();
 const outputStream = new Rx.Subject();
 
 //0 comand arg is node, 1 is path to file
-const argvScenarioBodyIndex = 2;
+const ARGV_SCRIPT_INDEX = 2;
 
 outputStream.subscribe((data) => {
     process.send({
@@ -23,4 +23,4 @@ const sandbox = {
     SMART_HOUSE
 };
 
-vm.runInNewContext(process.argv[argvScenarioBodyIndex], sandbox);
+vm.runInNewContext(process.argv[ARGV_SCRIPT_INDEX], sandbox);
