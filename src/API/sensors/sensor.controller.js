@@ -31,10 +31,9 @@ function update(req, res, next) {
 }
 
 function remove(req, res, next) {
-    Sensor.findByIdAndRemoveAsync(req.params.id, req.body)
+    req.sensor.removeAsync()
         .then(sensor => {
-            res.json(sensor);
-            return next();
+            return res.json(sensor);
         })
         .error(next);
 }

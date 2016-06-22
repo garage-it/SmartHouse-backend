@@ -3,15 +3,14 @@ import httpStatus from 'http-status';
 import chai from 'chai';
 import { expect } from 'chai';
 import app from '../../index';
-import DashboardModel from './dashboard.model';
 import SensorModel from '../sensors/sensor.model';
+import DashboardModel from './dashboard.model';
 
 chai.config.includeStack = true;
 
 describe('## Dashboard APIs', () => {
 
     let device;
-    let deviceId;
 
     beforeEach(done => {
 
@@ -21,14 +20,12 @@ describe('## Dashboard APIs', () => {
             mqttId: 'some mqtt id'
         };
 
-        SensorModel.create(device).then(device => {
-            deviceId = device._id;
-            DashboardModel.create({devices: [device._id]})
-                .then(() => {
-                    done();
-                })
-                .catch(done);
-        });
+        SensorModel
+            .create(device)
+            .then(sensor => {
+                device._id = sensor._id;
+                done();
+            });
 
     });
 
@@ -56,8 +53,8 @@ describe('## Dashboard APIs', () => {
     });
 
     describe('# PUT /api/dashboard', () => {
-        it('should update dashboard', done => {
 
+        it('should not update dashboard when is empty devices', done => {
             request(app)
                 .put('/api/dashboard')
                 .send({devices: []})
@@ -67,13 +64,16 @@ describe('## Dashboard APIs', () => {
                     done();
                 });
         });
-        it('should populate updated dashboard with device', done => {
+
+        it('should update dashboard devices', done => {
+            device.hidden = true;
 
             request(app)
                 .put('/api/dashboard')
-                .send({devices: [deviceId]})
-                .then(res => {
-                    expect(res.body.devices[0].mqttId).to.equal(device.mqttId);
+                .send({devices: [device]})
+                .then(() => DashboardModel.findOne({device: device._id}))
+                .then(updatedDashboardItem => {
+                    expect(updatedDashboardItem.hidden).to.equal(device.hidden);
                     done();
                 });
         });
