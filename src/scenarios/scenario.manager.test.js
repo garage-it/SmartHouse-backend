@@ -16,6 +16,9 @@ describe('#Scenario manager', () => {
     let outputStream;
     let fork;
     let childProcess;
+    let mockQuery;
+
+
     const scenario = {
         id: 123,
         body: 'alert();'
@@ -31,6 +34,10 @@ describe('#Scenario manager', () => {
         fork = sinon.stub().returns(childProcess);
         inputStream = new Rx.Subject();
         outputStream = new Rx.Subject();
+        mockQuery = {
+            exec: sinon.stub()
+        };
+        scenario.update = sinon.stub().returns(mockQuery);
     });
 
     beforeEach(() => {
@@ -46,15 +53,8 @@ describe('#Scenario manager', () => {
             sut.start(scenario);
         });
 
-        it('should for a runner process', () => {
-            expect(fork).to.have.been.calledWith(__dirname + '/scenario-runner/runner');
-        });
-
-        it('should start executing scenario body in child process', () => {
-            expect(childProcess.send).to.have.been.calledWith({
-                type: 'start',
-                content: scenario.body
-            });
+        it('should for a runner process with scenario body', () => {
+            expect(fork).to.have.been.calledWith(__dirname + '/scenario-runner/runner', [scenario.body]);
         });
 
         it('should notify scenarios when input stream recieves a message', () => {
@@ -87,6 +87,22 @@ describe('#Scenario manager', () => {
             childProcess.on.withArgs('exit').callArg(1);
 
             expect(fork).to.have.been.calledAfter(childProcess.kill);
+        });
+
+        it('should exec a query to update scenario as inactive when it ends working', () => {
+            const successExitCode = 0;
+            childProcess.on.withArgs('exit').callArgWith(1, successExitCode);
+
+            expect(scenario.update).to.have.been.calledWith({active: false});
+            expect(mockQuery.exec).to.have.been.called;
+        });
+
+        it('should exec a query to update scenario as inactive when it stops because of an error', () => {
+            const errorExitCode = 1;
+            childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);
+
+            expect(scenario.update).to.have.been.calledWith({active: false});
+            expect(mockQuery.exec).to.have.been.called;
         });
     });
 

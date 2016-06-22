@@ -81,6 +81,8 @@ function create(inputStream, outputStream){
 
 
     function get_api(version){
+        let hasDevicesSubscribed = false;
+
         if (version === '0.0.1'){
             const api = create_api();
             api.version = version;
@@ -103,6 +105,13 @@ function create(inputStream, outputStream){
             };
 
             function onHandler(eventName, devices, cb){
+                if(!hasDevicesSubscribed && devices.length) {
+                    process.on('message', (message) => {
+                        inputStream.next(message.content);
+                    });
+                    hasDevicesSubscribed = true;
+                }
+
                 if (eventName === 'message') {
                     inputStream
                         .filter(event=>devices.indexOf(event.device)>=0)
