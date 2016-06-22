@@ -23,7 +23,7 @@ describe('## Dashboard APIs', () => {
 
         SensorModel.create(device).then(device => {
             deviceId = device._id;
-            DashboardModel.create({devices: [device._id]})
+            DashboardModel.create({devices: [{device: device._id, hidden: false}]})
                 .then(() => {
                     done();
                 })
@@ -71,7 +71,7 @@ describe('## Dashboard APIs', () => {
 
             request(app)
                 .put('/api/dashboard')
-                .send({devices: [deviceId]})
+                .send({devices: [{device: deviceId}]})
                 .then(res => {
                     expect(res.body.devices[0].mqttId).to.equal(device.mqttId);
                     done();
