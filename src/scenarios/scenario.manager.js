@@ -18,11 +18,15 @@ function run(scenario) {
     });
 
     scenarioProcess.on('exit', (code) => {
+        //when we end the process manually, we do not send an error code, but it is present if the process ends itself
         var isKilledManually = code === null;
 
         runningScenarios.delete(scenario.id);
+
         if (!isKilledManually) {
-            console.log('i`m done. Or i`m dead');
+            //update without callbacks returns a query. we can get rid of exec() if we pass some callback here or
+            // use updateAsync, but we don`t need any callbacks here
+            scenario.update({active: false}).exec();
         }
     });
 }
