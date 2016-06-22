@@ -76,6 +76,14 @@ describe('Scenario API manager', () => {
 
             context('#on', ()=>{
 
+                beforeEach(() => {
+                    sinon.stub(process, 'on');
+                });
+
+                afterEach(() => {
+                    process.on.restore();
+                });
+
                 it('will trigger callbacks on events from specific devices', ()=>{
                     const DEVICE_ID = 'some_device';
                     let spy = sinon.spy();
@@ -92,6 +100,19 @@ describe('Scenario API manager', () => {
                     expect(spy).not.to.have.been.called;
                 });
 
+                it('will subscribe for messages from external process once', ()=>{
+                    const DEVICE_ID = 'some_device';
+                    const message = 'wazzup';
+                    let spy = sinon.spy();
+                    api.on('message', [DEVICE_ID], spy);
+                    inputStream.subscribe(spy);
+
+                    process.on.callArgWith(1, {type: message, content: message});
+                    expect(spy).to.have.been.calledWith(message);
+
+                    api.on('message', [DEVICE_ID], spy);
+                    expect(process.on).to.have.been.calledOnce;
+                });
             });
 
         });
