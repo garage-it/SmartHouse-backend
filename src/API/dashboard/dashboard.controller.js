@@ -17,6 +17,7 @@ function query(req, res) {
         });
 }
 
+// TODO: change function name and straighten the logic of mapping
 function modifyResponse(data) {
     const dashboard = data.toObject();
     dashboard.devices = dashboard.devices.map(item => {
