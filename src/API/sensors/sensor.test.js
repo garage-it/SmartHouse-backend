@@ -4,10 +4,13 @@ import chai from 'chai';
 import { expect } from 'chai';
 import app from '../../index';
 import SensorModel from './sensor.model';
+import DashboardModel from '../dashboard/dashboard.model';
 
 chai.config.includeStack = true;
 
 describe('## Sensor APIs', () => {
+
+    let raw_devices;
 
     let sensor;
     let devices;
@@ -20,7 +23,7 @@ describe('## Sensor APIs', () => {
             mqttId: 'some mqtt id'
         };
 
-        const raw_devices = [];
+        raw_devices = [];
 
         raw_devices.push(new SensorModel({
             description: 'some description',
@@ -157,7 +160,6 @@ describe('## Sensor APIs', () => {
         });
     });
 
-
     describe('# Error Handling', () => {
         it('should handle mongoose CastError - Cast to ObjectId failed', (done) => {
             request(app)
@@ -183,5 +185,37 @@ describe('## Sensor APIs', () => {
                 })
                 .catch(done);
         });
+    });
+
+    describe('hooks', () => {
+
+        it('should create dasboard instance when create sensor', (done) => {
+            compareDevicesBetweenDashboard(done);
+        });
+
+        it('should remove dasboard instance when sensor instance is removed', (done) => {
+            var removeDeviceId = devices.pop()._id;
+
+            SensorModel
+                .findOne({_id: removeDeviceId}, (err, content) => {
+                    content.remove(() => {
+                        compareDevicesBetweenDashboard(done);
+                    });
+                });
+        });
+
+        function compareDevicesBetweenDashboard(done) {
+            DashboardModel.find({})
+                .then(items => {
+                    expect(items
+                        .map(item => item.device.toString())
+                        .sort())
+                    .to.deep.equal(devices
+                        .map(device => device._id)
+                        .sort());
+                    done();
+                })
+                .catch(done);
+        }
     });
 });
