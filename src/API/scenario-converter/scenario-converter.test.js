@@ -1,50 +1,41 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import chai from 'chai';
-import { expect } from 'chai';
+import {expect} from 'chai';
 import app from '../../index';
 
 chai.config.includeStack = true;
 
 describe('## scenario-converter APIs', () => {
-    const SCENARIO_JSON = {
-        conditions: [],
-        actions: [],
-        logicalOperator: 'logicalOperator'
+    const SCENARIO = {
+        conditions: [{device: 'any', condition: 'LESS_THAN_OR_EQUAL_TO', value: '123'}],
+        actions: [{device: 'air-conditioner', value: 'ON'}]
     };
 
-    const SCENARIO_EMPTY_JS = `if (
-            
-        ) {
-            
-        }`;
+    const SCENARIO_QUERY = 'conditions%5B0%5D%5Bdevice%5D=any&conditions%5B0%5D%5Bcondition%5D=LESS_THAN_OR_EQUAL_TO&conditions%5B0%5D%5Bvalue%5D=123&actions%5B0%5D%5Bdevice%5D=air-conditioner&actions%5B0%5D%5Bvalue%5D=ON';
+
+    const BAD_REQUEST = 'Bad Request';
 
     describe('# GET /api/scenario-converter', () => {
-        it('should return string on correct JSON send', (done) => {
+        it('will return string on correct JSON send', (done) => {
             request(app)
-                .get(`/api/scenario-converter?scenarioConfig=${JSON.stringify(SCENARIO_JSON)}`)
+                .get(`/api/scenario-converter?${ SCENARIO_QUERY }`)
                 .expect(httpStatus.OK)
-                .then(res => {
-                    expect(res.body).to.equal(SCENARIO_EMPTY_JS);
+                .then((res) => {
+                    expect(res.text).to.include(SCENARIO.conditions[0].device);
+                    expect(res.text).to.include(SCENARIO.actions[0].device);
                     done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should return Bad Request on JSON NOT send', (done) => {
+        it('will return Bad Request on JSON NOT send', (done) => {
             request(app)
-                .get('/api/scenario-converter?scenarioConfig=')
-                .expect(httpStatus.BAD_REQUEST);
-
-            done();
-        });
-
-        it('should return Bad Request on incorrect JSON send', (done) => {
-            request(app)
-                .get('/api/scenario-converter?scenarioConfig={}')
-                .expect(httpStatus.BAD_REQUEST);
-
-            done();
+                .get('/api/scenario-converter?')
+                .expect(httpStatus.BAD_REQUEST)
+                .then((res) => {
+                    expect(res.text).to.include(BAD_REQUEST);
+                    done();
+                });
         });
     });
 });

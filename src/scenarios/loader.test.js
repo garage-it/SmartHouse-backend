@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
+import {expect} from 'chai';
 import proxyquire from 'proxyquire';
 import Promise from 'bluebird';
 
@@ -16,14 +16,23 @@ xdescribe('# Scenario loader', () => {
 
     let scripts;
 
-    beforeEach(function(){
-        scripts = ['a', 'b', 'c'];
+    beforeEach(function () {
+        scripts = [{
+            body: 'a',
+            active: true
+        }, {
+            body: 'b',
+            active: false
+        }, {
+            body: 'c',
+            active: true
+        }];
 
         scenarioManager = {
             start: sinon.spy()
         };
 
-        promise = new Promise(resolve=>{
+        promise = new Promise(resolve=> {
             resolve(scripts);
         });
 
@@ -38,19 +47,18 @@ xdescribe('# Scenario loader', () => {
         };
 
         proxyquire('./loader', {
-            'mongoose': mongoose ,
+            'mongoose': mongoose,
             './scenario.manager': scenarioManager,
             './scenario.model': Scenario
         });
     });
 
-    it('will load all scripts', function(done){
-        promise.then(()=>{
-            expect(scenarioManager.start).to.have.been.calledWith('a');
-            expect(scenarioManager.start).to.have.been.calledWith('b');
-            expect(scenarioManager.start).to.have.been.calledWith('c');
+    it('will load all scripts', function (done) {
+        promise.then(()=> {
+            expect(scenarioManager.start).to.have.been.calledWith(scripts[0]);
+            expect(scenarioManager.start).not.to.have.been.calledWith(scripts[1]);
+            expect(scenarioManager.start).to.have.been.calledWith(scripts[2]);
             done();
         });
     });
-
 });

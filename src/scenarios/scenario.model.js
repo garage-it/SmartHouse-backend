@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import * as scenarioManager from './scenario.manager';
+import ScenarioConverter from './scenario.converter';
 
 /**
  * Scenario Schema
@@ -58,6 +59,20 @@ ScenarioSchema.options.toJSON = ScenarioSchema.options.toObject = {
         return ret;
     }
 };
+
+ScenarioSchema.pre('validate', function (next) {
+    if (!this.isConvertable || !this.wizard) {
+        next();
+    }
+
+    ScenarioConverter
+        .convertScenario(this.wizard)
+        .then((jsBody) => {
+            this.body = jsBody;
+            next();
+        })
+        .catch(next);
+});
 
 ScenarioSchema.post('save', (scenario) => {
     if (scenario.active) {
