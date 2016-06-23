@@ -1,5 +1,5 @@
 import express from 'express';
-import dashboardCtrl from './dashboard.controller.js';
+import dashboardCtrl from './dashboard-settings.controller';
 
 const router = express.Router();// eslint-disable-line new-cap
 

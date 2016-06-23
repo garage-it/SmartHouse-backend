@@ -1,4 +1,4 @@
-import Dashboard from './dashboard.model.js';
+import Dashboard from './dashboard-settings.model';
 
 function update(req, res) {
     Dashboard.findOneAndUpdateAsync({}, req.body, { new: true })

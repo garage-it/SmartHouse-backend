@@ -6,7 +6,7 @@ import express from 'express';
 import sensorRoutes from './sensors/sensor.routes';
 import scenarioRoutes from './scenarios/scenario.routes';
 import scenarioConverterRoutes from './scenario-converter/scenario-converter.routes.js';
-import dashboardRoutes from './dashboard/dashboard.routes';
+import dashboardRoutes from './dashboard-settings/dashboard-settings.routes';
 
 const router = express.Router();    // eslint-disable-line new-cap
 

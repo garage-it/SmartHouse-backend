@@ -1,5 +1,5 @@
 import sensorModel from '../../API/sensors/sensor.model';
-import dashboardModel from '../../API/dashboard/dashboard.model';
+import dashboardModel from '../../API/dashboard-settings/dashboard-settings.model';
 
 export default { populateDashboard };
 
