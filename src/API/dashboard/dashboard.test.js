@@ -49,7 +49,7 @@ describe('## Dashboard APIs', () => {
                 .get('/api/dashboard')
                 .then(res => {
                     expect(res.body.devices.length).equals(1);
-                    expect(res.body.devices[0].mqttId).equals(device.mqttId);
+                    expect(res.body.devices[0].device.mqttId).equals(device.mqttId);
                     done();
                 });
         });
@@ -73,7 +73,7 @@ describe('## Dashboard APIs', () => {
                 .put('/api/dashboard')
                 .send({devices: [{device: deviceId}]})
                 .then(res => {
-                    expect(res.body.devices[0].mqttId).to.equal(device.mqttId);
+                    expect(res.body.devices[0].device.mqttId).to.equal(device.mqttId);
                     done();
                 });
         });
