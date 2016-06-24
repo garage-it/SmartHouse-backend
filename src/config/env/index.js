@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import path from 'path';
 
-const env = process.env.NODE_ENV || 'development';
+dotenv.config({silent: true});
+
+const env = process.env.ENV_CONFIG || 'development';
 const config = require(`./${env}`);
 
 const defaults = {
