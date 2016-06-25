@@ -222,4 +222,4 @@ node/
 
 dist/
 db/
-
+.env
