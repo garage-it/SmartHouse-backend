@@ -1,11 +1,12 @@
 import {fork} from 'child_process';
 
-import {stream as input_stream} from '../data-streams/filtered.input';
+import {stream as device_stream} from '../data-streams/filtered.input';
+import {stream as input_stream} from '../data-streams/input';
 import {stream as output_stream} from '../data-streams/output';
 
 const runningScenarios = new Map();
 
-input_stream.subscribe(notifyScenarios);
+device_stream.subscribe(notifyScenarios);
 
 function run(scenario) {
     let scenarioProcess = fork(__dirname + '/scenario-runner/runner', [scenario.body]);
@@ -24,9 +25,14 @@ function run(scenario) {
         runningScenarios.delete(scenario.id);
 
         if (!isKilledManually) {
-            //update without callbacks returns a query. we can get rid of exec() if we pass some callback here or
-            // use updateAsync, but we don`t need any callbacks here
-            scenario.update({active: false}).exec();
+            scenario.updateAsync({active: false})
+                .then(() => {
+                    input_stream.next({
+                        id: scenario.id,
+                        active: false,
+                        event: 'scenario-status-change'
+                    });
+                });
         }
     });
 }
