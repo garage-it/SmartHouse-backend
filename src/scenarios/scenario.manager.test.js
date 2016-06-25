@@ -12,11 +12,11 @@ chai.config.includeStack = true;
 describe('#Scenario manager', () => {
 
     let sut;
+    let filteredInputStream;
     let inputStream;
     let outputStream;
     let fork;
     let childProcess;
-    let mockQuery;
 
 
     const scenario = {
@@ -32,18 +32,19 @@ describe('#Scenario manager', () => {
         };
 
         fork = sinon.stub().returns(childProcess);
-        inputStream = new Rx.Subject();
+        filteredInputStream = new Rx.Subject();
         outputStream = new Rx.Subject();
-        mockQuery = {
-            exec: sinon.stub()
-        };
-        scenario.update = sinon.stub().returns(mockQuery);
+        inputStream = new Rx.Subject();
+        scenario.updateAsync = sinon.stub().returns({
+            then: sinon.stub().callsArg(0)
+        });
     });
 
     beforeEach(() => {
         sut = proxyquire('./scenario.manager', {
             'child_process': {fork},
-            '../data-streams/filtered.input': {stream: inputStream},
+            '../data-streams/filtered.input': {stream: filteredInputStream},
+            '../data-streams/input': {stream: inputStream},
             '../data-streams/output': {stream: outputStream}
         });
     });
@@ -59,7 +60,7 @@ describe('#Scenario manager', () => {
 
         it('should notify scenarios when input stream recieves a message', () => {
             let message = 'asd';
-            inputStream.next(message);
+            filteredInputStream.next(message);
 
             expect(childProcess.send).to.have.been.calledWith({
                 type: 'message',
@@ -89,20 +90,34 @@ describe('#Scenario manager', () => {
             expect(fork).to.have.been.calledAfter(childProcess.kill);
         });
 
-        it('should exec a query to update scenario as inactive when it ends working', () => {
-            const successExitCode = 0;
-            childProcess.on.withArgs('exit').callArgWith(1, successExitCode);
+        context('#scenario stopped working itself', () => {
+            it('should exec a query to update scenario as inactive when it ends working', () => {
+                const successExitCode = 0;
+                childProcess.on.withArgs('exit').callArgWith(1, successExitCode);
 
-            expect(scenario.update).to.have.been.calledWith({active: false});
-            expect(mockQuery.exec).to.have.been.called;
-        });
+                expect(scenario.updateAsync).to.have.been.calledWith({active: false});
+            });
 
-        it('should exec a query to update scenario as inactive when it stops because of an error', () => {
-            const errorExitCode = 1;
-            childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);
+            it('should exec a query to update scenario as inactive when it stops because of an error', () => {
+                const errorExitCode = 1;
+                childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);
 
-            expect(scenario.update).to.have.been.calledWith({active: false});
-            expect(mockQuery.exec).to.have.been.called;
+                expect(scenario.updateAsync).to.have.been.calledWith({active: false});
+            });
+
+
+            it('should exec a query to update scenario as inactive when it stops because of an error', () => {
+                const subscriber = sinon.stub();
+                inputStream.subscribe(subscriber);
+                const errorExitCode = 1;
+                childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);
+
+                expect(subscriber).to.have.been.calledWith({
+                    id: scenario.id,
+                    active: false,
+                    event: 'scenario-status-change'
+                });
+            });
         });
     });
 
@@ -117,7 +132,7 @@ describe('#Scenario manager', () => {
         sut.start(scenario);
         childProcess.send.reset();
         childProcess.on.withArgs('exit').callArg(1);
-        inputStream.next();
+        filteredInputStream.next();
 
         expect(childProcess.send).not.to.have.been.called;
     });

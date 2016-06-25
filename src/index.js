@@ -5,7 +5,7 @@ import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import http from 'http';
 import socketio from 'socket.io';
-import socketApi from './API/socket/device-events';
+import socketApi from './API/socket';
 
 import config from './config/env';
 import app from './config/express';
