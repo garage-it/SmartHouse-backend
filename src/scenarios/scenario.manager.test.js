@@ -112,7 +112,11 @@ describe('#Scenario manager', () => {
                 const errorExitCode = 1;
                 childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);
 
-                expect(subscriber).to.have.been.calledWith({active: false});
+                expect(subscriber).to.have.been.calledWith({
+                    id: scenario.id,
+                    active: false,
+                    event: 'scenario-status-change'
+                });
             });
         });
     });
