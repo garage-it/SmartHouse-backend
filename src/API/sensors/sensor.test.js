@@ -8,7 +8,7 @@ import DashboardModel from '../dashboard/dashboard.model';
 
 chai.config.includeStack = true;
 
-describe('## Sensor APIs', () => {
+describe.only('## Sensor APIs', () => {
 
     let sensor;
     let devices;
@@ -82,7 +82,8 @@ describe('## Sensor APIs', () => {
                 .then(res => {
                     expect(res.status).to.be.above(400);
                     done();
-                });
+                })
+                .catch(done);
         });
 
         it('should not create a new sensor without mqtt id', (done) => {
