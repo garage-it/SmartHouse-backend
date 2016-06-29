@@ -71,21 +71,6 @@ describe('## Sensor APIs', () => {
                 });
         });
 
-        it('should not create a new sensor with existing mqtt id', (done) => {
-            SensorModel
-                .create(sensor)
-                .then(() => {
-                    return request(app)
-                        .post('/api/sensors')
-                        .send(sensor);
-                })
-                .then(res => {
-                    expect(res.status).to.be.above(400);
-                    done();
-                })
-                .catch(done);
-        });
-
         it('should not create a new sensor without mqtt id', (done) => {
             const invalidSensor = {};
 
