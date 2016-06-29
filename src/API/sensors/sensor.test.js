@@ -8,7 +8,7 @@ import DashboardModel from '../dashboard/dashboard.model';
 
 chai.config.includeStack = true;
 
-describe.only('## Sensor APIs', () => {
+describe('## Sensor APIs', () => {
 
     let sensor;
     let devices;
