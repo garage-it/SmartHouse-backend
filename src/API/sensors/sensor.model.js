@@ -13,21 +13,19 @@ const SensorSchema = new mongoose.Schema({
         type: String
     },
     type: {
-        type: String,
-        required: true
+        type: String
     },
     executor: {
         type: Boolean,
         default: false
     },
     metrics: {
-        type: String,
-        require: true
+        type: String
     },
     mqttId: {
         type: 'String',
         unique : true,
-        require: true
+        required: true
     }
 });
 
