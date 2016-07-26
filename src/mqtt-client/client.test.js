@@ -88,7 +88,7 @@ describe('# MQTT client', () => {
 
         it('will parse and write event to inner stream when its device STATUS event', () => {
             let device = 'temperature';
-            let topic = `/smart-home/out/${device}`;
+            let topic = `/${device}`;
             let mockMessage = JSON.stringify('Its a mock message');
             let mqttEventData = {
                 device,
@@ -103,7 +103,7 @@ describe('# MQTT client', () => {
             let topic, mockMessage, mqttEventData, clock2;
             beforeEach(function () {
                 let device = 'faked';
-                topic = `/smart-home/out/${device}`;
+                topic = `/${device}`;
                 mockMessage = JSON.stringify({type: 'sensor'});
                 mqttEventData = {
                     device,
@@ -123,7 +123,7 @@ describe('# MQTT client', () => {
             
             it('will NOT publish new device-info to mqtt if there is no queue', () => {
                 client.publish(topic, mockMessage);
-                expect(client.publish).not.to.have.been.calledWith('/smart-home/out/device-info');
+                expect(client.publish).not.to.have.been.calledWith('/device-info');
             });
 
             it('will publish new device-info to mqtt if there is queue', () => {

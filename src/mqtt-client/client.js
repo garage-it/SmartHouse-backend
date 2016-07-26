@@ -11,7 +11,7 @@ import output from '../data-streams/output';
 
 const debug = Debugger('SH_BE:mqtt-client');
 
-const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
+const MQTT_INPUT_TOPIC_PREFIX = '';
 const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
 const DEVICE_INFO_EVENT = 'device-info';
 const DEVICE_STATUS_EVENT = 'status';
