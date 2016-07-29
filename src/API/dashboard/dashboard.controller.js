@@ -13,6 +13,7 @@ function query(req, res) {
     Dashboard.findOne({})
         .populate(getDevicePopulationConfig())
         .then(result => {
+            console.log(result); //eslint-disable-line
             res.json(result);
         });
 }
