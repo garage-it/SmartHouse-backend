@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -23,6 +24,11 @@ if (config.env === 'development') {
 // parse body params and attache them to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// TODO: Purpose only. Static FE
+console.log(path.resolve('../SmartHouse-frontend/dist/')); //eslint-disable-line
+
+app.use(express.static(path.resolve('../SmartHouse-frontend/dist/')));
 
 app.use(cookieParser());
 app.use(compress());
