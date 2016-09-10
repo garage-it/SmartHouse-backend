@@ -19,11 +19,8 @@ function query(req, res) {
 
 function getDevicePopulationConfig() {
     return {
-        path: 'devices',
-        populate: {
-            path: 'device',
-            model: 'Sensor'
-        }
+        path: 'devices.device',
+        model: 'Sensor'
     };
 }
 
