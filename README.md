@@ -8,6 +8,11 @@ Install dependencies:
 npm install
 ```
 
+Install only production dependencies:
+```sh
+npm install --production
+```
+
 Start server:
 ```sh
 # set DEBUG env variable to get debug logs
@@ -16,6 +21,12 @@ DEBUG=express-mongoose-es6-rest-api:* npm start
 # requires gulp to be installed globally
 npm i -g gulp
 gulp serve
+```
+
+Start server in production mode:
+```sh
+# will run api backend
+npm run api
 ```
 
 Execute tests:
