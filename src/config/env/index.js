@@ -11,6 +11,4 @@ const defaults = {
     host: 'localhost'
 };
 
-Object.assign(config, defaults);
-
-export default config;
+export default  Object.assign({}, defaults, config);
