@@ -2,7 +2,7 @@
   "name": "smart-house-backend",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/runner.js",
   "private": false,
   "engines": {
     "node": "5.x.x",
