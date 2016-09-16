@@ -19,6 +19,10 @@ const SensorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    servo: {
+        type: Boolean,
+        default: false
+    },
     metrics: {
         type: String
     },
