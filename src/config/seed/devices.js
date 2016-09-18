@@ -28,6 +28,13 @@ devices.push(new sensorModel({
     mqttId: 'humidity'
 }));
 
+devices.push(new sensorModel({
+    description: 'servo',
+    type: 'servo type',
+    metrics: 'degrees',
+    mqttId: 'servo',
+    servo: true
+}));
 
 function populateDevices() {
     return sensorModel.find({}).remove(function() {
