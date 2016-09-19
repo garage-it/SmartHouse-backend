@@ -2,7 +2,9 @@ export default {
     env: 'heroku',
     db: process.env.MONGO,
     port: process.env.PORT,
+    host: '',
     seedDB: true,
+    staticPath: '',
     plugAndPlay: true,
     mqtt: {
         port: process.env.MQTT_PORT,
