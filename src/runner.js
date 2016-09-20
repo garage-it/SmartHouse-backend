@@ -7,6 +7,7 @@ var path = require('path');
 var babelrc = fs.readFileSync(path.resolve(__dirname, '../.babelrc'));
 /* istanbul ignore next */
 var config;
+/* istanbul ignore next */
 try {
     /* istanbul ignore next */
     config = JSON.parse(babelrc);
