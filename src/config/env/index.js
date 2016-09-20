@@ -7,9 +7,8 @@ const env = process.env.ENV_CONFIG || 'development';
 const config = require(`./${env}`);
 
 const defaults = {
-    root: path.join(__dirname, '/..')
+    root: path.join(__dirname, '/..'),
+    host: 'localhost'
 };
 
-Object.assign(config, defaults);
-
-export default config;
+export default  Object.assign({}, defaults, config);

@@ -1,6 +1,3 @@
-// NOTE: this is a starter kit file
-// TODO: refactor
-
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import http from 'http';
@@ -41,8 +38,10 @@ let io = socketio(server);
 socketApi(io);
 
 // listen on port config.port
-server.listen(config.port, () => {
-    debug(`server started on port ${config.port} (${config.env})`);
+server.listen(config.port, config.host, () => {
+    /* eslint-disable no-console */
+    console.log(`Server started on \x1b[36m port:${config.port} (${config.env}) \x1b[0m`);
+    /* eslint-enable no-console */
 });
 
 trackDeviceConnection();
