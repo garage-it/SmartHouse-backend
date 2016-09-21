@@ -2,7 +2,7 @@
   "name": "smart-house-backend",
   "version": "0.1.0",
   "description": "",
-  "main": "src/runner.js",
+  "main": "dist/index.js",
   "private": false,
   "engines": {
     "node": "5.x.x",
@@ -14,7 +14,8 @@
     "lint": "gulp lint",
     "test": "gulp mocha",
     "report-coverage": "codecov < ./coverage/lcov.info",
-    "api": "cross-env ENV_CONFIG=production node src/runner.js"
+    "api": "cross-env ENV_CONFIG=production node src/runner.js",
+    "postinstall": "babel src --out-dir dist --ignore runner.js"
   },
   "bin": "bin/index.js",
   "repository": {
