@@ -15,7 +15,7 @@
     "test": "gulp mocha",
     "report-coverage": "codecov < ./coverage/lcov.info",
     "api": "cross-env ENV_CONFIG=production node src/runner.js",
-    "postinstall": "babel src --out-dir dist --ignore runner.js"
+    "postinstall": "babel src --out-dir dist"
   },
   "bin": "bin/index.js",
   "repository": {
