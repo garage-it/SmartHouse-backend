@@ -5,7 +5,7 @@ export default {
     host: '0.0.0.0',
     seedDB: false,
     staticPath: process.env.PATH_FRONTENT_DIST,
-    plugAndPlay: false,
+    plugAndPlay: true,
     mqtt: {
         port: process.env.MQTT_PORT,
         hostname: process.env.MQTT_HOST_NAME,
