@@ -23,6 +23,9 @@ function create(req, res, next) {
 }
 
 function update(req, res, next) {
+    if (req.body && req.body._id) {
+        delete req.body._id;
+    }
     Sensor.findByIdAndUpdateAsync(req.params.id, req.body, {
         new: true
     })
