@@ -34,8 +34,10 @@ export default function run(config) {
             .then(seed.populateDashboard);
     }
 
+    const expressApp = expressServerCreator(config);
+
     // Create websocket server
-    let server = http.createServer(expressServerCreator(config));
+    let server = http.createServer(expressApp);
     let io = socketio(server);
     socketApi(io);
 
@@ -52,4 +54,6 @@ export default function run(config) {
     if (config.plugAndPlay) {
         handleUnknownDeviceData();
     }
+
+    return expressApp;
 }

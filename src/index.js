@@ -4,4 +4,6 @@ import config from './config/env';
 const run = require('./app');
 
 // Run the application
-run(config);
+const app = run(config);
+
+export default app;

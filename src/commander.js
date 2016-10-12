@@ -11,9 +11,11 @@ program
     .command('start [options]')
     .description('Start the backend')
     .option('--MONGO [value]', 'MongoDb connection point')
+    .option('--MONGO_DB_MAIN [value]', 'MongoDb main database')
+
     .option('--BACKEND_PORT [value]', 'Port to serve data to')
-    .option('--HOST [value]', 'Host to serve the backend e.g. 0.0.0.0')
-    .option('--SEED_DB', 'Activare seeds db')
+    .option('--BACKEND_HOST [value]', 'Host to serve the backend e.g. 0.0.0.0')
+    .option('--EXEC_MOCK', 'Activare seeds db')
 
     .option('--PLUG_AND_PLAY', 'Turn on plug and play option')
 
@@ -26,10 +28,10 @@ program
         // run program (take options from param then env varribes, and default)
         var cfg = {
             env: 'production',
-            db: options['MONGO'] || process.env['MONGO'] || 'mongodb://localhost/db',
+            db: (options['MONGO'] + options['MONGO_DB_MAIN']) || process.env['MONGO'] || 'mongodb://localhost/db',
             port: options['BACKEND_PORT'] || process.env['PORT'] || 3000,
-            host: options['HOST'] || '0.0.0.0',
-            seedDB: !!options['SEED_DB'],
+            host: options['BACKEND_HOST'] || '0.0.0.0',
+            seedDB: !!options['EXEC_MOCK'],
             plugAndPlay: !!options['PLUG_AND_PLAY'],
             staticPath: options['PATH_FRONTENT_DIST'] || process.env['PATH_FRONTENT_DIST'],
             mqtt: {
@@ -39,10 +41,9 @@ program
                 password: options['MQTT_PASSWORD'] || process.env['MQTT_PASSWORD'] || 'PASSWORD'
             }
         };
-                
+
         run(cfg);
     });
-
 
 
 // Process Argv
