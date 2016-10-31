@@ -31,6 +31,7 @@ describe('# MQTT client', () => {
                 } else if ('message' === name) {
                     subscriptors.push(cb);
                 }
+                return client;
             }
         };
 
@@ -89,7 +90,7 @@ describe('# MQTT client', () => {
         it('will parse and write event to inner stream when its device STATUS event', () => {
             let device = 'temperature';
             let topic = `/smart-home/out/${device}`;
-            let mockMessage = JSON.stringify('Its a mock message');
+            let mockMessage = 'Its a mock message';
             let mqttEventData = {
                 device,
                 event: 'status',

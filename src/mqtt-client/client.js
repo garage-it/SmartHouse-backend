@@ -8,13 +8,14 @@ import mqtt from 'mqtt';
 import Debugger from 'debug';
 import input from '../data-streams/input';
 import output from '../data-streams/output';
+import convertMqttMessageToEvent from './event/convert-mqtt-message-to-event';
+import {DEVICE_INFO, DEVICE_STATUS} from './event/event-type';
+import {INPUT, OUTPUT} from './topic-prefix';
+import uniqueQueue from './unique-queue';
+import lock from './lock';
 
 const debug = Debugger('SH_BE:mqtt-client');
 
-const MQTT_INPUT_TOPIC_PREFIX = '/smart-home/out/';
-const MQTT_OUTPUT_TOPIC_PREFIX = '/smart-home/in/';
-const DEVICE_INFO_EVENT = 'device-info';
-const DEVICE_STATUS_EVENT = 'status';
 const MQTT_DEVICE_INFO_TIMEOUT = 60 * 1000;
 
 // Create a client connection
@@ -25,93 +26,59 @@ const client = mqtt.connect({
     auth: `${config.mqtt.username}:${config.mqtt.password}`
 });
 
-let blockPublishing = false,
-    publishingQueue = new Set();
+const deviceInfoPublishQueue = uniqueQueue();
+const deviceInfoPublishQueueLock = lock();
+let deviceInfoPublishQueueClearTimeout = 0;
 
-client.on('connect', onMqttConnect);
-client.on('message', onMqttMessage);
+client
+    .on('connect', onMqttConnect)
+    .on('message', onMqttMessage);
 
 function onMqttConnect() {
-    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`);
+    client.subscribe(`${INPUT}#`);
     output.stream.subscribe(onInputEvent);
 }
 
 function onMqttMessage(topic, rawMessage) {
     debug(`MQTT >>. Got message: topic '${topic}', message: '${rawMessage.toString()}'`);
-    let message = '';
-    try {
-        message = JSON.parse(rawMessage);
-    } catch (e) {
-        message = rawMessage.toString();
-    }
-    let isDeviceInfo = typeof message === 'object';
-    let event,
-        deviceName = topic.split('/').pop();
-
-    if (isDeviceInfo) {
-
-        publishingQueue.delete(deviceName);
-        blockPublishing = false;
+    const event = convertMqttMessageToEvent(topic, rawMessage);
+    if (event.event === DEVICE_INFO) {
+        deviceInfoPublishQueue.remove(event.device);
+        deviceInfoPublishQueueLock.unlock();
         publishDeviceInfoEvent();
-
-        event  = {
-            event: 'device-info',
-            device: deviceName,
-            value: message
-        };
-    }
-    else {
-        event = {
-            event: 'status',
-            device: deviceName,
-            value: rawMessage.toString()
-        };
     }
     input.write(event);
     debug(`Added to input stream event: '${JSON.stringify(event)}'`);
 }
 
 function onInputEvent(event) {
-    let message, topic = MQTT_OUTPUT_TOPIC_PREFIX;
-
-    if ( event.event === DEVICE_STATUS_EVENT) {
-        message = event.value;
-        topic += event.device;
-    } else  if (event.event === DEVICE_INFO_EVENT) {
-
+    if (event.event === DEVICE_STATUS) {
+        client.publish(OUTPUT + event.device, event.value);
+    } else if (event.event === DEVICE_INFO) {
         publishDeviceInfoEvent(event.device);
-        return;
-
     } else {
         debug(`Unknown output stream event received: '${JSON.stringify(event)}'`);
-        return;
     }
-
-    client.publish(topic, message);
 }
 
-function publishDeviceInfoEvent (device) {
-    let timeoutTimer;
+function publishDeviceInfoEvent(device) {
 
-    if (device) {
-        publishingQueue.add(device);
-    }
+    device && deviceInfoPublishQueue.enqueue(device);
 
-    if (!blockPublishing) {
-        if (timeoutTimer) {
-            clearTimeout(timeoutTimer);
-        }
-        if (publishingQueue.size) {
-            blockPublishing = true;
-            client.publish(MQTT_OUTPUT_TOPIC_PREFIX + DEVICE_INFO_EVENT, [...publishingQueue][0]);
-
-            timeoutTimer = setTimeout(() => {
-                blockPublishing = false;
-                publishingQueue.clear();
-                debug('Queue cleared by timeout');
-            }, MQTT_DEVICE_INFO_TIMEOUT);
+    if (!deviceInfoPublishQueueLock.isLocked) {
+        clearTimeout(deviceInfoPublishQueueClearTimeout);
+        if (!deviceInfoPublishQueue.isEmpty) {
+            deviceInfoPublishQueueLock.lock();
+            client.publish(OUTPUT + DEVICE_INFO, deviceInfoPublishQueue.dequeue());
+            deviceInfoPublishQueueClearTimeout = setTimeout(clearDeviceInfoPublishQueue, MQTT_DEVICE_INFO_TIMEOUT);
         }
     }
+}
+
+function clearDeviceInfoPublishQueue() {
+    deviceInfoPublishQueue.clear();
+    deviceInfoPublishQueueLock.unlock();
+    debug('Queue cleared by timeout');
 }
 
 export default client;
