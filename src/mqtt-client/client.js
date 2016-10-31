@@ -28,66 +28,66 @@ const client = mqtt.connect({
 let blockPublishing = false,
     publishingQueue = new Set();
 
-client.on('connect', onConnect);
+client.on('connect', onMqttConnect);
+client.on('message', onMqttMessage);
 
-function onConnect() {
-    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`, onSubscribed);
-
-    output.stream.subscribe(event => {
-        let message, topic = MQTT_OUTPUT_TOPIC_PREFIX;
-
-        if ( event.event === DEVICE_STATUS_EVENT) {
-            message = event.value;
-            topic += event.device;
-        } else  if (event.event === DEVICE_INFO_EVENT) {
-
-            publishDeviceInfoEvent(event.device);
-            return;
-
-        } else {
-            debug(`Unknown output stream event received: '${JSON.stringify(event)}'`);
-            return;
-        }
-
-        client.publish(topic, message);
-    });
+function onMqttConnect() {
+    client.subscribe(`${MQTT_INPUT_TOPIC_PREFIX}#`);
+    output.stream.subscribe(onInputEvent);
 }
 
-function onSubscribed() {
-    client.on('message', function (topic, rawMessage) {
-        debug(`MQTT >>. Got message: topic '${topic}', message: '${rawMessage.toString()}'`);
-        let message = '';
-        try {
-            message = JSON.parse(rawMessage);
-        } catch (e) {
-            message = rawMessage.toString();
-        }
-        let isDeviceInfo = typeof message === 'object';
-        let event,
-            deviceName = topic.split('/').pop();
+function onMqttMessage(topic, rawMessage) {
+    debug(`MQTT >>. Got message: topic '${topic}', message: '${rawMessage.toString()}'`);
+    let message = '';
+    try {
+        message = JSON.parse(rawMessage);
+    } catch (e) {
+        message = rawMessage.toString();
+    }
+    let isDeviceInfo = typeof message === 'object';
+    let event,
+        deviceName = topic.split('/').pop();
 
-        if (isDeviceInfo) {
+    if (isDeviceInfo) {
 
-            publishingQueue.delete(deviceName);
-            blockPublishing = false;
-            publishDeviceInfoEvent();
+        publishingQueue.delete(deviceName);
+        blockPublishing = false;
+        publishDeviceInfoEvent();
 
-            event  = {
-                event: 'device-info',
-                device: deviceName,
-                value: message
-            };
-        }
-        else {
-            event = {
-                event: 'status',
-                device: deviceName,
-                value: rawMessage.toString()
-            };
-        }
-        input.write(event);
-        debug(`Added to input stream event: '${JSON.stringify(event)}'`);
-    });
+        event  = {
+            event: 'device-info',
+            device: deviceName,
+            value: message
+        };
+    }
+    else {
+        event = {
+            event: 'status',
+            device: deviceName,
+            value: rawMessage.toString()
+        };
+    }
+    input.write(event);
+    debug(`Added to input stream event: '${JSON.stringify(event)}'`);
+}
+
+function onInputEvent(event) {
+    let message, topic = MQTT_OUTPUT_TOPIC_PREFIX;
+
+    if ( event.event === DEVICE_STATUS_EVENT) {
+        message = event.value;
+        topic += event.device;
+    } else  if (event.event === DEVICE_INFO_EVENT) {
+
+        publishDeviceInfoEvent(event.device);
+        return;
+
+    } else {
+        debug(`Unknown output stream event received: '${JSON.stringify(event)}'`);
+        return;
+    }
+
+    client.publish(topic, message);
 }
 
 function publishDeviceInfoEvent (device) {

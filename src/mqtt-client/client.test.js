@@ -21,7 +21,7 @@ describe('# MQTT client', () => {
     beforeEach(() => {
         let subscriptors = [];
         client = {
-            subscribe: (topic, cb)=>cb(),
+            subscribe: (topic, cb)=> cb && cb(),
             publish: (topic, message)=> {
                 subscriptors.forEach(cb=>cb(topic, message));
             },
@@ -115,12 +115,12 @@ describe('# MQTT client', () => {
             afterEach(function(){
                 clock2.restore();
             });
-            
+
             it('will parse and write event to inner stream', () => {
                 client.publish(topic, mockMessage);
                 expect(input.write).to.have.been.calledWith(mqttEventData);
             });
-            
+
             it('will NOT publish new device-info to mqtt if there is no queue', () => {
                 client.publish(topic, mockMessage);
                 expect(client.publish).not.to.have.been.calledWith('/smart-home/out/device-info');
@@ -179,7 +179,7 @@ describe('# MQTT client', () => {
                 it('will publish event if there is no event in handling ', () => {
                     expect(client.publish).to.have.been.calledWith('/smart-home/in/device-info', config.device);
                 });
-                
+
                 it('will NOT publish event if there is event in handling', () => {
                     config = {event: 'device-info', device: 'mock2'};
                     publishFn(config);
