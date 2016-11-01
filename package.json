@@ -1,8 +1,8 @@
 {
   "name": "smart-house-backend",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Smart House BE",
-  "main": "dist/index.js",
+  "main": "dist/plugin.js",
   "private": false,
   "engines": {
     "node": "5.x.x",

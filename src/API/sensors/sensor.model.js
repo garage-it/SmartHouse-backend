@@ -60,6 +60,8 @@ SensorSchema.statics = {
     }
 };
 
+
+
 sensorHooks.createHooks(SensorSchema);
 
 export default mongoose.model('Sensor', SensorSchema);
