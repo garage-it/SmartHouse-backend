@@ -1,12 +1,6 @@
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
 import socketIoMocks from 'socket-io-mocks';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('# Socket Device Events', () => {
     let input;

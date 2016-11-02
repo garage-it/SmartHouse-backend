@@ -1,13 +1,6 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
 
 import Rx from 'rxjs/Rx';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('Scenario API manager', () => {
 
@@ -47,7 +40,7 @@ describe('Scenario API manager', () => {
             it('will send data to output stream', ()=>{
                 const DEVICE_ID = 'some_device';
                 const OUT_VALUE = 'ON';
-                let spy = sinon.spy();
+                let spy = env.spy();
                 outputStream.subscribe(spy);
                 api.device.get(DEVICE_ID).send(OUT_VALUE);
                 expect(spy).to.have.been.calledWith({
@@ -77,7 +70,7 @@ describe('Scenario API manager', () => {
             context('#on', ()=>{
 
                 beforeEach(() => {
-                    sinon.stub(process, 'on');
+                    env.stub(process, 'on');
                 });
 
                 afterEach(() => {
@@ -86,7 +79,7 @@ describe('Scenario API manager', () => {
 
                 it('will trigger callbacks on events from specific devices', ()=>{
                     const DEVICE_ID = 'some_device';
-                    let spy = sinon.spy();
+                    let spy = env.spy();
                     api.on('message', [DEVICE_ID], spy);
                     inputStream.next({ device: DEVICE_ID });
                     expect(spy).to.have.been.called;
@@ -94,7 +87,7 @@ describe('Scenario API manager', () => {
 
                 it('will not trigger callbacks on events from other devices', ()=>{
                     const DEVICE_ID = 'some_device';
-                    let spy = sinon.spy();
+                    let spy = env.spy();
                     api.on('message', ['-robocow-'], spy);
                     inputStream.next({ device: DEVICE_ID });
                     expect(spy).not.to.have.been.called;
@@ -103,7 +96,7 @@ describe('Scenario API manager', () => {
                 it('will subscribe for messages from external process once', ()=>{
                     const DEVICE_ID = 'some_device';
                     const message = 'wazzup';
-                    let spy = sinon.spy();
+                    let spy = env.spy();
                     api.on('message', [DEVICE_ID], spy);
                     inputStream.subscribe(spy);
 

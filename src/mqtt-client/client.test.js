@@ -1,11 +1,4 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
 import proxyquire from 'proxyquire';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('# MQTT client', () => {
     let mqtt;
@@ -40,12 +33,12 @@ describe('# MQTT client', () => {
             connect: ()=>client
         };
 
-        inputSubscribeStub = {subscribe: sinon.stub()};
-        outputStreamStub = {subscribe: sinon.stub(), next: sinon.stub()};
-        inputFilterStub = sinon.stub().returns(inputSubscribeStub);
+        inputSubscribeStub = {subscribe: env.stub()};
+        outputStreamStub = {subscribe: env.stub(), next: env.stub()};
+        inputFilterStub = env.stub().returns(inputSubscribeStub);
 
         input = {
-            write: sinon.stub(),
+            write: env.stub(),
             stream: {filter: inputFilterStub}
         };
 
@@ -62,9 +55,9 @@ describe('# MQTT client', () => {
             }
         };
 
-        sinon.spy(mqtt, 'connect');
-        sinon.spy(client, 'subscribe');
-        sinon.spy(client, 'publish');
+        env.spy(mqtt, 'connect');
+        env.spy(client, 'subscribe');
+        env.spy(client, 'publish');
 
         proxyquire('./client', {
             mqtt,
@@ -152,7 +145,7 @@ describe('# MQTT client', () => {
             let publishFn;
             let config;
             beforeEach(() => {
-                client.publish = sinon.stub();
+                client.publish = env.stub();
                 publishFn = outputStreamStub.subscribe.lastCall.args[0];
             });
 

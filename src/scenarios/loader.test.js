@@ -1,12 +1,5 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
 import Promise from 'bluebird';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 xdescribe('# Scenario loader', () => {
     let Scenario;
@@ -29,7 +22,7 @@ xdescribe('# Scenario loader', () => {
         }];
 
         scenarioManager = {
-            start: sinon.spy()
+            start: env.spy()
         };
 
         promise = new Promise(resolve=> {
@@ -37,7 +30,7 @@ xdescribe('# Scenario loader', () => {
         });
 
         Scenario = {
-            findAsync: sinon.stub().returns(promise)
+            findAsync: env.stub().returns(promise)
         };
 
         mongoose = {

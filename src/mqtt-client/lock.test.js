@@ -1,6 +1,4 @@
 import lock from './lock';
-import chai from 'chai';
-chai.should();
 
 describe('lock', () => {
 

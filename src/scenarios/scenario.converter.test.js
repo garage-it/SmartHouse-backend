@@ -1,8 +1,3 @@
-import chai from 'chai';
-import {expect} from 'chai';
-
-chai.config.includeStack = true;
-
 describe('# Scenario converter', () => {
     let sut;
     let scenario;

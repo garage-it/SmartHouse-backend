@@ -1,12 +1,5 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonAsPromised from 'sinon-as-promised'; //eslint-disable-line
-import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
-
-chai.use(sinonChai);
 
 describe('#Device connected', () => {
     let input,
@@ -31,13 +24,13 @@ describe('#Device connected', () => {
     beforeEach(function () {
         input = {
             stream: new Rx.Subject(),
-            write: sinon.spy()
+            write: env.spy()
         };
 
-        saveAsync = sinon.stub();
-        findStub = sinon.stub();
+        saveAsync = env.stub();
+        findStub = env.stub();
 
-        debug = sinon.spy();
+        debug = env.spy();
 
         Sensor = class {
             constructor() {

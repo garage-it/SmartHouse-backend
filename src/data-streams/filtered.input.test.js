@@ -1,23 +1,17 @@
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import Rx from 'rxjs';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('# Filtered input', () => {
     let sut;
     let inputStream;
-    sinon.stub(Rx.Subject.prototype, 'sampleTime').returnsThis();
     /*
         NOTE: there is a better way of testing rx - http://www.mostovenko.com/posts/2016-05-21-testing-with-rxjs.html
         but in rxjs 5 ReactiveTest is missing - https://github.com/ReactiveX/rxjs/tree/master/src/testing
      */
 
     beforeEach(() => {
+        env.stub(Rx.Subject.prototype, 'sampleTime').returnsThis();
+
         inputStream = new Rx.Subject();
         sut = proxyquire('./filtered.input', {
             './input': {stream: inputStream},
@@ -26,7 +20,7 @@ describe('# Filtered input', () => {
     });
 
     it('will filter distinct events for the same device', () => {
-        const subscriber = sinon.stub();
+        const subscriber = env.stub();
         const events = [
             {
                 device: 'a',
@@ -50,7 +44,7 @@ describe('# Filtered input', () => {
     });
 
     it('will filter distinct events for the multiple devices', () => {
-        const subscriber = sinon.stub();
+        const subscriber = env.stub();
         const firstA = {
             device: 'a',
             value: 1

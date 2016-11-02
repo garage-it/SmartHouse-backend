@@ -1,13 +1,6 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
 import socketIoMocks from 'socket-io-mocks';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('# Socket Device Events', () => {
     let input;
@@ -17,11 +10,11 @@ describe('# Socket Device Events', () => {
     beforeEach(function(){
 
         socket = new socketIoMocks.socket();
-        sinon.spy(socket, 'on');
+        env.spy(socket, 'on');
 
         let streamConfig = {
             stream: new Rx.Subject(),
-            write: sinon.stub()
+            write: env.stub()
         };
 
         input = streamConfig;

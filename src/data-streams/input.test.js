@@ -1,10 +1,3 @@
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
-
 describe('# Input', () => {
     let sut;
 

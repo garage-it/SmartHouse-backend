@@ -1,6 +1,4 @@
 import uniqueQueue from './unique-queue';
-import chai from 'chai';
-chai.should();
 
 describe('uniqueQueue', () => {
     let sut;

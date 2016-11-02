@@ -1,13 +1,9 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
-import chai from 'chai';
-import { expect } from 'chai';
 import app from '../../index';
-import '../../test/mongo';
+import '../../../test/config/mongo';
 import mongoose from 'mongoose';
 import ScenarioModel from '../../scenarios/scenario.model';
-
-chai.config.includeStack = true;
 
 describe('## scenario APIs', () => {
     let scenarios;
