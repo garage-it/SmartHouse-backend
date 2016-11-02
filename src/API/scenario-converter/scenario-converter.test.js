@@ -1,10 +1,6 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
-import chai from 'chai';
-import {expect} from 'chai';
 import app from '../../index';
-
-chai.config.includeStack = true;
 
 describe('## scenario-converter APIs', () => {
     const SCENARIO = {

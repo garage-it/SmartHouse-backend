@@ -10,7 +10,7 @@ before_script:
   - npm prune
 script:
   - npm run lint
-  - npm test
+  - npm run test-coverage
   - npm run build
 after_script:
   - npm run report-coverage

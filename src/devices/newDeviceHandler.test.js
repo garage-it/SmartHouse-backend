@@ -1,12 +1,5 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonAsPromised from 'sinon-as-promised'; //eslint-disable-line
-import sinonChai from 'sinon-chai';
-import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
-
-chai.use(sinonChai);
 
 describe('# New device handler', () => {
     let input,
@@ -23,10 +16,10 @@ describe('# New device handler', () => {
         };
 
         output = {
-            write: sinon.spy()
+            write: env.spy()
         };
 
-        findStub = sinon.stub();
+        findStub = env.stub();
 
         Sensor = class {
             constructor() {

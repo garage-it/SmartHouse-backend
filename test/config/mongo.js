@@ -1,4 +1,4 @@
-import config from '../config/env';
+import config from '../../src/config/env';
 import mongoose from 'mongoose';
 import Promise from 'bluebird';
 

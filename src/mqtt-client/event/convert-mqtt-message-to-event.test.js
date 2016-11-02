@@ -1,6 +1,4 @@
-import chai from 'chai';
 import sut from './convert-mqtt-message-to-event';
-chai.should();
 
 describe('mqtt-clinet/event/convert-mqtt-message-to-event', () => {
 

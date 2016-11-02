@@ -1,12 +1,8 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
-import chai from 'chai';
-import { expect } from 'chai';
 import app from '../../index';
 import DashboardModel from './dashboard.model';
 import SensorModel from '../sensors/sensor.model';
-
-chai.config.includeStack = true;
 
 describe('## Dashboard APIs', () => {
 

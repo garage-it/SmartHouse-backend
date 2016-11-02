@@ -1,13 +1,5 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
-
 import Rx from 'rxjs/Rx';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('#Scenario manager', () => {
 
@@ -26,17 +18,17 @@ describe('#Scenario manager', () => {
 
     beforeEach(() => {
         childProcess = {
-            send: sinon.stub(),
-            on: sinon.stub(),
-            kill: sinon.stub()
+            send: env.stub(),
+            on: env.stub(),
+            kill: env.stub()
         };
 
-        fork = sinon.stub().returns(childProcess);
+        fork = env.stub().returns(childProcess);
         filteredInputStream = new Rx.Subject();
         outputStream = new Rx.Subject();
         inputStream = new Rx.Subject();
-        scenario.updateAsync = sinon.stub().returns({
-            then: sinon.stub().callsArg(0)
+        scenario.updateAsync = env.stub().returns({
+            then: env.stub().callsArg(0)
         });
     });
 
@@ -107,7 +99,7 @@ describe('#Scenario manager', () => {
 
 
             it('should exec a query to update scenario as inactive when it stops because of an error', () => {
-                const subscriber = sinon.stub();
+                const subscriber = env.stub();
                 inputStream.subscribe(subscriber);
                 const errorExitCode = 1;
                 childProcess.on.withArgs('exit').callArgWith(1, errorExitCode);

@@ -1,13 +1,6 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
-import '../test/mongo';
+import '../../test/config/mongo';
 import mongoose from 'mongoose';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('# Scenario Model', () => {
     let sut;
@@ -21,12 +14,12 @@ describe('# Scenario Model', () => {
         delete mongoose.modelSchemas.Scenario;
 
         scenarioManager = {
-            start: sinon.stub(),
-            stop: sinon.stub()
+            start: env.stub(),
+            stop: env.stub()
         };
 
         scenarioConverter = {
-            convertScenario: sinon.stub().returns(new Promise(resolve=> {
+            convertScenario: env.stub().returns(new Promise(resolve=> {
                 resolve();
             }))
         };

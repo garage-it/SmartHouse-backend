@@ -1,20 +1,13 @@
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import {expect} from 'chai';
 import proxyquire from 'proxyquire';
-
-chai.use(sinonChai);
-chai.config.includeStack = true;
 
 describe('Scenario Runner', () => {
     before(function () {
-        process.send = sinon.stub();
+        process.send = env.stub();
     });
 
     it('will start script execution', function () {
         const mockVm = {
-            runInNewContext: sinon.stub()
+            runInNewContext: env.stub()
         };
         const script = 'alert()';
 
