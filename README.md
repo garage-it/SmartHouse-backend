@@ -35,6 +35,9 @@ Execute tests:
 ```sh
 # compile with babel and run tests
 npm test
+
+# get code coverage for each file
+npm run test-coverage
 ```
 
 Other gulp tasks:
