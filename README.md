@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/garage-it/SmartHouse-backend.svg?branch=master)](https://travis-ci.org/garage-it/SmartHouse-backend)
 [![codecov.io](https://codecov.io/github/garage-it/SmartHouse-backend/coverage.svg?branch=master)](https://codecov.io/github/garage-it/SmartHouse-backend?branch=master)
+[![dependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/status.svg)](https://david-dm.org/garage-it/SmartHouse-backend)
+[![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
 
 ## Commands
 
@@ -32,10 +34,7 @@ npm run api
 Execute tests:
 ```sh
 # compile with babel and run tests
-npm test (or gulp mocha)
-
-# use --code-coverage-reporter text to get code coverage for each file
-gulp mocha --code-coverage-reporter text
+npm test
 ```
 
 Other gulp tasks:
