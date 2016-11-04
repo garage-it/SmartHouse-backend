@@ -1,6 +1,6 @@
 {
   "name": "smart-house-backend",
-  "version": "0.5.0-0",
+  "version": "0.5.1-0",
   "description": "Smart House BE",
   "main": "dist/index.js",
   "private": false,
