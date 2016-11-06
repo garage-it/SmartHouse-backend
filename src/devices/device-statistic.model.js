@@ -21,7 +21,7 @@ const DeviceStatisticSchema = new mongoose.Schema({
         'type': String
     },
     'value': {
-        'type': Number
+        'type': Object
     }
 });
 
