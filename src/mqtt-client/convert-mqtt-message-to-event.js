@@ -1,5 +1,5 @@
-import {DEVICE_INFO, DEVICE_STATUS} from './event-type';
-import inputEvent from './event';
+import {DEVICE_INFO, DEVICE_STATUS} from '../devices/event/event-type';
+import inputEvent from '../devices/event/event';
 
 export default function convertMqttMessageToEvent(topic, rawMessage) {
     const message = tryParseMessage(rawMessage);

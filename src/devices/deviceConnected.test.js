@@ -11,7 +11,6 @@ describe('#Device connected', () => {
         saveAsyncPromise,
         config,
         findStub;
-
     function setup (resolve, value) {
         if (resolve) {
             saveAsync.resolves(value);
@@ -55,6 +54,7 @@ describe('#Device connected', () => {
             '../data-streams/input': input,
             '../API/sensors/sensor.model': Sensor,
             '../config/env': config,
+            './event/event-type': { DEVICE_INFO_EVENT: 'device-info'},
             'debug': Debugger
         });
 

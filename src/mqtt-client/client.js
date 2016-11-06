@@ -8,8 +8,8 @@ import mqtt from 'mqtt';
 import Debugger from 'debug';
 import input from '../data-streams/input';
 import output from '../data-streams/output';
-import convertMqttMessageToEvent from './event/convert-mqtt-message-to-event';
-import {DEVICE_INFO, DEVICE_STATUS} from './event/event-type';
+import convertMqttMessageToEvent from './convert-mqtt-message-to-event';
+import {DEVICE_INFO, DEVICE_STATUS} from '../devices/event/event-type';
 import {INPUT, OUTPUT} from './topic-prefix';
 import uniqueQueue from './unique-queue';
 import lock from './lock';
@@ -48,6 +48,7 @@ function onMqttMessage(topic, rawMessage) {
         publishDeviceInfoEvent();
     }
     input.write(event);
+
     debug(`Added to input stream event: '${JSON.stringify(event)}'`);
 }
 
