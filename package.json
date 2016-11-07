@@ -103,11 +103,6 @@
     "url": "https://github.com/garage-it/SmartHouse-backend/issues"
   },
   "homepage": "https://github.com/garage-it/SmartHouse-backend#readme",
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run lint && npm test"
-    }
-  },
   "babel": {
     "presets": [
       "es2015",
