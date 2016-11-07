@@ -1,54 +1,51 @@
 import User from './user.model';
+const REMOVED_FIELDS = '-salt -hashedPassword -__v';
 
 /**
- * It will authenticate user password
- *
+ * @function isPasswordCorrect
+ * @description It will authenticate user password
  * @param {Object} user
  * @param {String} password
  * @return {Boolean}
- *
  */
 function isPasswordCorrect(user, password) {
     return user.authenticate(password);
 }
 
 /**
- * It will find one user by query
- *
+ * @function findOneBy
+ * @description It will find one user by query
  * @param {Object} query
  * @return {object}
- *
  */
 function findOneBy(query) {
     return User.findOne(query);
 }
 
 /**
- * It will return all users
+ * @function getAllUsers
+ * @description It will return all users
  * @return {Array}
- *
  */
 function getAllUsers() {
-    return User.find({}, '-salt -hashedPassword -__v');
+    return User.find({}, REMOVED_FIELDS);
 }
 
 /**
- * It will return user by id
- *
+ * @function getUserById
+ * @description It will return user by id
  * @param {Number} userId
  * @return {object}
- *
  */
 function getUserById(userId) {
-    return User.findById(userId);
+    return User.findById(userId, REMOVED_FIELDS);
 }
 
 /**
- * It will create new user in database
- *
+ * @function createUser
+ * @description It will create new user in database
  * @param {object} body
  * @return {object}
- *
  */
 function createUser(body) {
     return User.create(body).then((result) => {
@@ -57,13 +54,11 @@ function createUser(body) {
 }
 
 /**
- * It will find user by query
- * or create new user in database
- *
+ * @function findOrCreateUser
+ * @description It will find user by query or create new user in database
  * @param {object} query
  * @param {object} body
  * @return {object}
- *
  */
 function findOrCreateUser (query, body) {
     return User.findOrCreate(query, body).then((result) => {
@@ -72,23 +67,21 @@ function findOrCreateUser (query, body) {
 }
 
 /**
- * Update existing user
- *
+ * @function updateUser
+ * @description Update existing user
  * @param {object} body
  * @param {Number} userId
  * @return {object}
- *
  */
 function updateUser(body, userId) {
     return User.update({ '_id': userId }, { $set: body });
 }
 
 /**
- * Delete user by id
- *
+ * @function deleteUser
+ * @description Delete user by id
  * @param {Number} userId
  * @return {object}
- *
  */
 function deleteUser(userId) {
     return User.findByIdAndRemove(userId);

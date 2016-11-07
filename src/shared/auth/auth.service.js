@@ -6,9 +6,9 @@ import UserService from '../user/user.service';
 const validateJwt = expressJwt({ secret: config.token.secret });
 
 /**
- * Attaches the user object to the request if authenticated
+ * @function ensureAuthenticated
+ * @description Attaches the user object to the request if authenticated
  * Otherwise returns 403
- *
  * @return {Object}
  */
 function ensureAuthenticated() {
@@ -16,18 +16,18 @@ function ensureAuthenticated() {
         validateJwt,
         (req, res, next) => {
             UserService.getUserById(req.user._id)
-                .then((user) => {
+                .then(user => {
                     req.user = user;
                     next();
                 })
-                .catch((err) => next(err));
+                .catch(err => next(err));
         }
     );
 }
 
 /**
- * Checks if the user role meets the minimum requirements of the route
- *
+ * @function hasRole
+ * @description Checks if the user role meets the minimum requirements of the route
  * @param {String} roleRequired
  * @return {Object}
  */
@@ -49,8 +49,8 @@ function hasRole(roleRequired) {
 }
 
 /**
- * Returns a jwt token signed by the app secret
- *
+ * @function generateToken
+ * @description Returns a jwt token signed by the app secret
  * @param {Number} id
  */
 function generateToken(id) {

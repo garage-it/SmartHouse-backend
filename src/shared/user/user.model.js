@@ -3,9 +3,8 @@ import crypto from 'crypto';
 import findOrCreate from 'mongoose-findorcreate';
 
 /**
- * User Schema
+ * @file User Schema
  */
-
 const UserSchema = new mongoose.Schema({
     login: {
         type: String,
@@ -52,24 +51,20 @@ UserSchema
     });
 
 /**
- * Make salt for password
- * private method
- *
+ * @function
+ * @description Make salt for password private method
  * @return {String}
- *
  */
 let makeSalt = () => {
     return crypto.randomBytes(16).toString('base64');
 };
 
 /**
- * encrypt password
- * private method
- *
+ * @function encryptPassword
+ * @description encrypt password private method
  * @param {String} password
  * @param {String} salt
  * @return {String}
- *
  */
 let encryptPassword = (password, salt) => {
     let encryptedPassword = '';
@@ -84,11 +79,10 @@ let encryptPassword = (password, salt) => {
 
 UserSchema.methods = {
     /**
-     * Check is password correct
-     *
+     * @function authenticate
+     * @description Check is password correct
      * @param {String} plainText
      * @return {Boolean}
-     *
      */
     authenticate: function (plainText) {
         return encryptPassword(plainText, this.salt) === this.hashedPassword;

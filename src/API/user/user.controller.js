@@ -2,61 +2,65 @@ import UserService from '../../shared/user/user.service';
 
 function getAllUsers(req, res) {
     UserService.getAllUsers()
-        .then((results) => {
+        .then(results => {
             res.json({
                 status: 'success',
                 responses: results
             });
         })
-        .catch((err) => {
+        .catch(err => {
             res.json(err);
         });
 }
 
 function add(req, res) {
     UserService.createUser(req.body)
-        .then((results) => {
+        .then(results => {
             res.json({
                 status: 'success',
                 responses: results
             });
         })
-        .catch((err) => {
+        .catch(err => {
             res.json(err);
         });
 }
 
 function update(req, res) {
     UserService.updateUser(req.body, req.user._id)
-        .then((results) => {
+        .then(results => {
             res.json({
                 status: 'success',
                 responses: results
             });
         })
-        .catch((err) => {
+        .catch(err => {
             res.json(err);
         });
 }
 
 function getById(req, res) {
     UserService.getUserById(req.params.id)
-        .then((result) => {
+        .then(result => {
             res.json(result.toObject({transform: true}));
         })
-        .catch((err) => {
+        .catch(err => {
             res.json(err);
         });
 }
 
 function deleteUserById(req, res) {
     UserService.deleteUser(req.params.id)
-        .then((result) => {
+        .then(result => {
             res.json(result);
         })
-        .catch((err) => {
+        .catch(err => {
             res.json(err);
         });
+}
+
+function getCurrentUser(req, res) {
+    res.json(req.user);
 }
 
 export default {
@@ -64,5 +68,6 @@ export default {
     add,
     update,
     getById,
-    deleteUserById
+    deleteUserById,
+    getCurrentUser
 };

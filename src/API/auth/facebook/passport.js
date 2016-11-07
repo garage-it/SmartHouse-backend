@@ -4,10 +4,12 @@ import passportFacebook from 'passport-facebook';
 const FacebookStrategy = passportFacebook.Strategy;
 
 /**
- * Register facebook authentication strategy
- *
+ * @function setup
+ * @description Register facebook authentication strategy
+ * @param {Object} UserService
+ * @param {Object} config
  */
-function setup(UserService, config) {
+export default function setup(UserService, config) {
     passport.use(new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
@@ -18,15 +20,11 @@ function setup(UserService, config) {
             email: profile.emails[0].value,
             name: profile.username
         })
-        .then((user) => {
+        .then(user => {
             done(null, user);
         })
-        .catch((err) => {
+        .catch(err => {
             done(err);
         });
     }));
 }
-
-export default {
-    setup
-};

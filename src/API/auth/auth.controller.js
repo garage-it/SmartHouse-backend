@@ -1,29 +1,43 @@
 import composeMiddleware from 'compose-middleware';
 import passport from 'passport';
-import local from './local/passport';
-import facebook from './facebook/passport';
+import localSetup from './local/passport';
+import facebookSetup from './facebook/passport';
 import UserService from '../../shared/user/user.service';
-import config from '../../config/oauth';
+import config from '../../config/auth';
 import authService from '../../shared/auth/auth.service';
 
 /**
- * Register authenticate strategies
+ * @function initialize
+ * @description Register authenticate strategies
  */
 function initialize() {
-    local.setup(UserService, config);
-    facebook.setup(UserService, config);
+    localSetup(UserService);
+    facebookSetup(UserService, config);
 }
-
 
 function register() {
     return composeMiddleware.compose(
         (reg, res, next) => {
             reg.params = reg.body;
 
+            UserService.findOneBy({email: reg.params.email})
+                .then(result => {
+                    if (result) {
+                        res.json({
+                            code: 'NOT_UNIQUE_EMAIL',
+                            error: 'Email address already exists'
+                        });
+                    } else {
+                        next();
+                    }
+                });
+        },
+        (reg, res, next) => {
             UserService.createUser(reg.params)
                 .then(() => {
                     next();
-                });
+                })
+                .catch(err => next(err));
         },
         passport.authenticate('local', {session: false}),
         (req, res) => {
