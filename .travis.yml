@@ -27,3 +27,10 @@ deploy:
     app: garage-it-smart-house-api-qa
     on:
       repo: garage-it/SmartHouse-backend
+  - provider: npm
+    email: paur.link@gmail.com
+    api_key:
+      secure: W+ws50YqzEPoJiCzn/9kKoxgLW2CiOwZS5ECbmjpF7N75SkRC7jx84JVxJuHTaBV9UHZPS7YQoRfBJeH685PGBr234XPV4lIlGnp8r1NxacJsvQhq2QpHctX0/fTnAK/MFQ+9b04ezZUW9LosmQm3ljJWxRs3LFj2rUTqpdgj8cY4GNcA/BV2cbv7aF3NYbGH0FWJEoYl8lOSwRn6QBDaF6zol+Y7IKRxTTmEh4zo8xfj17YeH1xmub+OI7uU4TBvSlG1KffQvH7hy/9NcNyI0nTpxozf2zY6rtv/0qQUNv45/WKyEOoilCG5GqiasmQPgTur3KY4vfiAr/Ju5H/2r2cZA+eWseolxIFVlavyAkKWWSkmqfL6RaIUU52PR/j3XeW+QxhHdgMZ1FuSglBdxVVIhb9+ZA0Lr+KE2uaRC+Odaml+TniGpebWsTmnKAMbpT8MHIj3vGvgpf08xnQkUNr3WARJ6roy8/I29AMohUn3uZwrZWIPJO4eoKH+bwiMDVAqOvIFMIWmUKrE7Eqm9kwS8wFpvTaaWAuUsrWzo105rkUKccobwXqcrbaCp5IYUhwkwwAWhKnkaBa3TMhujrNCQw87xbUnGusf+b4FeIbqpxWEASov6M4e3dCHWDb5g+8f5x4IPMvzs1RYVGkql6YLaQ/FobDizO5p9Q/nJM=
+    on:
+      repo: garage-it/SmartHouse-backend
+
