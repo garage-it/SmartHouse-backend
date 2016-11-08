@@ -3,6 +3,16 @@
 [![dependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/status.svg)](https://david-dm.org/garage-it/SmartHouse-backend)
 [![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
 
+### Contributing
+
+:point_up: Every pull request should contain version increment, to do this type following in your command line:_
+
+```sh
+npm version prerelease
+```
+
+this will commit incremented version in package.json
+
 ## Commands
 
 Install dependencies:
@@ -10,7 +20,7 @@ Install dependencies:
 npm install
 ```
 
-Start server:
+### Start server:
 ```sh
 # set DEBUG env variable to get debug logs
 DEBUG=express-mongoose-es6-rest-api:* npm start
@@ -19,13 +29,13 @@ DEBUG=express-mongoose-es6-rest-api:* npm start
 npm start
 ```
 
-Start server in production mode:
+### Start server in production mode:
 ```sh
 # will run api backend
 npm run api
 ```
 
-Execute tests:
+### Execute tests:
 ```sh
 # run tests
 npm test
@@ -34,7 +44,7 @@ npm test
 npm run test-coverage
 ```
 
-Other tasks:
+### Other tasks:
 ```sh
 # Lint code with ESLint
 npm run lint
