@@ -1,4 +1,5 @@
 import composeMiddleware from 'compose-middleware';
+import httpStatus from 'http-status';
 import passport from 'passport';
 import localSetup from './local/passport';
 import facebookSetup from './facebook/passport';
@@ -23,7 +24,7 @@ function register() {
             UserService.findOneBy({email: reg.params.email})
                 .then(result => {
                     if (result) {
-                        res.json({
+                        res.status(httpStatus.BAD_REQUEST).json({
                             code: 'NOT_UNIQUE_EMAIL',
                             error: 'Email address already exists'
                         });
