@@ -21,6 +21,6 @@ export default function setup(UserService) {
                     done();
                 }
             })
-            .catch(err => done(err));
+            .catch(done);
     }));
 }

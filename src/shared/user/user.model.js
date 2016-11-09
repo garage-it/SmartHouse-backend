@@ -6,11 +6,6 @@ import findOrCreate from 'mongoose-findorcreate';
  * @file User Schema
  */
 const UserSchema = new mongoose.Schema({
-    login: {
-        type: String,
-        unique: true,
-        required: true
-    },
     name: {
         type: String,
         required: true
@@ -30,7 +25,7 @@ const UserSchema = new mongoose.Schema({
 }, {
     collection: 'users',
     toObject: {
-        transform: (doc, ret) => {
+        transform(doc, ret) {
             delete ret.salt;
             delete ret.hashedPassword;
             delete ret.__v;
@@ -41,7 +36,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema
     .virtual('password')
-    .set(function (password) {
+    .set(function(password) {
         this._password = password;
         this.salt = makeSalt();
         this.hashedPassword = encryptPassword(password, this.salt);
@@ -55,9 +50,9 @@ UserSchema
  * @description Make salt for password private method
  * @return {String}
  */
-let makeSalt = () => {
+function makeSalt() {
     return crypto.randomBytes(16).toString('base64');
-};
+}
 
 /**
  * @function encryptPassword
@@ -66,7 +61,7 @@ let makeSalt = () => {
  * @param {String} salt
  * @return {String}
  */
-let encryptPassword = (password, salt) => {
+function encryptPassword(password, salt) {
     let encryptedPassword = '';
 
     if (password && salt) {
@@ -75,7 +70,7 @@ let encryptPassword = (password, salt) => {
     }
 
     return encryptedPassword;
-};
+}
 
 UserSchema.methods = {
     /**
@@ -84,7 +79,7 @@ UserSchema.methods = {
      * @param {String} plainText
      * @return {Boolean}
      */
-    authenticate: function (plainText) {
+    authenticate(plainText) {
         return encryptPassword(plainText, this.salt) === this.hashedPassword;
     }
 };

@@ -48,9 +48,7 @@ function getUserById(userId) {
  * @return {object}
  */
 function createUser(body) {
-    return User.create(body).then((result) => {
-        return result;
-    });
+    return User.create(body);
 }
 
 /**
@@ -61,9 +59,7 @@ function createUser(body) {
  * @return {object}
  */
 function findOrCreateUser (query, body) {
-    return User.findOrCreate(query, body).then((result) => {
-        return result;
-    });
+    return User.findOrCreate(query, body);
 }
 
 /**
@@ -74,7 +70,10 @@ function findOrCreateUser (query, body) {
  * @return {object}
  */
 function updateUser(body, userId) {
-    return User.update({ '_id': userId }, { $set: body });
+    return User.update({ '_id': userId }, { $set: body })
+        .then(() => {
+            return getUserById(userId);
+        });
 }
 
 /**

@@ -1,6 +1,6 @@
 import UserService from '../../shared/user/user.service';
 
-function getAllUsers(req, res) {
+function getAllUsers(req, res, next) {
     UserService.getAllUsers()
         .then(results => {
             res.json({
@@ -8,25 +8,21 @@ function getAllUsers(req, res) {
                 responses: results
             });
         })
-        .catch(err => {
-            res.json(err);
-        });
+        .catch(next);
 }
 
-function add(req, res) {
+function add(req, res, next) {
     UserService.createUser(req.body)
-        .then(results => {
+        .then(result => {
             res.json({
                 status: 'success',
-                responses: results
+                responses: result.toObject({transform: true})
             });
         })
-        .catch(err => {
-            res.json(err);
-        });
+        .catch(next);
 }
 
-function update(req, res) {
+function update(req, res, next) {
     UserService.updateUser(req.body, req.user._id)
         .then(results => {
             res.json({
@@ -34,33 +30,32 @@ function update(req, res) {
                 responses: results
             });
         })
-        .catch(err => {
-            res.json(err);
-        });
+        .catch(next);
 }
 
-function getById(req, res) {
+function getById(req, res, next) {
     UserService.getUserById(req.params.id)
-        .then(result => {
-            res.json(result.toObject({transform: true}));
-        })
-        .catch(err => {
-            res.json(err);
-        });
+        .then(result => res.json({
+            status: 'success',
+            responses: result
+        }))
+        .catch(next);
 }
 
-function deleteUserById(req, res) {
+function deleteUserById(req, res, next) {
     UserService.deleteUser(req.params.id)
-        .then(result => {
-            res.json(result);
-        })
-        .catch(err => {
-            res.json(err);
-        });
+        .then(result => res.json({
+            status: 'success',
+            responses: result
+        }))
+        .catch(next);
 }
 
 function getCurrentUser(req, res) {
-    res.json(req.user);
+    res.json({
+        status: 'success',
+        responses: req.user
+    });
 }
 
 export default {

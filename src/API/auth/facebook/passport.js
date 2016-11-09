@@ -23,8 +23,6 @@ export default function setup(UserService, config) {
         .then(user => {
             done(null, user);
         })
-        .catch(err => {
-            done(err);
-        });
+        .catch(done);
     }));
 }

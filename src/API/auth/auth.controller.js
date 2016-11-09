@@ -37,7 +37,7 @@ function register() {
                 .then(() => {
                     next();
                 })
-                .catch(err => next(err));
+                .catch(next);
         },
         passport.authenticate('local', {session: false}),
         (req, res) => {
