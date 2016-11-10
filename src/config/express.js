@@ -13,6 +13,7 @@ import routes from '../API/index';
 import config from './env';
 import APIError from '../API/helpers/APIError';
 import ExtendableError from '../API/helpers/ExtendableError';
+import passport from 'passport';
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
 app.use(methodOverride());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // disable 'X-Powered-By' header in response
 app.disable('x-powered-by');
