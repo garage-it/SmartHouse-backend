@@ -4,16 +4,6 @@
 [![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
 [![npm version](https://badge.fury.io/js/smart-house-backend.svg)](https://badge.fury.io/js/smart-house-backend)
 
-### Contributing
-
-:point_up: Every pull request should contain version increment, to do this type following in your command line:_
-
-```sh
-npm version prerelease
-```
-
-this will commit incremented version in package.json
-
 ## Commands
 
 Install dependencies:
