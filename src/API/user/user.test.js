@@ -44,7 +44,20 @@ describe('## User APIs', () => {
                 .expect(httpStatus.UNAUTHORIZED)
                 .then(() => {
                     done();
-                });
+                })
+                .catch(done);
+        });
+
+        it('should add valid token', done => {
+            const token = AuthService.generateToken(123123);
+            request(app)
+                .get('/api/user')
+                .set('Authorization', 'Bearer ' + token)
+                .expect(httpStatus.BAD_REQUEST)
+                .then(() => {
+                    done();
+                })
+                .catch(done);
         });
     });
 

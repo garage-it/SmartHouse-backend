@@ -1,6 +1,7 @@
 import composeMiddleware from 'compose-middleware';
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
+import httpStatus from 'http-status';
 import config from '../../config/env';
 import UserService from '../user/user.service';
 const validateJwt = expressJwt({ secret: config.token.secret });
@@ -15,12 +16,18 @@ function ensureAuthenticated() {
     return composeMiddleware.compose(
         validateJwt,
         (req, res, next) => {
-            UserService.getUserById(req.user._id)
+            const id = req.user && req.user._id;
+            UserService.getUserById(id)
                 .then(user => {
                     req.user = user;
                     next();
                 })
-                .catch(err => next(err));
+                .catch(() => {
+                    res.status(httpStatus.BAD_REQUEST).json({
+                        code: 'USER_NOT_EXIST',
+                        error: 'user not exist'
+                    });
+                });
         }
     );
 }
@@ -40,8 +47,9 @@ function hasRole(roleRequired) {
             if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
                 next();
             } else {
-                res.status(403).json({
-                    error: 'Access denied'
+                res.status(httpStatus.FORBIDDEN).json({
+                    code: 'ACCESS_FORBIDDEN',
+                    error: 'Access forbidden'
                 });
             }
         }

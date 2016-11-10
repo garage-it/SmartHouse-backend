@@ -2,9 +2,7 @@ import composeMiddleware from 'compose-middleware';
 import httpStatus from 'http-status';
 import passport from 'passport';
 import localSetup from './local/passport';
-import facebookSetup from './facebook/passport';
 import UserService from '../../shared/user/user.service';
-import config from '../../config/auth';
 import authService from '../../shared/auth/auth.service';
 
 /**
@@ -13,7 +11,6 @@ import authService from '../../shared/auth/auth.service';
  */
 function initialize() {
     localSetup(UserService);
-    facebookSetup(UserService, config);
 }
 
 function register() {
@@ -66,35 +63,8 @@ function login() {
     );
 }
 
-function facebookLogin() {
-    return composeMiddleware.compose(
-        passport.authenticate('facebook', {
-            scope: ['email', 'user_about_me'],
-            failureRedirect: '/login',
-            session: false
-        })
-    );
-}
-
-function facebookLoginCallback() {
-    return composeMiddleware.compose(
-        passport.authenticate('facebook', {
-            failureRedirect: '/login',
-            session: false
-        }),
-        (req, res) => {
-            res.json({
-                user: req.user,
-                token: authService.generateToken(req.user._id)
-            });
-        }
-    );
-}
-
 export default {
     register,
     login,
-    facebookLogin,
-    facebookLoginCallback,
     initialize
 };
