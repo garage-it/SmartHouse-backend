@@ -2,6 +2,7 @@
 [![codecov.io](https://codecov.io/github/garage-it/SmartHouse-backend/coverage.svg?branch=master)](https://codecov.io/github/garage-it/SmartHouse-backend?branch=master)
 [![dependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/status.svg)](https://david-dm.org/garage-it/SmartHouse-backend)
 [![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
+[![npm version](https://badge.fury.io/js/smart-house-backend.svg)](https://badge.fury.io/js/smart-house-backend)
 
 ## Commands
 
@@ -10,46 +11,34 @@ Install dependencies:
 npm install
 ```
 
-Install only production dependencies:
-```sh
-npm install --production
-```
-
-Start server:
+### Start server:
 ```sh
 # set DEBUG env variable to get debug logs
 DEBUG=express-mongoose-es6-rest-api:* npm start
-# OR
-# requires gulp to be installed globally
-npm i -g gulp
-gulp serve
+
+# or without debug
+npm start
 ```
 
-Start server in production mode:
+### Start server in production mode:
 ```sh
 # will run api backend
 npm run api
 ```
 
-Execute tests:
+### Execute tests:
 ```sh
-# compile with babel and run tests
+# run tests
 npm test
 
-# get code coverage for each file
+# run tests with coverage
 npm run test-coverage
 ```
 
-Other gulp tasks:
+### Other tasks:
 ```sh
-# Wipe out dist and coverage directory
-gulp clean
-
 # Lint code with ESLint
-gulp lint
-
-# Default task: Wipes out dist and coverage directory. Compiles using babel.
-gulp
+npm run lint
 ```
 
 ## Logging

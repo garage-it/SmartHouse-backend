@@ -27,3 +27,8 @@ deploy:
     app: garage-it-smart-house-api-qa
     on:
       repo: garage-it/SmartHouse-backend
+after_success:
+  - npm run semantic-release
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
