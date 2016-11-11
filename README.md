@@ -4,6 +4,7 @@
 [![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
 [![npm version](https://badge.fury.io/js/smart-house-backend.svg)](https://badge.fury.io/js/smart-house-backend)
 
+
 ## Commands
 
 Install dependencies:
