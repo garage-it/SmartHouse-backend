@@ -25,8 +25,7 @@ describe('## Dashboard APIs', () => {
                     { device: '5825941220788d3c52e7766c', hidden: false}
                 ]
             })
-            .then(() => done())
-            .catch(() => done());
+            .finally(done);
         });
 
     });
