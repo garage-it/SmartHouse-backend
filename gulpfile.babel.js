@@ -9,38 +9,22 @@ import {exec} from 'child_process';
 const plugins = gulpLoadPlugins();
 
 const paths = {
-    js: ['./src/**/*.js'],
-    nonJs: ['./package.json', './.gitignore'],
-    tests: './src/**/*.test.js',
+    js: ['./src/**/*.js', '!./src/**/*.test.js'],
     dbPath: './db'
 };
 
-gulp.task('start-mongo', function (cb) {
+gulp.task('start-mongo', (done) => {
     let command = format('start cmd /c %mongo_home%\\mongod.exe --dbpath %s', paths.dbPath);
-    exec(command, function (err, stdout, stderr) {
-        cb(err);
-    });
+    exec(command, done);
 });
 
-// Clean up dist and coverage directory
-gulp.task('clean', () =>
-    del(['dist/**', '!dist', '!coverage'])
-);
-
-// Set env variables
-gulp.task('set-env', () => {
-    plugins.env({
-        vars: {
-            NODE_ENV: 'test'
-        }
-    });
-});
+gulp.task('clean', () => del(['dist/**', '!dist', '!coverage']));
 
 // Lint Javascript
 gulp.task('lint', () =>
     gulp.src(paths.js)
-        // eslint() attaches the lint output to the "eslint" property
-        // of the file object so it can be used by other modules.
+    // eslint() attaches the lint output to the "eslint" property
+    // of the file object so it can be used by other modules.
         .pipe(plugins.eslint())
         // eslint.format() outputs the lint results to the console.
         // Alternatively use eslint.formatEach() (see Docs).
@@ -50,16 +34,9 @@ gulp.task('lint', () =>
         .pipe(plugins.eslint.failAfterError())
 );
 
-// Copy non-js files to dist
-gulp.task('copy', () =>
-    gulp.src(paths.nonJs, { base: '.' })
-        .pipe(plugins.newer('dist'))
-        .pipe(gulp.dest('dist'))
-);
-
 // Compile ES6 to ES5 and copy to dist
 gulp.task('babel', () =>
-    gulp.src([...paths.js, '!gulpfile.babel.js'], { base: '.' })
+    gulp.src(paths.js, {base: './src'})
         .pipe(plugins.newer('dist'))
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.babel())
@@ -73,21 +50,17 @@ gulp.task('babel', () =>
 );
 
 // Start server with restart on file changes
-gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
+gulp.task('nodemon', ['lint', 'babel'], () =>
     plugins.nodemon({
-        script: path.join('dist', 'src', 'index.js'),
+        script: path.join('dist', 'index.js'),
         ext: 'js',
-        ignore: ['node_modules/**/*.js', 'dist/**/*.js'],
-        tasks: ['lint', 'copy', 'babel']
+        ignore: ['node_modules', 'dist'],
+        tasks: ['lint', 'babel']
     })
 );
 
 // gulp serve for development
-gulp.task('serve', ['clean'], () => runSequence('nodemon'));
+gulp.task('serve', () => runSequence('clean', 'nodemon'));
 
 // default task: clean dist, compile js files and copy non-js files.
-gulp.task('default', ['clean'], () => {
-    runSequence(
-        ['copy', 'babel']
-    );
-});
+gulp.task('default', () => runSequence('clean', 'babel'));

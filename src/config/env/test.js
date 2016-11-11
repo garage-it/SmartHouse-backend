@@ -1,7 +1,7 @@
 export default {
     env: 'test',
     db: 'mongodb://localhost/db',
-    port: 3000,
+    port: 3001,
     host: '',
     seedDB: false,
     staticPath: '',

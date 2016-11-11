@@ -13,6 +13,9 @@ function query(req, res) {
     Dashboard.findOne({})
         .populate(getDevicePopulationConfig())
         .then(result => {
+            result.devices = result.devices
+                .filter(widget => widget.device);
+
             res.json(result);
         });
 }

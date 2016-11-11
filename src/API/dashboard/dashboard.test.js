@@ -19,11 +19,13 @@ describe('## Dashboard APIs', () => {
 
         SensorModel.create(device).then(device => {
             deviceId = device._id;
-            DashboardModel.create({devices: [{device: device._id, hidden: false}]})
-                .then(() => {
-                    done();
-                })
-                .catch(done);
+            DashboardModel.create({
+                devices: [
+                    { device: device._id, hidden: false },
+                    { device: '5825941220788d3c52e7766c', hidden: false}
+                ]
+            })
+            .finally(done);
         });
 
     });
@@ -44,8 +46,17 @@ describe('## Dashboard APIs', () => {
             request(app)
                 .get('/api/dashboard')
                 .then(res => {
-                    expect(res.body.devices.length).equals(1);
                     expect(res.body.devices[0].device.mqttId).equals(device.mqttId);
+                    done();
+                });
+        });
+
+        it('should filter unpopulated sensors', done => {
+            request(app)
+                .get('/api/dashboard')
+                .expect(httpStatus.OK)
+                .then(res => {
+                    expect(res.body.devices.length).equals(1);
                     done();
                 });
         });
@@ -63,6 +74,7 @@ describe('## Dashboard APIs', () => {
                     done();
                 });
         });
+
         it('should populate updated dashboard with device', done => {
 
             request(app)

@@ -1,6 +1,5 @@
 {
   "name": "smart-house-backend",
-  "version": "0.1.2",
   "description": "Smart House BE",
   "main": "dist/index.js",
   "private": false,
@@ -17,12 +16,12 @@
     "test-coverage": "nyc npm test",
     "report-coverage": "codecov < ./coverage/lcov.info",
     "api": "cross-env ENV_CONFIG=production node src/runner.js",
-    "postinstall": "babel src --out-dir dist"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "bin": "bin/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/garage-it/SmartHouse-backend.git"
+    "url": "https://github.com/garage-it/SmartHouse-backend.git"
   },
   "keywords": [
     "express",
@@ -42,21 +41,28 @@
   "dependencies": {
     "bluebird": "^3.1.4",
     "body-parser": "^1.14.2",
+    "compose-middleware": "^2.2.0",
     "compression": "^1.6.1",
     "cookie-parser": "^1.4.1",
     "cors": "^2.7.1",
-    "dotenv": "^2.0.0",
     "cross-env": "^2.0.1",
+    "crypto": "0.0.3",
+    "dotenv": "^2.0.0",
     "express": "~4.13.1",
+    "express-jwt": "^5.1.0",
     "express-validation": "^0.4.5",
     "express-winston": "^1.2.0",
     "http-status": "^0.2.0",
+    "jsonwebtoken": "^7.1.9",
     "joi": "^7.2.3",
     "method-override": "^2.3.5",
     "mongoose": "^4.3.7",
+    "mongoose-findorcreate": "^0.1.2",
     "morgan": "~1.6.1",
     "mqtt": "^1.8.0",
-    "run-sequence": "^1.1.5",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-local": "^1.0.0",
     "rxjs": "^5.0.0-beta.6",
     "shelljs": "^0.7.0",
     "socket.io": "^1.4.5",
@@ -91,12 +97,14 @@
     "mocha": "^2.3.4",
     "nyc": "^8.3.2",
     "proxyquire": "^1.7.4",
+    "run-sequence": "^1.1.5",
     "sinon": "^1.17.3",
     "sinon-as-promised": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "socket-io-mocks": "^0.1.4",
     "supertest": "^1.1.0",
-    "supertest-as-promised": "^2.0.2"
+    "supertest-as-promised": "^2.0.2",
+    "semantic-release": "^4.3.5"
   },
   "license": "MIT",
   "bugs": {
