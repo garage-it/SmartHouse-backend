@@ -1,100 +1,64 @@
-function query(req, res) {
-    //expected in params:
-    /*
-      req = {
-          from: '2016-11-08T00:00:00.001Z',
-          to: '2016-11-09T00:00:00.001Z',
-          sensor: 'TEMPERATURE_1',
-          stepMin: 60
-      };
-    */
+const PERIOD_TO_INTERVAL = {
+    'day': 60,
+    'week': 60,
+    'month': 60*24,
+    'year': 60*24
+};
 
-    // @FIXME:: the file return mock data
-    var responceData = {
-      from: '2016-11-08T00:00:00.001Z',
-      to: '2016-11-09T00:00:00.001Z',
-      sensor: 'TEMPERATURE_1',
-      stepMin: 60,
-      data: [{
-              date: '2016-11-08T00:00:00.001Z',
-              value: 19
-          },{
-              date: '2016-11-08T00:10:00.001Z',
-              value: 20
-          },{
-              date: '2016-11-08T00:20:00.001Z',
-              value: 20,
-          },{
-              date: '2016-11-08T00:30:00.001Z',
-              value: 20
-          },{
-              date: '2016-11-08T00:40:00.001Z',
-              value: 20
-          },{
-              date: '2016-11-08T00:50:00.001Z',
-              value: 20
-          },{
-              date: '2016-11-08T00:60:00.001Z',
-              value: 21
-          },{
-              date: '2016-11-08T00:70:00.001Z',
-              value: 21
-          },{
-              date: '2016-11-08T00:80:00.001Z',
-              value: 22
-          },{
-              date: '2016-11-08T00:90:00.001Z',
-              value: 22
-          },{
-              date: '2016-11-08T00:10:00.001Z',
-              value: 22
-          },{
-              date: '2016-11-08T00:11:00.001Z',
-              value: 23
-          },{
-              date: '2016-11-08T00:12:00.001Z',
-              value: 23
-          },{
-              date: '2016-11-08T00:13:00.001Z',
-              value: 24
-          },{
-              date: '2016-11-08T00:14:00.001Z',
-              value: 24
-          },{
-              date: '2016-11-08T00:15:00.001Z',
-              value: 25
-          },{
-              date: '2016-11-08T00:16:00.001Z',
-              value: 24
-          },{
-              date: '2016-11-08T00:17:00.001Z',
-              value: 24
-          },{
-              date: '2016-11-08T00:18:00.001Z',
-              value: 23
-          },{
-              date: '2016-11-08T00:19:00.001Z',
-              value: 23
-          },{
-              date: '2016-11-08T00:20:00.001Z',
-              value: 22
-          },{
-              date: '2016-11-08T00:21:00.001Z',
-              value: 22
-          },{
-              date: '2016-11-08T00:22:00.001Z',
-              value: 21
-          },{
-              date: '2016-11-08T00:23:00.001Z',
-              value: 20
-          },{
-              date: '2016-11-09T00:00:00.001Z',
-              value: 19
-          }
-      ]
-    };
+import APIError from '../helpers/APIError';
+import httpStatus from 'http-status';
+import moment from 'moment';
 
-    res.send(responceData);
+function query(req, res, next) {
+
+    if (!req.query.period || ! PERIOD_TO_INTERVAL.hasOwnProperty(req.query.period)) {
+        const err = new APIError('Period is not provided to wrong', httpStatus.BAD_REQUEST);
+        return next(err);
+    }
+
+    if (!req.query.sensor) {
+        const err = new APIError('Sensor is not provided', httpStatus.BAD_REQUEST);
+        return next(err);
+    }
+    
+    const sensor = req.query.sensor;
+    const period = req.query.period;
+    const stepMin = PERIOD_TO_INTERVAL[period];
+    const from = moment();
+    const to = from.clone();
+    switch (period) {
+        case 'day':
+                from.subtract(1, 'd');
+            break;
+        case 'week':
+                from.subtract(7, 'd');
+            break;
+        case 'month':
+                from.subtract(1, 'm');
+            break;
+        case 'year':
+                from.subtract(1, 'y');
+            break;
+    }
+    const data = [];
+
+    let current = to.clone();
+
+    while (current >= from) {
+        data.push({
+            date: current.toString(),
+            value: Math.floor(Math.random()*100)
+        });
+        current = current.subtract(stepMin, 'minutes');
+    }
+
+    res.json({
+        from,
+        to,
+        sensor,
+        stepMin,
+        data
+    });
 }
 
 export default { query };
