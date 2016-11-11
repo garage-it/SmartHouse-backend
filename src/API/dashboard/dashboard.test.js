@@ -19,11 +19,14 @@ describe('## Dashboard APIs', () => {
 
         SensorModel.create(device).then(device => {
             deviceId = device._id;
-            DashboardModel.create({devices: [{device: device._id, hidden: false}]})
-                .then(() => {
-                    done();
-                })
-                .catch(done);
+            DashboardModel.create({
+                devices: [
+                    { device: device._id, hidden: false },
+                    { device: '5825941220788d3c52e7766c', hidden: false}
+                ]
+            })
+            .then(() => done())
+            .catch(() => done());
         });
 
     });
@@ -44,11 +47,41 @@ describe('## Dashboard APIs', () => {
             request(app)
                 .get('/api/dashboard')
                 .then(res => {
-                    expect(res.body.devices.length).equals(1);
                     expect(res.body.devices[0].device.mqttId).equals(device.mqttId);
                     done();
                 });
         });
+
+        it('should filter unpopulated sensors', done => {
+            request(app)
+                .get('/api/dashboard')
+                .expect(httpStatus.OK)
+                .then(res => {
+                    expect(res.body.devices.length).equals(1);
+                    done();
+                });
+        });
+
+        // describe('when some devices were not found to populate', () => {
+        //     let error;
+
+        //     beforeEach(done => {
+
+        //         DashboardModel.create({ devices: null })
+        //             .then(() => done(), () => done());
+        //     });
+
+        //     it('should respond with error', done => {
+        //         request(app)
+        //             .get('/api/dashboard')
+        //             .expect(httpStatus.NOT_FOUND)
+        //             .then(res => {
+        //                 expect(res.body).equals(error);
+        //                 done();
+        //             })
+        //             .catch(done);
+        //     });
+        // });
     });
 
     describe('# PUT /api/dashboard', () => {
@@ -63,6 +96,7 @@ describe('## Dashboard APIs', () => {
                     done();
                 });
         });
+
         it('should populate updated dashboard with device', done => {
 
             request(app)
