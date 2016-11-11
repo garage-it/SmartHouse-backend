@@ -20,25 +20,25 @@ function query(req, res, next) {
         const err = new APIError('Sensor is not provided', httpStatus.BAD_REQUEST);
         return next(err);
     }
-    
+
     const sensor = req.query.sensor;
     const period = req.query.period;
     const stepMin = PERIOD_TO_INTERVAL[period];
     const from = moment();
     const to = from.clone();
     switch (period) {
-        case 'day':
-                from.subtract(1, 'd');
-            break;
-        case 'week':
-                from.subtract(7, 'd');
-            break;
-        case 'month':
-                from.subtract(1, 'm');
-            break;
-        case 'year':
-                from.subtract(1, 'y');
-            break;
+    case 'day':
+        from.subtract(1, 'd');
+        break;
+    case 'week':
+        from.subtract(7, 'd');
+        break;
+    case 'month':
+        from.subtract(1, 'm');
+        break;
+    case 'year':
+        from.subtract(1, 'y');
+        break;
     }
     const data = [];
 
