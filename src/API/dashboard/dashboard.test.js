@@ -61,27 +61,6 @@ describe('## Dashboard APIs', () => {
                     done();
                 });
         });
-
-        // describe('when some devices were not found to populate', () => {
-        //     let error;
-
-        //     beforeEach(done => {
-
-        //         DashboardModel.create({ devices: null })
-        //             .then(() => done(), () => done());
-        //     });
-
-        //     it('should respond with error', done => {
-        //         request(app)
-        //             .get('/api/dashboard')
-        //             .expect(httpStatus.NOT_FOUND)
-        //             .then(res => {
-        //                 expect(res.body).equals(error);
-        //                 done();
-        //             })
-        //             .catch(done);
-        //     });
-        // });
     });
 
     describe('# PUT /api/dashboard', () => {
