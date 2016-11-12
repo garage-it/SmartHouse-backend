@@ -3,7 +3,7 @@ export default {
     db: process.env.MONGO,
     port: process.env.PORT,
     host: '',
-    seedDB: false,
+    seedDB: true,
     staticPath: '',
     plugAndPlay: true,
     mqtt: {
