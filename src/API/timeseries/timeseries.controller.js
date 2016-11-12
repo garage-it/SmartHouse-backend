@@ -26,22 +26,24 @@ function query(req, res, next) {
     const stepMin = PERIOD_TO_INTERVAL[period];
     const from = moment();
     const to = from.clone();
+
+    // Period
     switch (period) {
     case 'day':
-        from.subtract(1, 'd');
+        from.subtract(1, 'day');
         break;
     case 'week':
-        from.subtract(7, 'd');
+        from.subtract(7, 'day');
         break;
     case 'month':
-        from.subtract(1, 'm');
+        from.subtract(1, 'month');
         break;
     case 'year':
-        from.subtract(1, 'y');
+        from.subtract(1, 'year');
         break;
     }
-    const data = [];
 
+    const data = [];
     let current = to.clone();
 
     while (current >= from) {
