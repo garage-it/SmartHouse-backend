@@ -1,10 +1,12 @@
-import gulp from 'gulp';
-import gulpLoadPlugins from 'gulp-load-plugins';
-import path from 'path';
-import del from 'del';
-import runSequence from 'run-sequence';
-import {format} from 'util';
-import {exec} from 'child_process';
+'use strict';
+
+const gulp = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const path = require('path');
+const del = require('del');
+const runSequence = require('run-sequence');
+const format = require('util').format;
+const exec = require('child_process').exec;
 
 const plugins = gulpLoadPlugins();
 
