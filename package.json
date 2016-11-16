@@ -77,6 +77,7 @@
     "babel-register": "^6.18.0",
     "chai": "^3.4.1",
     "codecov": "^1.0.1",
+    "cz-conventional-changelog": "^1.2.0",
     "debug": "^2.2.0",
     "del": "^2.2.0",
     "eslint": "^2.7.0",
@@ -98,13 +99,13 @@
     "nyc": "^8.3.2",
     "proxyquire": "^1.7.4",
     "run-sequence": "^1.1.5",
+    "semantic-release": "^4.3.5",
     "sinon": "^1.17.3",
     "sinon-as-promised": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "socket-io-mocks": "^0.1.4",
     "supertest": "^1.1.0",
-    "supertest-as-promised": "^2.0.2",
-    "semantic-release": "^4.3.5"
+    "supertest-as-promised": "^2.0.2"
   },
   "license": "MIT",
   "bugs": {
@@ -139,5 +140,10 @@
     "functions": 80,
     "lines": 80,
     "check-coverage": true
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

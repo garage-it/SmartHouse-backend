@@ -3,6 +3,7 @@
 [![dependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/status.svg)](https://david-dm.org/garage-it/SmartHouse-backend)
 [![devDependencies Status](https://david-dm.org/garage-it/SmartHouse-backend/dev-status.svg)](https://david-dm.org/garage-it/SmartHouse-backend?type=dev)
 [![npm version](https://badge.fury.io/js/smart-house-backend.svg)](https://badge.fury.io/js/smart-house-backend)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 
 ## Commands
