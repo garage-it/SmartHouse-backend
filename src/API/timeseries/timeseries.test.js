@@ -17,7 +17,7 @@ describe('## Timeseries API', () => {
          });
     });
 
-    it('should give error by default', (done) => {
+    it('should return responce with 200 status when all data is provided', (done) => {
         request(app)
         .get("/api/timeseries?period=day&sensor=SENSOR")
         .expect(httpStatus.OK)

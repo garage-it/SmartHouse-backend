@@ -1,13 +1,13 @@
+import APIError from '../helpers/APIError';
+import httpStatus from 'http-status';
+import moment from 'moment';
+
 const PERIOD_TO_INTERVAL = {
     'day': 60,
     'week': 60,
     'month': 60*24,
     'year': 60*24
 };
-
-import APIError from '../helpers/APIError';
-import httpStatus from 'http-status';
-import moment from 'moment';
 
 function query(req, res, next) {
 
@@ -21,8 +21,7 @@ function query(req, res, next) {
         return next(err);
     }
 
-    const sensor = req.query.sensor;
-    const period = req.query.period;
+    const {sensor, period} = req.query;
     const stepMin = PERIOD_TO_INTERVAL[period];
     const from = moment();
     const to = from.clone();
