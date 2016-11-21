@@ -55,6 +55,7 @@
     "http-status": "^0.2.0",
     "jsonwebtoken": "^7.1.9",
     "joi": "^7.2.3",
+    "moment": "^2.16.0",
     "method-override": "^2.3.5",
     "mongoose": "^4.3.7",
     "mongoose-findorcreate": "^0.1.2",
