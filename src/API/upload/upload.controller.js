@@ -1,15 +1,15 @@
 import fsHelper from './../../shared/fs-helper';
 
-function query(req, res, next) {
+function query(req, res) {
     fsHelper.getFiles()
         .then(files => res.json(files))
         .catch(error => handleError(res, error));
 }
 
-function get(req, res, next) {
+function get(req, res) {
     fsHelper.getFile(req.params.fileName)
         .then(result => {
-            res.writeHead(200, {'Content-Type': 'image/jpeg'})
+            res.writeHead(200, {'Content-Type': 'image/jpeg'});
             res.end(result);
         })
         .catch(error => handleError(res, error));
@@ -21,17 +21,18 @@ function create(req, res) {
 
 function update(req, res) {
     fsHelper.deleteFile(req.params.fileName)
-        .then(data => res.json(req.file.filename))
+        .then(() => res.json(req.file.filename))
         .catch(error => handleError(res, error));
 }
 
 function remove(req, res) {
     fsHelper.deleteFile(req.params.fileName)
-        .then(data => res.end())
+        .then(() => res.end())
         .catch(error => handleError(res, error));
 }
 
 function handleError(res, error) {
+    /* eslint-disable no-console */
     console.error(error);
     return res.status(500).send(error);
 }
