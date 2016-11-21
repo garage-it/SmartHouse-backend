@@ -15,6 +15,8 @@ const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
 
+import fsHelper from './shared/fs-helper';
+
 // promisify mongoose
 Promise.promisifyAll(mongoose);
 mongoose.Promise = Promise;
@@ -32,6 +34,14 @@ if (config.seedDB) {
     seed.populateScenarios();
     seed.populateSensors()
         .then(seed.populateDashboard);
+}
+
+// Remove uploads
+if (config.cleanUploads) {
+    /* eslint-disable no-console */
+    console.log('Cleaning uploads folder');
+
+    fsHelper.cleanFolder(config.uploadsFolder);
 }
 
 // Create websocket server

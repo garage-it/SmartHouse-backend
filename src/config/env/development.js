@@ -4,6 +4,7 @@ export default {
     port: 3000,
     host: '',
     seedDB: true,
+    cleanUploads: true,
     staticPath: '',
     plugAndPlay: false,
     mqtt: {

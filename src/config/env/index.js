@@ -9,6 +9,8 @@ const config = require(`./${env}`);
 const defaults = {
     userRoles: ['guest', 'user:read', 'user:write', 'user', 'admin'],
     root: path.join(__dirname, '/..'),
+    cleanUploads: false,
+    uploadsFolder: './uploads',
     host: 'localhost',
     token: {
         expires: 60*10,
@@ -20,4 +22,4 @@ const defaults = {
     }
 };
 
-export default  Object.assign({}, defaults, config);
+export default Object.assign({}, defaults, config);

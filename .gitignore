@@ -218,9 +218,13 @@ node/
 # Optional REPL history
 .node_repl_history
 
+# Visual Studio Code
+.vscode
+
 ### Project ###
 
-dist/
-db/
+dist
+db
+uploads
 .env
 .nyc_output
