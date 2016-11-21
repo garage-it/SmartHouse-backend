@@ -13,6 +13,10 @@ const defaults = {
     token: {
         expires: 60*10,
         secret: 'session_secret'
+    },
+    facebook: {
+        clientID:     process.env.FACEBOOK_CLIENT_ID || 'invalid clientID for run app without error',
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'invalid clientSecret for run app without error'
     }
 };
 

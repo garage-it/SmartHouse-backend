@@ -51,6 +51,9 @@ function createUser(body) {
     return User.create(body);
 }
 
+/* istanbul ignore next */
+// Ignored until coverage report will be fixed
+
 /**
  * @function findOrCreateUser
  * @description It will find user by query or create new user in database
@@ -58,8 +61,17 @@ function createUser(body) {
  * @param {object} body
  * @return {object}
  */
-function findOrCreateUser (query, body) {
-    return User.findOrCreate(query, body);
+function findOrCreateUser(query, body) {
+    return new Promise((resolve, reject) => {
+        User.findOrCreate(query, body, {}, (err, user) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(user);
+        });
+    });
 }
 
 /**
