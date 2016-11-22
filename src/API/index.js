@@ -7,7 +7,7 @@ import dashboardRoutes from './dashboard/dashboard.routes';
 import timeseriesRoutes from './timeseries/timeseries.routes';
 import user from './user/user.routes';
 import auth from './auth/auth.routes';
-import uploadRoutes from './upload/upload.routes';
+import filesRoutes from './files/files.routes';
 
 const router = express.Router();    // eslint-disable-line new-cap
 
@@ -23,7 +23,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/timeseries', timeseriesRoutes);
 router.use('/user', user);
 router.use('/auth', auth);
-router.use('/upload', uploadRoutes);
+router.use('/files', filesRoutes);
 
 
 export default router;

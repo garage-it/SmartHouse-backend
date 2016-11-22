@@ -15,7 +15,7 @@ const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
 
-import fsHelper from './shared/fs-helper';
+import filesService from './API/files/files.service';
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -36,12 +36,12 @@ if (config.seedDB) {
         .then(seed.populateDashboard);
 }
 
-// Remove uploads
-if (config.cleanUploads) {
+// Remove files
+if (config.cleanFiles) {
     /* eslint-disable no-console */
-    console.log('Cleaning uploads folder');
-
-    fsHelper.cleanFolder(config.uploadsFolder);
+    console.log('Cleaning files folder');
+    /* eslint-enable no-console */
+    filesService.cleanFolder(config.filesPath);
 }
 
 // Create websocket server

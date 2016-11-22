@@ -225,6 +225,6 @@ node/
 
 dist
 db
-uploads
+/files
 .env
 .nyc_output

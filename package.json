@@ -96,6 +96,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
+    "mkdirp": "^0.5.1",
     "mocha": "^2.3.4",
     "nyc": "^8.3.2",
     "proxyquire": "^1.7.4",

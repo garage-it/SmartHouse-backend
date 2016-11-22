@@ -1,10 +1,12 @@
+import path from 'path';
+
 export default {
     env: 'test',
     db: 'mongodb://localhost/db',
     port: 3001,
     host: '',
     seedDB: false,
-    staticPath: '',
+    filesPath: path.join(__dirname, '/../../../test/files'),
     plugAndPlay: false,
     mqtt: {
         port: 1883,
