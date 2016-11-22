@@ -57,7 +57,7 @@ if (config.staticPath) {
     /* eslint-disable no-console */
     console.log('Serve static files from: \x1b[36m' + config.staticPath + '\x1b[0m');
     /* eslint-enable no-console */
-    app.use('', express.static(config.staticPath));
+    app.use(express.static(config.staticPath));
 }
 
 if (config.filesPath) {
