@@ -1,11 +1,5 @@
 import filesService from './files.service';
 
-function query(req, res, next) {
-    filesService.getFiles()
-        .then(files => res.json(files))
-        .catch(next);
-}
-
 function create(req, res) {
     return res.json(req.file.filename);
 }
@@ -22,4 +16,4 @@ function remove(req, res, next) {
         .catch(next);
 }
 
-export default { query, create, update, remove };
+export default { create, update, remove };

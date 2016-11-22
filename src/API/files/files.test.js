@@ -11,24 +11,23 @@ describe('## Files APIs', () => {
 
     const fileName = 'd74c678c7580deddbe8b008eab317b79';
     const imagePath = './test/assets/displayImage.gif';
-    const image = fs.readFileSync(imagePath);
+    const image = fs.readFileSync(imagePath, {encoding: 'utf8'});
 
     beforeEach(done => {
         fs.writeFile(path.join(env.filesPath, fileName), image, done);
     });
 
     afterEach(done => {
-        filesService.cleanFolder(); // TODO: you should do something like  filesService.cleanFolder(done);
-        done();
+        filesService.cleanFolder().then(done);
     });
 
-    describe('# GET /api/files', () => {
-        it('should get list of all saved files on the server', done => {
+    describe(`# GET /api/files/${fileName}`, () => {
+        it('should get an image from the server', done => {
             request(app)
-                .get('/api/files')
+                .get(`/api/files/${fileName}`)
                 .expect(httpStatus.OK)
-                .then((res) => {
-                    expect(res.body).to.contain(fileName);
+                .then(res => {
+                    expect(res.text).to.be.equal(image);
                 })
                 .then(done, done);
         });
@@ -41,7 +40,7 @@ describe('## Files APIs', () => {
                 .field('name', 'displayImage')
                 .attach('displayImage', imagePath)
                 .expect(httpStatus.OK)
-                .then((res) => {
+                .then(res => {
                     return filesService.getFiles()
                         .then((files) => {
                             expect(files).to.contain(res.body);
@@ -75,7 +74,7 @@ describe('## Files APIs', () => {
                 .delete(`/api/files/${fileName}`)
                 .expect(httpStatus.OK)
                 .then(() => filesService.getFiles())
-                .then((files) => {
+                .then(files => {
                     expect(files).to.not.contain(fileName);
                 })
                 .then(done, done);

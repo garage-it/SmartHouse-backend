@@ -7,11 +7,18 @@ const mkdirp = require('mkdirp');
 function cleanFolder(folder) {
     folder = folder || config.filesPath;
 
-    mkdirp(folder, error => {
-        if (error) throw error;
-        fs.readdir(folder, (error, files) => {
-            if (error) throw error;
-            files.forEach(file => deleteFile(file, folder));
+    return new Promise((resolve, reject) => {
+        mkdirp(folder, () => {
+            fs.readdir(folder, (error, files) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                Promise.all(files.map(x => deleteFile(x, folder)))
+                    .then(() => resolve())
+                    .catch(() => reject());
+            });
         });
     });
 }

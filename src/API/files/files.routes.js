@@ -1,12 +1,13 @@
 import express from 'express';
 import filesCtrl from './files.controller.js';
+import config from './../../config/env';
 
 const router = express.Router();    // eslint-disable-line new-cap
 
-router.route('/')
+/** GET /api/files/:filename - Get file */
+router.use('/', express.static(config.filesPath));
 
-    /** GET /api/files - Get files */
-    .get(filesCtrl.query)
+router.route('/')
 
     /** POST /api/files - Upload new file */
     .post(filesCtrl.create);
