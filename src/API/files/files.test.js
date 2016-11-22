@@ -14,13 +14,11 @@ describe('## Files APIs', () => {
     const image = fs.readFileSync(imagePath);
 
     beforeEach(done => {
-        fs.writeFile(path.join(env.filesPath, fileName), image, error => {
-            done();
-        });
+        fs.writeFile(path.join(env.filesPath, fileName), image, done);
     });
 
     afterEach(done => {
-        filesService.cleanFolder();
+        filesService.cleanFolder(); // TODO: you should do something like  filesService.cleanFolder(done);
         done();
     });
 
@@ -29,11 +27,10 @@ describe('## Files APIs', () => {
             request(app)
                 .get('/api/files')
                 .expect(httpStatus.OK)
-                .then(res => {
+                .then((res) => {
                     expect(res.body).to.contain(fileName);
-                    done();
                 })
-                .catch(done);
+                .then(done, done);
         });
     });
 
@@ -44,15 +41,13 @@ describe('## Files APIs', () => {
                 .field('name', 'displayImage')
                 .attach('displayImage', imagePath)
                 .expect(httpStatus.OK)
-                .then(res => {
-                    filesService.getFiles()
-                        .then(files => {
+                .then((res) => {
+                    return filesService.getFiles()
+                        .then((files) => {
                             expect(files).to.contain(res.body);
-                            done();
-                        })
-                        .catch(done);
+                        });
                 })
-                .catch(done);
+                .then(done, done);
         });
     });
 
@@ -64,15 +59,13 @@ describe('## Files APIs', () => {
                 .attach('displayImage', imagePath)
                 .expect(httpStatus.OK)
                 .then(res => {
-                    filesService.getFiles()
-                        .then(files => {
+                    return filesService.getFiles()
+                        .then((files) => {
                             expect(files).to.contain(res.body);
                             expect(files).to.not.contain(fileName);
-                            done();
-                        })
-                        .catch(done);
+                        });
                 })
-                .catch(done);
+                .then(done, done);
         });
     });
 
@@ -81,15 +74,11 @@ describe('## Files APIs', () => {
             request(app)
                 .delete(`/api/files/${fileName}`)
                 .expect(httpStatus.OK)
-                .then(res => {
-                    filesService.getFiles()
-                        .then(files => {
-                            expect(files).to.not.contain(fileName);
-                            done();
-                        })
-                        .catch(done);
+                .then(() => filesService.getFiles())
+                .then((files) => {
+                    expect(files).to.not.contain(fileName);
                 })
-                .catch(done);
+                .then(done, done);
         });
     });
 
