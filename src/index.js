@@ -15,8 +15,6 @@ const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
 
-import filesService from './API/files/files.service';
-
 // promisify mongoose
 Promise.promisifyAll(mongoose);
 mongoose.Promise = Promise;
