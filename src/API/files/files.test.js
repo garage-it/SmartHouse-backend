@@ -3,22 +3,24 @@ import env from './../../config/env';
 import httpStatus from 'http-status';
 import app from './../../index';
 import filesService from './files.service';
+import fs from 'fs';
+import path from 'path';
+import Promise from 'bluebird';
 
-const fs = require('fs');
-const path = require('path');
+Promise.promisifyAll(fs);
 
 describe('## Files APIs', () => {
 
     const fileName = 'd74c678c7580deddbe8b008eab317b79';
-    const imagePath = './test/assets/displayImage.gif';
+    const imagePath = path.join(__dirname, '../../../test/assets/displayImage.gif');
     const image = fs.readFileSync(imagePath, {encoding: 'utf8'});
 
-    beforeEach(done => {
-        fs.writeFile(path.join(env.filesPath, fileName), image, done);
+    beforeEach(() => {
+        return fs.writeFile(path.join(env.filesPath, fileName), image);
     });
 
-    afterEach(done => {
-        filesService.cleanFolder().then(done);
+    afterEach(() => {
+        return filesService.cleanFolder();
     });
 
     describe(`# GET /api/files/${fileName}`, () => {

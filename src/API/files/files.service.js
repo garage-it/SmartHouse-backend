@@ -1,26 +1,13 @@
-import config from './../../config/env';
+import config from '../../config/env';
 
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const del = require('del');
 
-function cleanFolder(folder) {
-    folder = folder || config.filesPath;
+const { filesPath } = config;
 
-    return new Promise((resolve, reject) => {
-        mkdirp(folder, () => {
-            fs.readdir(folder, (error, files) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                Promise.all(files.map(x => deleteFile(x, folder)))
-                    .then(() => resolve())
-                    .catch(() => reject());
-            });
-        });
-    });
+function cleanFolder() {
+    return del([path.join(filesPath, '**'), `!${filesPath}`]);
 }
 
 function getFiles(folder) {
