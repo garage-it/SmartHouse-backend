@@ -10,7 +10,7 @@ const path = require('path');
 describe('## Files APIs', () => {
 
     const fileName = 'd74c678c7580deddbe8b008eab317b79';
-    const imagePath = './test/displayImage.gif';
+    const imagePath = './test/assets/displayImage.gif';
     const image = fs.readFileSync(imagePath);
 
     beforeEach(done => {
