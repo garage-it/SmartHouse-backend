@@ -6,7 +6,6 @@ export default {
     port: 3001,
     host: '',
     seedDB: false,
-    filesPath: path.join(__dirname, '/../../../test/files'),
     plugAndPlay: false,
     mqtt: {
         port: 1883,

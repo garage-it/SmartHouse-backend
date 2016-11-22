@@ -36,14 +36,6 @@ if (config.seedDB) {
         .then(seed.populateDashboard);
 }
 
-// Remove files
-if (config.cleanFiles) {
-    /* eslint-disable no-console */
-    console.log('Cleaning files folder');
-    /* eslint-enable no-console */
-    Promise.resolve(filesService.cleanFolder(config.filesPath));
-}
-
 // Create websocket server
 let server = http.createServer(app);
 let io = socketio(server);
