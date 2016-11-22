@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import findOrCreate from 'mongoose-findorcreate';
+import Promise from 'bluebird';
 
 /**
  * @file User Schema
@@ -85,5 +86,6 @@ UserSchema.methods = {
 };
 
 UserSchema.plugin(findOrCreate);
+UserSchema.statics.findOrCreate = Promise.promisify(UserSchema.statics.findOrCreate);
 
 export default mongoose.model('User', UserSchema);

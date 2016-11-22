@@ -1,4 +1,5 @@
 import User from './user.model';
+
 const REMOVED_FIELDS = '-salt -hashedPassword -__v';
 
 /**
@@ -59,19 +60,10 @@ function createUser(body) {
  * @description It will find user by query or create new user in database
  * @param {object} query
  * @param {object} body
- * @return {object}
+ * @return {Promise}
  */
 function findOrCreateUser(query, body) {
-    return new Promise((resolve, reject) => {
-        User.findOrCreate(query, body, {}, (err, user) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(user);
-        });
-    });
+    return User.findOrCreate(query, body);
 }
 
 /**

@@ -15,7 +15,9 @@ export default function setup(UserService, facebookConfig) {
         clientID: facebookConfig.clientID,
         clientSecret: facebookConfig.clientSecret
     }, (accessToken, refreshToken, profile, done) => {
-        if (profile.emails[0].value) {
+        const mainPublicEmail = profile.emails[0].value;
+
+        if (!mainPublicEmail) {
             // Some times it happens
             // https://developers.facebook.com/bugs/298946933534016/?comment_id=620710881344692
             // https://developers.facebook.com/docs/graph-api/reference/user
@@ -25,10 +27,10 @@ export default function setup(UserService, facebookConfig) {
 
         UserService.findOrCreateUser(
             {
-                email: profile.emails[0].value
+                email: mainPublicEmail
             },
             {
-                email: profile.emails[0].value,
+                email: mainPublicEmail,
                 name: profile.displayName,
                 facebookId: profile.id
             }
