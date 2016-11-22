@@ -1,85 +1,46 @@
 import request from 'supertest-as-promised';
-import env from './../../config/env';
+import mockFs from 'mock-fs';
 import httpStatus from 'http-status';
+import fs from 'fs';
+import Promise from 'bluebird';
 import app from './../../index';
 import filesService from './files.service';
-import fs from 'fs';
-import path from 'path';
-import Promise from 'bluebird';
 
 Promise.promisifyAll(fs);
 
 describe('## Files APIs', () => {
 
-    const fileName = 'd74c678c7580deddbe8b008eab317b79';
-    const imagePath = path.join(__dirname, '../../../test/assets/displayImage.gif');
-    const image = fs.readFileSync(imagePath, {encoding: 'utf8'});
+    let sut;
 
-    beforeEach(() => {
-        return fs.writeFile(path.join(env.filesPath, fileName), image);
-    });
+    describe('GET /api/files/**', () => {
+        const fileName = 'd74c678c7580deddbe8b008eab317b79';
+        const fileContent = 'my file content';
 
-    afterEach(() => {
-        return filesService.cleanFolder();
-    });
+        beforeEach(() => {
+            mockFs({
+                [filesService.resolveFilePath(fileName)]: fileContent
+            });
 
-    describe(`# GET /api/files/${fileName}`, () => {
-        it('should get an image from the server', done => {
-            request(app)
+            sut = request(app);
+        });
+
+        afterEach(() => {
+            mockFs.restore();
+        });
+
+        it('should respond with file when found', () => {
+            return sut
                 .get(`/api/files/${fileName}`)
                 .expect(httpStatus.OK)
-                .then(res => {
-                    expect(res.text).to.be.equal(image);
-                })
-                .then(done, done);
+                .then(({ text }) => {
+                    expect(text).to.equal(fileContent);
+                });
         });
-    });
 
-    describe('# POST /api/files', () => {
-        it('should upload a new image on the server', done => {
-            request(app)
-                .post('/api/files')
-                .field('name', 'displayImage')
-                .attach('displayImage', imagePath)
-                .expect(httpStatus.OK)
-                .then(res => {
-                    return filesService.getFiles()
-                        .then((files) => {
-                            expect(files).to.contain(res.body);
-                        });
-                })
-                .then(done, done);
-        });
-    });
-
-    describe(`# POST /api/files/${fileName}`, () => {
-        it('should upload a new image on the server and remove the old one', done => {
-            request(app)
-                .post(`/api/files/${fileName}`)
-                .field('name', 'displayImage')
-                .attach('displayImage', imagePath)
-                .expect(httpStatus.OK)
-                .then(res => {
-                    return filesService.getFiles()
-                        .then((files) => {
-                            expect(files).to.contain(res.body);
-                            expect(files).to.not.contain(fileName);
-                        });
-                })
-                .then(done, done);
-        });
-    });
-
-    describe(`# REMOVE /api/files/${fileName}`, () => {
-        it('should remove an image from the server', done => {
-            request(app)
-                .delete(`/api/files/${fileName}`)
-                .expect(httpStatus.OK)
-                .then(() => filesService.getFiles())
-                .then(files => {
-                    expect(files).to.not.contain(fileName);
-                })
-                .then(done, done);
+        it('should respond with not found when file not found', () => {
+            return sut
+                .get('/api/files/notfound')
+                .expect(httpStatus.NOT_FOUND);
         });
     });
 

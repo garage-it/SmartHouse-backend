@@ -14,15 +14,12 @@ import config from './env';
 import APIError from '../API/helpers/APIError';
 import ExtendableError from '../API/helpers/ExtendableError';
 import passport from 'passport';
-import multer from 'multer';
 
 const app = express();
 
 if (config.env === 'development') {
     app.use(logger('dev'));
 }
-
-app.use(multer({dest: config.filesPath}).single('displayImage'));
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json());

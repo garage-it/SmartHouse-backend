@@ -8,6 +8,7 @@ import timeseriesRoutes from './timeseries/timeseries.routes';
 import user from './user/user.routes';
 import auth from './auth/auth.routes';
 import filesRoutes from './files/files.routes';
+import mapViewRoutes from './map-view/map-view.routes';
 
 const router = express.Router();    // eslint-disable-line new-cap
 
@@ -24,6 +25,7 @@ router.use('/timeseries', timeseriesRoutes);
 router.use('/user', user);
 router.use('/auth', auth);
 router.use('/files', filesRoutes);
+router.use('/map-view', mapViewRoutes);
 
 
 export default router;

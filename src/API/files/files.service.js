@@ -1,58 +1,30 @@
+import fs from 'fs';
+import path from 'path';
+import del from 'del';
+import Promise from 'bluebird';
 import config from '../../config/env';
+import tryAsync from '../helpers/try-async';
 
-const fs = require('fs');
-const path = require('path');
-const del = require('del');
-
-const { filesPath } = config;
+Promise.promisifyAll(fs);
 
 function cleanFolder() {
-    return del([path.join(filesPath, '**'), `!${filesPath}`]);
+    return del([resolveFilePath('**'), `!${config.filesPath}`]);
 }
 
-function getFiles(folder) {
-    folder = folder || config.filesPath;
-
-    return new Promise((resolve, reject) => {
-        fs.readdir(folder, (error, data) =>
-            resolveData(resolve, reject, error, data));
-    });
-}
-
-function deleteFile(name, folder) {
-    folder = folder || config.filesPath;
-
-    return new Promise((resolve, reject) => {
-        const curPath = path.join(folder, name);
-        fs.unlink(curPath, (error, data) =>
-            resolveData(resolve, reject, error, data));
-    });
-}
-
-function getFile(name, folder) {
-    folder = folder || config.filesPath;
-
-    return new Promise((resolve, reject) => {
-        fs.readFile(path.join(folder, name), (error, data) =>
-            resolveData(resolve, reject, error, data));
-    });
-}
-
-function resolveData(resolve, reject, error, data) {
-    if (error) {
-        reject(getMessage(error));
-        return;
+function tryDeleteFile(name) {
+    if (!name) {
+        return Promise.resolve();
     }
-    resolve(data);
+    const filePath = resolveFilePath(name);
+    return tryAsync(fs.unlinkAsync(filePath));
 }
 
-function getMessage(error) {
-    let message = error.message || error;
-    // remove absolute path from the message
-    if (error.code === 'ENOENT') {
-        message = message.substring(0, message.indexOf(','));
-    }
-    return message;
+function resolveFilePath(fileName) {
+    return path.join(config.filesPath, fileName);
 }
 
-export default { cleanFolder, getFiles, deleteFile, getFile };
+export default {
+    cleanFolder,
+    tryDeleteFile,
+    resolveFilePath
+};

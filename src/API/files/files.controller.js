@@ -1,19 +1,6 @@
-import filesService from './files.service';
+import express from 'express';
+import { filesPath } from '../../config/env';
 
-function create(req, res) {
-    return res.json(req.file.filename);
-}
-
-function update(req, res, next) {
-    filesService.deleteFile(req.params.filename)
-        .then(() => res.json(req.file.filename))
-        .catch(next);
-}
-
-function remove(req, res, next) {
-    filesService.deleteFile(req.params.filename)
-        .then(() => res.end())
-        .catch(next);
-}
-
-export default { create, update, remove };
+export default {
+    serve: express.static(filesPath)
+};
