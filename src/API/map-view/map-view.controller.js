@@ -17,7 +17,9 @@ function get(req, res, next) {
 
 function updateInfo(req, res, next) {
 
-    mapViewService.updateInfo(req.body)
+    const updates = req.body;
+
+    mapViewService.updateInfo(updates)
         .then((mapView) => res.send(mapView))
         .catch(next);
 }

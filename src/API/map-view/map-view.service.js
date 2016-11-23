@@ -1,6 +1,6 @@
 import MapViewModel from './map-view.model';
 import filesService from '../files/files.service';
-import mapViewInfoUpdatesDto from './map-view-info-updates.dto';
+import { infoUpdate, pictureUpdate } from './map-view-updates.converter';
 
 const mapViewService = {
     get,
@@ -22,12 +22,13 @@ function updateInfo(updates) {
         .then(onMapViewReceived);
 
     function onMapViewReceived(mapView) {
-        Object.assign(mapView, mapViewInfoUpdatesDto(updates));
-        return mapView.save();
+        return Object
+            .assign(mapView, infoUpdate(updates))
+            .save();
     }
 }
 
-function updatePicture(newPictureName) {
+function updatePicture(newName) {
 
     return mapViewService.get()
         .then(onMapViewReceived);
@@ -37,8 +38,8 @@ function updatePicture(newPictureName) {
             .then(onOldPictureRemoved);
 
         function onOldPictureRemoved() {
-            mapView.pictureName = newPictureName;
-            return mapView.save();
+            return Object.assign(mapView, pictureUpdate(newName))
+                .save();
         }
     }
 }
