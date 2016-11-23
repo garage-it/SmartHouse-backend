@@ -9,7 +9,6 @@ const config = require(`./${env}`);
 const defaults = {
     userRoles: ['guest', 'user:read', 'user:write', 'user', 'admin'],
     root: path.join(__dirname, '/..'),
-    staticPath: '',
     filesPath: path.join(__dirname, '/../../../files'),
     host: 'localhost',
     token: {
