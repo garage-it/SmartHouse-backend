@@ -1,9 +1,10 @@
-import moongose from 'mongoose';
+import moongose, { Schema } from 'mongoose';
+import SensorModel from '../sensors/sensor.model';
 
 /**
  * MapView Schema
  */
-export default moongose.model('MapView', new moongose.Schema({
+export default moongose.model('MapView', new Schema({
     pictureName: String,
     name: String,
     description: String,
@@ -13,8 +14,8 @@ export default moongose.model('MapView', new moongose.Schema({
     },
     sensors: [{
         sensor: {
-            type: moongose.Schema.Types.ObjectId,
-            ref: 'Sensor'
+            type: Schema.Types.ObjectId,
+            ref: SensorModel
         },
         position: {
             x: Number,
