@@ -223,8 +223,8 @@ node/
 
 ### Project ###
 
-dist
-db
+/dist
+/db
 /files
 .env
 .nyc_output
