@@ -28,10 +28,3 @@ function updatePicture(newPictureName) {
         }
     }
 }
-
-
-
-
-
-
-
