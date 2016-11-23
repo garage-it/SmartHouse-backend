@@ -5,7 +5,6 @@ export default {
     host: '',
     publicUrl: 'http://localhost:3000',
     seedDB: true,
-    staticPath: process.env.PATH_FRONTENT_DIST || '',
     plugAndPlay: false,
     mqtt: {
         port: 1883,

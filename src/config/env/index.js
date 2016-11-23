@@ -10,6 +10,7 @@ const fbGraphVersion = '2.8';
 const defaults = {
     userRoles: ['guest', 'user:read', 'user:write', 'user', 'admin'],
     root: path.join(__dirname, '/../..'),
+    filesPath: path.join(__dirname, '/../../../files'),
     host: 'localhost',
     publicUrl: process.env.PUBLIC_URL,
     token: {
@@ -25,4 +26,4 @@ const defaults = {
     }
 };
 
-export default  Object.assign({}, defaults, config);
+export default Object.assign({}, defaults, config);

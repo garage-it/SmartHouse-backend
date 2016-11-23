@@ -1,0 +1,1 @@
+export default (promise, fallback) => promise.catch(() => fallback);
