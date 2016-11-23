@@ -11,18 +11,18 @@ const mapViewService = {
 export default mapViewService;
 
 function get() {
+
     return MapViewModel.findOne()
         .then((mapView) => new MapViewModel(mapView));
 }
 
-function updateInfo(rawUpdates) {
-    const updates = mapViewInfoUpdatesDto(rawUpdates);
+function updateInfo(updates) {
 
     return mapViewService.get()
         .then(onMapViewReceived);
 
     function onMapViewReceived(mapView) {
-        Object.assign(mapView, updates);
+        Object.assign(mapView, mapViewInfoUpdatesDto(updates));
         return mapView.save();
     }
 }
