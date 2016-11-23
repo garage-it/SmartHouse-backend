@@ -2,13 +2,20 @@ const proxyquire = require('proxyquire').noCallThru();
 
 describe('files service', () => {
 
+    const fileName = 'file name';
+
     let sut,
         del,
         config,
-        result;
+        result,
+        fs;
 
     beforeEach(() => {
         del = env.stub();
+
+        fs = {
+            unlinkAsync: env.stub()
+        };
 
         config = {
             filesPath: 'filesPath'
@@ -16,6 +23,7 @@ describe('files service', () => {
 
         sut = proxyquire('./files.service', {
             del,
+            fs,
             '../../config/env': config
         });
     });
@@ -41,6 +49,39 @@ describe('files service', () => {
 
         it('should delegate delete response handling', () => {
             result.should.equal(deleteResult);
+        });
+
+    });
+
+
+    describe('resolve file path', () => {
+
+        it('should resolve file path relative to config', () => {
+            sut.resolveFilePath(fileName).should.equal(`${config.filesPath}/${fileName}`);
+        });
+
+    });
+
+    describe('try delete file', () => {
+
+        it('should resolve nothing when filename is missed', () => {
+            return sut.tryDeleteFile();
+        });
+
+        context('when file name present', () => {
+
+            it('should delete file', () => {
+                return sut.tryDeleteFile(fileName)
+                    .then(() => {
+                        fs.unlinkAsync.should.calledWith(`${config.filesPath}/${fileName}`);
+                    });
+            });
+
+            it('should ignore error when file is not exists', () => {
+                fs.unlinkAsync.rejects('aaa');
+                return sut.tryDeleteFile(fileName);
+            });
+
         });
 
     });
