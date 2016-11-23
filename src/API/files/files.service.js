@@ -7,21 +7,21 @@ import tryAsync from '../helpers/try-async';
 
 Promise.promisifyAll(fs);
 
-const self = {
+const filesService = {
     cleanFolder,
     tryDeleteFile,
     resolveFilePath
 };
 
-export default self;
+export default filesService;
 
 function cleanFolder() {
-    return del([self.resolveFilePath('**'), `!${config.filesPath}`]);
+    return del([filesService.resolveFilePath('**'), `!${config.filesPath}`]);
 }
 
 function tryDeleteFile(name) {
     return tryAsync(Promise.try(() => {
-        const filePath = self.resolveFilePath(name);
+        const filePath = filesService.resolveFilePath(name);
         return fs.unlinkAsync(filePath);
     }));
 }
