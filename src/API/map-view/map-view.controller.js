@@ -3,32 +3,35 @@ import fileUploadMiddleware from '../files/file-upload.middleware';
 import mapViewService from './map-view.service';
 
 export default {
-    get,
-    updateInfo,
+    getById,
+    create,
     uploadPicture: compose(fileUploadMiddleware, onFileUploaded)
 };
 
-function get(req, res, next) {
+function getById(req, { send }, next) {
 
-    mapViewService.get()
-        .then((mapView) => res.send(mapView))
+    const { id } = req.params;
+
+    mapViewService.getById(id)
+        .then(send)
         .catch(next);
 }
 
-function updateInfo(req, res, next) {
+function create(req, { send }, next) {
 
-    const updates = req.body;
+    const mapViewCreateDto = req.body;
 
-    mapViewService.updateInfo(updates)
-        .then((mapView) => res.send(mapView))
+    mapViewService.create(mapViewCreateDto)
+        .then(send)
         .catch(next);
 }
 
-function onFileUploaded(req, res, next) {
+function onFileUploaded(req, { send }, next) {
 
+    const { id } = req.params;
     const { filename } = req.file;
 
-    mapViewService.updatePicture(filename)
-        .then((mapView) => res.send(mapView))
+    mapViewService.updatePicture(id, filename)
+        .then(send)
         .catch(next);
 }

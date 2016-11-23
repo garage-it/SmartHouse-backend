@@ -1,18 +1,18 @@
 import MapViewModel from './map-view.model';
 import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
-import { infoUpdate, pictureUpdate } from './map-view-updates.converter';
+import mapViewDtoConverter from './map-view-dto.converter';
 
 const mapViewService = {
-    get,
-    updateInfo,
+    getById,
+    create,
     updatePicture
 };
 
 export default mapViewService;
 
-function get() {
-    return MapViewModel.findOne()
+function getById(id) {
+    return MapViewModel.findById(id)
         .populate({
             path: 'sensors.sensor',
             model: SensorModel
@@ -20,32 +20,29 @@ function get() {
         .then((mapView) => new MapViewModel(mapView));
 }
 
-function updateInfo(updates) {
+function create(createDto) {
+    return new MapViewModel(mapViewDtoConverter.create(createDto))
+        .save()
+        .then(onActionCompleted);
+}
 
-    return mapViewService.get()
-        .then(onMapViewReceived)
-        .then(get);
+function updatePicture(id, newName) {
 
-    function onMapViewReceived(mapView) {
-        return Object
-            .assign(mapView, infoUpdate(updates))
-            .save();
+    return mapViewService.getById(id)
+        .then(onReceived)
+        .then(onActionCompleted);
+
+
+    function onReceived(mapViewModel) {
+        return filesService.tryDeleteFile(mapViewModel.pictureName)
+            .then(onOldPictureRemoved);
+
+        function onOldPictureRemoved() {
+            return MapViewModel.findByIdAndUpdate(id,  mapViewDtoConverter.pictureUpdate(newName));
+        }
     }
 }
 
-function updatePicture(newName) {
-
-    return mapViewService.get()
-        .then(onMapViewReceived);
-
-    function onMapViewReceived(mapView) {
-        return filesService.tryDeleteFile(mapView.pictureName)
-            .then(onOldPictureRemoved)
-            .then(get);
-
-        function onOldPictureRemoved() {
-            return Object.assign(mapView, pictureUpdate(newName))
-                .save();
-        }
-    }
+function onActionCompleted({ id }) {
+    return getById(id);
 }
