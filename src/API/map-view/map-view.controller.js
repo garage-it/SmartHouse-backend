@@ -9,7 +9,8 @@ export default {
 };
 
 function get(req, res, next) {
-    return mapViewService.get()
+
+    mapViewService.get()
         .then((mapView) => res.send(mapView))
         .catch(next);
 }
@@ -22,9 +23,10 @@ function updateInfo(req, res, next) {
 }
 
 function onFileUploaded(req, res, next) {
+
     const { filename } = req.file;
 
-    return mapViewService.updatePicture(filename)
+    mapViewService.updatePicture(filename)
         .then((mapView) => res.send(mapView))
         .catch(next);
 }
