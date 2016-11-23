@@ -18,9 +18,19 @@ export default function handleUnknownDeviceData() {
         Sensor.find({
             mqttId: data.device
         }, function (error, records) {
-            
-            if (records.length){
-                debug('Device already added');
+            if (records.length) {
+                // save to mongo last known value
+                records = records.forEach((record)=> {
+                    record = Object.assign(record, {
+                        value: data.value,
+                        valueUpdated: Date.now()
+                    });
+                    record.save((err) => {
+                       if (err) {
+                         throw new Error("mongodb save error");
+                       }
+                    });
+                });
             } else {
                 let outputEvent = {
                     device: data.device,
