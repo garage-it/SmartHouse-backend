@@ -3,8 +3,9 @@ export default {
     db: 'mongodb://localhost/db',
     port: 3000,
     host: '',
+    publicUrl: 'http://localhost:3000',
     seedDB: true,
-    staticPath: '',
+    staticPath: process.env.PATH_FRONTENT_DIST || '',
     plugAndPlay: false,
     mqtt: {
         port: 1883,

@@ -9,7 +9,8 @@ import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
 import expressValidation from 'express-validation';
 import winstonInstance from './winston';
-import routes from '../API/index';
+import apiRoutes from '../API/index';
+import pageRoutes from '../pages/index';
 import config from './env';
 import APIError from '../API/helpers/APIError';
 import ExtendableError from '../API/helpers/ExtendableError';
@@ -57,8 +58,14 @@ if (config.staticPath) {
     app.use(express.static(config.staticPath));
 }
 
-// mount all routes on /api path
-app.use('/api', routes);
+// mount page routes on / path
+app.use('/', pageRoutes);
+// mount API routes on /api path
+app.use('/api', apiRoutes);
+
+// View settings for some pages like FB OAuth2 Callback
+app.set('view engine', 'pug');
+app.set('views', `${config.root}/views`);
 
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
