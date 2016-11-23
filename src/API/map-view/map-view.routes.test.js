@@ -39,6 +39,39 @@ describe('/api/map-view', () => {
 
     });
 
+    describe('PUT /', () => {
+
+        const expectedUpdates = {
+            name: 'name',
+            description: 'description',
+            active: true
+        };
+
+        const updates = Object.assign({}, expectedUpdates, {
+            pictureName: 'newPictureName'
+        });
+
+        beforeEach(() => {
+            sut = sut.put('/api/map-view')
+                .send(updates)
+                .expect(OK)
+                .then(({ body }) => body);
+        });
+
+        it('should ignore updates of picture name', () => {
+            return sut.then((mapView) => {
+                expect(mapView.pictureName).to.not.equal(updates.pictureName);
+            });
+        });
+
+        it('should update only name description and active flag', () => {
+            return sut.then((mapView) => {
+                mapView.should.include(expectedUpdates);
+            });
+        });
+
+    });
+
 
     describe('POST /picture', () => {
 

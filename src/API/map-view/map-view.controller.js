@@ -4,6 +4,7 @@ import mapViewService from './map-view.service';
 
 export default {
     get,
+    updateInfo,
     uploadPicture: compose(fileUploadMiddleware, onFileUploaded)
 };
 
@@ -13,10 +14,17 @@ function get(req, res, next) {
         .catch(next);
 }
 
+function updateInfo(req, res, next) {
+
+    mapViewService.updateInfo(req.body)
+        .then((mapView) => res.send(mapView))
+        .catch(next);
+}
+
 function onFileUploaded(req, res, next) {
     const { filename } = req.file;
 
     return mapViewService.updatePicture(filename)
-        .then((result) => res.send(result))
+        .then((mapView) => res.send(mapView))
         .catch(next);
 }

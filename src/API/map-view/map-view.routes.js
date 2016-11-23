@@ -5,4 +5,6 @@ export default Router()
 
     .get('/', mapViewCtrl.get)
 
+    .put('/', mapViewCtrl.updateInfo)
+
     .post('/picture', mapViewCtrl.uploadPicture);
