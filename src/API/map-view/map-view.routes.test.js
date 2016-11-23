@@ -5,6 +5,7 @@ import Promise from 'bluebird';
 import app from '../../index';
 import filesService from '../files/files.service';
 import MapViewModel from './map-view.model';
+import SensorModel from '../sensors/sensor.model';
 
 Promise.promisifyAll(fs);
 
@@ -41,21 +42,47 @@ describe('/api/map-view', () => {
 
     describe('PUT /', () => {
 
-        const expectedUpdates = {
+        const sensor = {
+            description: 'some description',
+            type: 'some type',
+            mqttId: 'distance'
+        };
+
+
+        let sensorUpdates;
+
+        const infoUpdates = {
             name: 'name',
             description: 'description',
             active: true
         };
 
-        const updates = Object.assign({}, expectedUpdates, {
-            pictureName: 'newPictureName'
+        let updates;
+
+        beforeEach('create sensor', () => {
+
+            return SensorModel
+                .create(sensor)
+                .then(({ id }) => sensorUpdates = [{
+                    sensor: id,
+                    position: {
+                        x: 1,
+                        y: 2
+                    }
+                }]);
         });
 
-        beforeEach(() => {
+        beforeEach('send request', () => {
+            updates = Object.assign({}, infoUpdates, {
+                sensors: sensorUpdates,
+                pictureName: 'newPictureName'
+            });
+
             sut = sut.put('/api/map-view')
                 .send(updates)
                 .expect(OK)
                 .then(({ body }) => body);
+
         });
 
         it('should ignore updates of picture name', () => {
@@ -64,10 +91,42 @@ describe('/api/map-view', () => {
             });
         });
 
-        it('should update only name description and active flag', () => {
+        it('should update name description and active flag', () => {
             return sut.then((mapView) => {
-                mapView.should.include(expectedUpdates);
+                mapView.should.include(infoUpdates);
             });
+        });
+
+        it('should rewrite all sensors', () => {
+            return sut.then((mapView) => {
+                mapView.sensors.length.should.equal(sensorUpdates.length);
+            });
+        });
+
+        describe('sensors', () => {
+
+            beforeEach(function () {
+                sut = sut.then((mapView) => mapView.sensors[0]);
+            });
+
+            it('should store sensors positions', () => {
+                return sut.then(({ position }) => {
+                    position.should.deep.equal(sensorUpdates[0].position);
+                });
+            });
+
+            it('should link sensors', () => {
+                return sut.then(({ sensor }) => {
+                    sensor._id.should.equal(sensorUpdates[0].sensor);
+                });
+            });
+
+            it('should pre-populate sensors', () => {
+                return sut.then((sensor) => {
+                    sensor.should.contain(sensor);
+                });
+            });
+
         });
 
     });
