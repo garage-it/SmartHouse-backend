@@ -16,8 +16,8 @@ describe('/api/map-view', () => {
         sut = request(app);
     });
 
-    afterEach(() => {
-        return filesService.cleanFolder();
+    after(() => {
+        return filesService.deleteAllFiles();
     });
 
     describe('GET /', () => {

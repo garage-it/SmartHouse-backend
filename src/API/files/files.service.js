@@ -5,15 +5,15 @@ import config from '../../config/env';
 import tryAsync from '../helpers/try-async';
 
 const filesService = {
-    cleanFolder,
+    deleteAllFiles,
     tryDeleteFile,
     resolveFilePath
 };
 
 export default filesService;
 
-function cleanFolder() {
-    return del([filesService.resolveFilePath('**'), `!${config.filesPath}`]);
+function deleteAllFiles() {
+    return del(filesService.resolveFilePath('**'));
 }
 
 function tryDeleteFile(name) {

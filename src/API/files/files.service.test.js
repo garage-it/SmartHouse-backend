@@ -25,20 +25,14 @@ describe('files service', () => {
     describe('clean', () => {
 
         const deleteResult = 'deleteResult';
-        let patterns;
 
         beforeEach(() => {
             del.returns(deleteResult);
-            result = sut.cleanFolder();
-            patterns = del.lastCall.args[0];
+            result = sut.deleteAllFiles();
         });
 
         it('should clean files folder content', () => {
-            patterns.should.contain(config.filesPath + '/**');
-        });
-
-        it('should not delete files folder', () => {
-            patterns.should.contain('!' + config.filesPath);
+            del.should.calledWith(`${config.filesPath}/**`);
         });
 
         it('should delegate delete response handling', () => {
