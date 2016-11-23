@@ -7,15 +7,10 @@ describe('files service', () => {
     let sut,
         del,
         config,
-        result,
-        fs;
+        result;
 
     beforeEach(() => {
         del = env.stub();
-
-        fs = {
-            unlinkAsync: env.stub()
-        };
 
         config = {
             filesPath: 'filesPath'
@@ -23,7 +18,6 @@ describe('files service', () => {
 
         sut = proxyquire('./files.service', {
             del,
-            fs,
             '../../config/env': config
         });
     });
@@ -73,12 +67,12 @@ describe('files service', () => {
             it('should delete file', () => {
                 return sut.tryDeleteFile(fileName)
                     .then(() => {
-                        fs.unlinkAsync.should.calledWith(`${config.filesPath}/${fileName}`);
+                        del.should.calledWith(`${config.filesPath}/${fileName}`);
                     });
             });
 
             it('should ignore error when file is not exists', () => {
-                fs.unlinkAsync.rejects('aaa');
+                del.rejects('aaa');
                 return sut.tryDeleteFile(fileName);
             });
 

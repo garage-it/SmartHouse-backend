@@ -1,11 +1,8 @@
-import fs from 'fs';
 import path from 'path';
 import del from 'del';
 import Promise from 'bluebird';
 import config from '../../config/env';
 import tryAsync from '../helpers/try-async';
-
-Promise.promisifyAll(fs);
 
 const filesService = {
     cleanFolder,
@@ -20,10 +17,11 @@ function cleanFolder() {
 }
 
 function tryDeleteFile(name) {
-    return tryAsync(Promise.try(() => {
-        const filePath = filesService.resolveFilePath(name);
-        return fs.unlinkAsync(filePath);
-    }));
+    return tryAsync(Promise.try(() => deleteFile(name)));
+}
+
+function deleteFile(name) {
+    return del(filesService.resolveFilePath(name));
 }
 
 function resolveFilePath(fileName) {
