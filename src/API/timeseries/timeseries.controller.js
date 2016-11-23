@@ -53,6 +53,8 @@ function query(req, res, next) {
         current = current.subtract(stepMin, 'minutes');
     }
 
+    data.reverse();
+
     res.json({
         from,
         to,
