@@ -63,6 +63,14 @@ app.use('/', pageRoutes);
 // mount API routes on /api path
 app.use('/api', apiRoutes);
 
+// fallback for work with HTML5 History API
+// should be defined after back-end routes (like /api)
+if (config.staticPath) {
+    app.get('/*', (req, res) => {
+        res.sendFile(config.staticPath + '/index.html');
+    });
+}
+
 // View settings for some pages like FB OAuth2 Callback
 app.set('view engine', 'pug');
 app.set('views', `${config.root}/views`);
