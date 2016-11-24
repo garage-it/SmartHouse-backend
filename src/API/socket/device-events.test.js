@@ -22,7 +22,8 @@ describe('# Socket Device Events', () => {
 
         let sut = proxyquire('./device-events', {
             '../../data-streams/input': input,
-            '../../data-streams/output': output
+            '../../data-streams/output': output,
+            '../../devices/event/event-type': { ALL_EVENT_TYPES: ['device-info', 'status'] }
         });
 
         let io = socketIoMocks.server()();

@@ -14,6 +14,7 @@ import Debugger from 'debug';
 const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
+import handleDeviceStatistic from './devices/deviceStatisticHandler';
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -47,6 +48,7 @@ server.listen(config.port, config.host, () => {
 });
 
 trackDeviceConnection();
+handleDeviceStatistic();
 
 // Enable Plug-n-Play
 if (config.plugAndPlay) {

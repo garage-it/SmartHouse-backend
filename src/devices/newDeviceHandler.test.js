@@ -33,7 +33,8 @@ describe('# New device handler', () => {
         sut = proxyquire('./newDeviceHandler', {
             '../data-streams/input': input,
             '../data-streams/output': output,
-            '../API/sensors/sensor.model': Sensor
+            '../API/sensors/sensor.model': Sensor,
+            './event/event-type': { DEVICE_STATUS: 'status'}
         });
 
         sut();
