@@ -21,6 +21,9 @@ function tryDeleteFile(name) {
 }
 
 function deleteFile(name) {
+    if (!String(name).trim()) {
+        throw new Error('name is empty');
+    }
     return del(filesService.resolveFilePath(name));
 }
 

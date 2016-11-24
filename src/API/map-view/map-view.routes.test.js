@@ -4,7 +4,7 @@ import fs from 'fs';
 import Promise from 'bluebird';
 import app from '../../index';
 import filesService from '../files/files.service';
-import MapViewModel from './map-view.model';
+import mapViewService from './map-view.service';
 import SensorModel from '../sensors/sensor.model';
 
 Promise.promisifyAll(fs);
@@ -21,26 +21,7 @@ describe('/api/map-view', () => {
         return filesService.deleteAllFiles();
     });
 
-    describe('GET /', () => {
-        const mapView = {
-            pictureName: 'hello'
-        };
-
-        it('should respond with blank map view when it is not yet created', () => {
-            return sut.get('/api/map-view')
-                .expect(OK)
-                .then((res) => res.body.should.not.contain(mapView));
-        });
-
-        it('should respond with map view when map view is created', () => {
-            return MapViewModel.create(mapView)
-                .then(() => sut.get('/api/map-view'))
-                .then((res) => res.body.should.contain(mapView));
-        });
-
-    });
-
-    describe('PUT /', () => {
+    describe('POST /', () => {
 
         const sensor = {
             description: 'some description',
@@ -49,21 +30,21 @@ describe('/api/map-view', () => {
         };
 
 
-        let sensorUpdates;
+        let sensors;
 
-        const infoUpdates = {
+        const mapViewCreateDto = {
             name: 'name',
             description: 'description',
             active: true
         };
 
-        let updates;
+        let body;
 
         beforeEach('create sensor', () => {
 
             return SensorModel
                 .create(sensor)
-                .then(({ id }) => sensorUpdates = [{
+                .then(({ id }) => sensors = [{
                     sensor: id,
                     position: {
                         x: 1,
@@ -73,13 +54,13 @@ describe('/api/map-view', () => {
         });
 
         beforeEach('send request', () => {
-            updates = Object.assign({}, infoUpdates, {
-                sensors: sensorUpdates,
+            body = Object.assign({}, mapViewCreateDto, {
+                sensors,
                 pictureName: 'newPictureName'
             });
 
-            sut = sut.put('/api/map-view')
-                .send(updates)
+            sut = sut.post('/api/map-view')
+                .send(body)
                 .expect(OK)
                 .then(({ body }) => body);
 
@@ -87,19 +68,19 @@ describe('/api/map-view', () => {
 
         it('should ignore updates of picture name', () => {
             return sut.then((mapView) => {
-                expect(mapView.pictureName).to.not.equal(updates.pictureName);
+                expect(mapView.pictureName).to.not.equal(body.pictureName);
             });
         });
 
         it('should update name description and active flag', () => {
             return sut.then((mapView) => {
-                mapView.should.include(infoUpdates);
+                mapView.should.include(mapViewCreateDto);
             });
         });
 
         it('should rewrite all sensors', () => {
             return sut.then((mapView) => {
-                mapView.sensors.length.should.equal(sensorUpdates.length);
+                mapView.sensors.length.should.equal(sensors.length);
             });
         });
 
@@ -111,13 +92,13 @@ describe('/api/map-view', () => {
 
             it('should store sensors positions', () => {
                 return sut.then(({ position }) => {
-                    position.should.deep.equal(sensorUpdates[0].position);
+                    position.should.deep.equal(sensors[0].position);
                 });
             });
 
             it('should link sensors', () => {
                 return sut.then(({ sensor }) => {
-                    sensor._id.should.equal(sensorUpdates[0].sensor);
+                    sensor._id.should.equal(sensors[0].sensor);
                 });
             });
 
@@ -132,35 +113,72 @@ describe('/api/map-view', () => {
     });
 
 
-    describe('POST /picture', () => {
+    describe('/:mapViewId', () => {
 
-        const testFilePath = 'test/assets/file.txt';
+        let mapView;
 
-        beforeEach(() => {
-            sut = request(app)
-                .post('/api/map-view/picture')
-                .field('name', 'file')
-                .attach('file', testFilePath)
-                .then(({ body }) => body);
+        beforeEach('create map view', () => {
+            return mapViewService.create({
+                name: 'name',
+                description: 'desc',
+                active: true
+            }).then((createdMapView) => mapView = createdMapView);
         });
 
-        it('should upload new picture', () => {
-            return sut
-                .then(({ pictureName }) => filesService.resolveFilePath(pictureName))
-                .then((filePath) => fs.lstatAsync(filePath));
+        describe('GET /', () => {
+
+
+            beforeEach(() => {
+                sut = request(app)
+                    .get('/api/map-view/' + mapView.id )
+                    .expect(OK)
+                    .then(({ body }) => body);
+            });
+
+            it('should respond with map view', () => {
+                return sut
+                    .then((storedMapView) => {
+                        (mapView._id == storedMapView._id).should.be.true;
+                    });
+            });
+
         });
 
-        it('should save picture name in map-view', () => {
-            let mapView;
+        describe('POST /picture', () => {
 
-            return sut
-                .then((body) => mapView = body)
-                .then(() => MapViewModel.findOne())
-                .then((storedMapView) => {
-                    String(storedMapView._id).should.equal(mapView._id);
-                    storedMapView.pictureName.should.equal(mapView.pictureName);
-                });
+            const testFilePath = 'test/assets/file.txt';
+
+            beforeEach(() => {
+                sut = request(app)
+                    .post('/api/map-view/' + mapView.id + '/picture')
+                    .field('name', 'file')
+                    .attach('file', testFilePath)
+                    .expect(OK)
+                    .then(({ body }) => body);
+            });
+
+            it('should upload new picture', () => {
+                return sut
+                    .then(({ pictureName }) => filesService.resolveFilePath(pictureName))
+                    .then((filePath) => fs.lstatAsync(filePath));
+            });
+
+            it('should save picture name in map-view', () => {
+                return sut
+                    .then((storedMapView) => {
+                        storedMapView.pictureName.should.not.equal(mapView.pictureName);
+                    });
+            });
+
+            it('should respond with map view', () => {
+                return sut
+                    .then((storedMapView) => {
+                        (mapView._id == storedMapView._id).should.be.true;
+                    });
+            });
+
         });
 
     });
+
 });

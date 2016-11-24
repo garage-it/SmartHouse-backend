@@ -3,8 +3,8 @@ import mapViewCtrl from './map-view.controller';
 
 export default Router()
 
-    .get('/', mapViewCtrl.get)
+    .post('/', mapViewCtrl.create)
 
-    .put('/', mapViewCtrl.updateInfo)
+    .get('/:id', mapViewCtrl.getById)
 
-    .post('/picture', mapViewCtrl.uploadPicture);
+    .post('/:id/picture', mapViewCtrl.uploadPicture);

@@ -9,8 +9,11 @@ import user from './user/user.routes';
 import auth from './auth/auth.routes';
 import filesRoutes from './files/files.routes';
 import mapViewRoutes from './map-view/map-view.routes';
+import responseBindMiddleware from './middleware/response-bind.middleware';
 
 const router = express.Router();    // eslint-disable-line new-cap
+
+router.use(responseBindMiddleware);
 
 /** GET /health-check - Check service health */
 router.get('/health-check', (req, res) => {
