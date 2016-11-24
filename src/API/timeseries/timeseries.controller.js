@@ -4,9 +4,9 @@ import moment from 'moment';
 
 const PERIOD_TO_INTERVAL = {
     'day': 60,
-    'week': 60,
+    'week': 60*24,
     'month': 60*24,
-    'year': 60*24
+    'year': 60*24*30
 };
 
 function query(req, res, next) {
