@@ -55,7 +55,7 @@ describe('## Timeseries API', () => {
       .get("/api/timeseries?period=week&sensor=SENSOR")
       .expect(httpStatus.OK)
       .then((res) => {
-          expect(res.body.stepMin).to.equal(60);
+          expect(res.body.stepMin).to.equal(60*24);
           done();
        });
     });
@@ -75,7 +75,7 @@ describe('## Timeseries API', () => {
       .get("/api/timeseries?period=year&sensor=SENSOR")
       .expect(httpStatus.OK)
       .then((res) => {
-          expect(res.body.stepMin).to.equal(60*24);
+          expect(res.body.stepMin).to.equal(60*24*30);
           done();
        });
     });
