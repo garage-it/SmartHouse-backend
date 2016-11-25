@@ -19,16 +19,13 @@ export default function handleUnknownDeviceData() {
             mqttId: data.device
         }, function (error, records) {
             if (records.length) {
-                // save to mongo last known value
                 records = records.forEach((record)=> {
                     record = Object.assign(record, {
                         value: data.value,
                         valueUpdated: Date.now()
                     });
-                    record.save((err) => {
-                       if (err) {
-                         throw new Error("mongodb save error");
-                       }
+                    record.saveAsync().catch(()=> {
+                        debug(`Error: '${error}' occured`);
                     });
                 });
             } else {

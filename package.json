@@ -16,7 +16,8 @@
     "test-coverage": "nyc npm test",
     "report-coverage": "codecov < ./coverage/lcov.info",
     "api": "cross-env ENV_CONFIG=production node src/runner.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "postinstall": "babel src --out-dir dist"
   },
   "bin": "bin/index.js",
   "repository": {
