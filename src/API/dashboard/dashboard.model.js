@@ -6,14 +6,8 @@ import mongoose from 'mongoose';
 
 const DashboardSchema = new mongoose.Schema({
     devices: [{
-        device: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Sensor'
-        },
-        hidden: {
-            type: Boolean,
-            default: false
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Sensor'
     }]
 });
 

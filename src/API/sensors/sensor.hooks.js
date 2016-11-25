@@ -5,16 +5,12 @@ export default {createHooks};
 function createHooks(sensorSchema) {
     sensorSchema.post('save', (sensor, next) => {
         Dashboard
-            .findOneAndUpdate({}, {$push: {devices: {
-                device: sensor._id.toString()
-            }}}, next);
+            .findOneAndUpdate({}, {$push: {devices: sensor._id}}, next);
 
     });
 
     sensorSchema.post('remove', (sensor, next) => {
         Dashboard
-            .findOneAndUpdate({}, {$pull: {devices: {
-                device: sensor._id.toString()
-            }}}, next);
+            .findOneAndUpdate({}, {$pull: {devices: sensor._id}}, next);
     });
 }
