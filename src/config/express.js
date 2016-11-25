@@ -71,10 +71,6 @@ if (config.staticPath) {
     });
 }
 
-// View settings for some pages like FB OAuth2 Callback
-app.set('view engine', 'pug');
-app.set('views', `${config.root}/views`);
-
 // if error is not an instanceOf APIError, convert it.
 app.use((err, req, res, next) => {
     if (err instanceof expressValidation.ValidationError) {

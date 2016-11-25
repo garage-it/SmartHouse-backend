@@ -12,8 +12,7 @@ const plugins = gulpLoadPlugins();
 
 const paths = {
     js: ['./src/**/*.js', '!./src/**/*.test.js'],
-    dbPath: './db',
-    views: './src/views/**/*'
+    dbPath: './db'
 };
 
 gulp.task('start-mongo', (done) => {
@@ -52,24 +51,18 @@ gulp.task('babel', () =>
         .pipe(gulp.dest('dist'))
 );
 
-// Copy pug views for page controllers
-gulp.task('views', () =>
-    gulp.src(paths.views, {base: './src'})
-        .pipe(gulp.dest('dist'))
-);
-
 // Start server with restart on file changes
 gulp.task('nodemon', ['lint', 'babel'], () =>
     plugins.nodemon({
         script: path.join('dist', 'index.js'),
-        ext: 'js pug',
+        ext: 'js',
         ignore: ['node_modules', 'dist'],
-        tasks: ['lint', 'babel', 'views']
+        tasks: ['lint', 'babel']
     })
 );
 
 // gulp serve for development
-gulp.task('serve', () => runSequence('clean', ['nodemon', 'views']));
+gulp.task('serve', () => runSequence('clean', 'nodemon'));
 
 // default task: clean dist, compile js files and copy non-js files.
-gulp.task('default', () => runSequence('clean', ['babel', 'views']));
+gulp.task('default', () => runSequence('clean', 'babel'));

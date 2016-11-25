@@ -6,5 +6,4 @@ const router = express.Router();    // eslint-disable-line new-cap
 
 router.use('/auth', authRoutes);
 
-
 export default router;

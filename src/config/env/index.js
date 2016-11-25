@@ -12,7 +12,6 @@ const defaults = {
     root: path.join(__dirname, '/../..'),
     filesPath: path.join(__dirname, '/../../../files'),
     host: 'localhost',
-    publicUrl: process.env.PUBLIC_URL,
     token: {
         expires: 60*10,
         secret: 'session_secret',
