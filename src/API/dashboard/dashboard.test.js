@@ -21,8 +21,8 @@ describe('## Dashboard APIs', () => {
             deviceId = device._id;
             DashboardModel.create({
                 devices: [
-                    { device: device._id, hidden: false },
-                    { device: '5825941220788d3c52e7766c', hidden: false}
+                    deviceId,
+                    '5825941220788d3c52e7766c'
                 ]
             })
             .finally(done);
@@ -46,7 +46,7 @@ describe('## Dashboard APIs', () => {
             request(app)
                 .get('/api/dashboard')
                 .then(res => {
-                    expect(res.body.devices[0].device.mqttId).equals(device.mqttId);
+                    expect(res.body.devices[0].mqttId).deep.equals(device.mqttId);
                     done();
                 });
         });
@@ -79,9 +79,9 @@ describe('## Dashboard APIs', () => {
 
             request(app)
                 .put('/api/dashboard')
-                .send({devices: [{device: deviceId}]})
+                .send([device])
                 .then(res => {
-                    expect(res.body.devices[0].device.mqttId).to.equal(device.mqttId);
+                    expect(res.body.devices[0].mqttId).to.equal(device.mqttId);
                     done();
                 });
         });

@@ -11,16 +11,13 @@ function createHooks(sensorSchema) {
 
     sensorSchema.post('save', function(sensor, next) {
         if (this.wasNew) {
-            Dashboard.findOneAndUpdate({},{$push: {devices: {
-                device: sensor._id.toString()
-            }}}, next);
+            Dashboard
+                .findOneAndUpdate({}, {$push: {devices: sensor._id}}, next);
         }
     });
 
     sensorSchema.post('remove', (sensor, next) => {
         Dashboard
-            .findOneAndUpdate({}, {$pull: {devices: {
-                device: sensor._id.toString()
-            }}}, next);
+            .findOneAndUpdate({}, {$pull: {devices: sensor._id}}, next);
     });
 }
