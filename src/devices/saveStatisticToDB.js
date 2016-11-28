@@ -7,7 +7,7 @@ import config from '../config/env';
 const debug = Debugger('SH_BE:new-device-handler');
 const STATUS_EVENT = 'status';
 const STRATEGY = 'averages';
-const periods = ['month', 'day', 'hour', 'minute'];
+const periods = ['month', 'day', 'hour', 'minute', 'second'];
 const options = {
     driver: {
         type: 'mongodb',
