@@ -48,13 +48,15 @@ describe('Auth', () => {
             sut.facebookLogin(req, res);
         });
 
-        it('should redirect to FB OAuth url', () => {
+        it('should get FB OAuth url', () => {
             expect(oauth2Stub.getAuthorizeUrl).to.have.been.calledWith({
                 response_type: 'token',
                 scope: ['public_profile', 'email'].join(','),
                 redirect_uri: req.query.redirect_uri
             });
+        });
 
+        it('should redirect to FB OAuth url', () => {
             expect(res.redirect).to.have.been.calledWith(fbAuthUrl);
         });
     });
