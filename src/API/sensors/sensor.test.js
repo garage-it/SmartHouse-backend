@@ -191,7 +191,7 @@ describe('## Sensor APIs', () => {
             DashboardModel.findOne({})
                 .then(data => {
                     expect(data.devices
-                        .map(item => item.device.toString())
+                        .map(item => item.toString())
                         .sort())
                         .to.deep.equal(devices
                         .map(device => device._id)
