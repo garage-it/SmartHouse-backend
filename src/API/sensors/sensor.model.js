@@ -30,6 +30,12 @@ const SensorSchema = new mongoose.Schema({
         type: 'String',
         unique : true,
         required: true
+    },
+    value: {
+        type: Number
+    },
+    valueUpdated: {
+        type: Date
     }
 });
 

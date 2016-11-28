@@ -9,22 +9,23 @@ const debug = Debugger('SH_BE:device-connected');
 const DEVICE_INFO_EVENT = 'device-info';
 
 export default function trackDeviceConnection() {
+
     input.stream
         .filter(message => message.event === DEVICE_INFO_EVENT)
         .subscribe(saveDevice, onError);
 
     function saveDevice(data) {
-
         Sensor.find({
             mqttId: data.device
         }, function (error, records) {
-
             if (records.length) {
                 debug('Device already added');
             } else {
                 let sensorModel = Object.assign({
                     mqttId: data.device,
-                    executor: isExecutor(data.value.type)
+                    executor: isExecutor(data.value.type),
+                    value: data.value,
+                    valueUpdated: Date.now()                    
                 }, data.value);
 
                 let device = new Sensor(sensorModel);
@@ -51,7 +52,7 @@ export default function trackDeviceConnection() {
     function onError(error) {
         debug(`Error: '${error}' occured`);
     }
-    
+
     function isExecutor(type) {
         let exectorTypes = ['relay', 'servo'];
         return  exectorTypes.indexOf(type) !== -1;
