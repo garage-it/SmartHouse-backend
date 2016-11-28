@@ -14,7 +14,7 @@ import Debugger from 'debug';
 const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
-import statisticSaver from './devices/statisticSaver';
+import saveStatisticToDB from './devices/saveStatisticToDB';
 
 // promisify mongoose
 Promise.promisifyAll(mongoose);
@@ -54,6 +54,7 @@ if (config.plugAndPlay) {
     handleUnknownDeviceData();
 }
 
-const statistic = {};
-statisticSaver(statistic);
+const statisticSavers = {};
+saveStatisticToDB(statisticSavers);
+
 export default app;
