@@ -1,5 +1,6 @@
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
+import Promise from 'bluebird';
 
 describe('# New device handler', () => {
     let input,
@@ -7,7 +8,9 @@ describe('# New device handler', () => {
         Sensor,
         sut,
         mockedDevice,
-        findStub;
+        findStub,
+        saveAsyncSpy,
+        mockValue;
 
 
     beforeEach(() => {
@@ -19,7 +22,14 @@ describe('# New device handler', () => {
             write: env.spy()
         };
 
-        findStub = env.stub();
+        saveAsyncSpy = env.spy(function() {
+            console.log(arguments);
+            return Promise.resolve();
+        });
+
+        findStub = env.spy();
+
+        mockValue = 'mock-value';
 
         Sensor = class {
             constructor() {
@@ -44,12 +54,10 @@ describe('# New device handler', () => {
         expect(findStub).not.to.have.been.called.once;
     });
 
-
-
     describe('there are status events in db', () => {
         let findDeviceCallback;
         beforeEach(() => {
-            input.stream.next({ device: mockedDevice, event: 'status' });
+            input.stream.next({ device: mockedDevice, event: 'status', value: mockValue });
             findDeviceCallback = findStub.getCall(0).args[1];
         });
 
@@ -66,13 +74,26 @@ describe('# New device handler', () => {
         });
 
         it('will NOT add to output stream event if event device is NOT unique', function () {
-            findDeviceCallback('error', [{
-                mqttId: mockedDevice
-            }]);
+            let records = [{
+                mqttId: mockedDevice,
+                saveAsync: saveAsyncSpy
+            }];
+            findDeviceCallback('error', records);
             expect(output.write).not.to.have.been.called;
         });
 
+        it('will save devices value if such exists in db', function () {
+            saveAsyncSpy = env.spy(function() {
+                return Promise.resolve();
+            });
+            let records = [{
+                mqttId: mockedDevice,
+                saveAsync: saveAsyncSpy
+            }];
+
+            findDeviceCallback('error', records);
+            expect(saveAsyncSpy).to.have.been.called;
+        });
+
     });
-
-
 });

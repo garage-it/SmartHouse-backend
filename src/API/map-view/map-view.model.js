@@ -1,25 +1,50 @@
-import moongose, { Schema } from 'mongoose';
+import moongose from 'mongoose';
 import SensorModel from '../sensors/sensor.model';
 
-/**
- * MapView Schema
- */
-export default moongose.model('MapView', new Schema({
-    pictureName: String,
-    name: String,
-    description: String,
+
+const PositionSchema = {
+    x: {
+        type: Number,
+        required: true
+    },
+    y: {
+        type: Number,
+        required: true
+    }
+};
+
+const SensorPositionSchema = {
+    sensor: {
+        type: moongose.Schema.Types.ObjectId,
+        ref: SensorModel,
+        required: true
+    },
+    position: {
+        type: PositionSchema,
+        required: true
+    }
+};
+
+export default moongose.model('MapView', new moongose.Schema({
+    pictureName: {
+        type: String,
+        default: '',
+        required: false
+    },
+    name: {
+        type: String,
+        default: '',
+        required: true
+    },
+    description: {
+        type: String,
+        default: '',
+        required: true
+    },
     active: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
-    sensors: [{
-        sensor: {
-            type: Schema.Types.ObjectId,
-            ref: SensorModel
-        },
-        position: {
-            x: Number,
-            y: Number
-        }
-    }]
+    sensors: [SensorPositionSchema]
 }));

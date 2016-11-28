@@ -53,7 +53,7 @@ describe('files service', () => {
     describe('try delete file', () => {
 
         it('should resolve nothing when filename is missed', () => {
-            return sut.tryDeleteFile();
+            return sut.tryDeleteFile('');
         });
 
         context('when file name present', () => {
