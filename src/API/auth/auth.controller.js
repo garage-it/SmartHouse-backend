@@ -78,7 +78,9 @@ function generateTokenControllerAction(req, res) {
 }
 
 function createPassportAuthenticateMiddleware(strategyName) {
-    return passport.authenticate(strategyName, {session: false});
+    return passport.authenticate(strategyName, {
+        session: false
+    });
 }
 
 export default {

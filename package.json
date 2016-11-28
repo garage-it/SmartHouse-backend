@@ -64,6 +64,7 @@
     "morgan": "~1.6.1",
     "mqtt": "^1.8.0",
     "multer": "^1.2.0",
+    "oauth": "^0.9.14",
     "passport": "^0.3.2",
     "passport-facebook-token": "^3.3.0",
     "passport-local": "^1.0.0",
