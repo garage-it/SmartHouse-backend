@@ -44,15 +44,14 @@ describe('# Device statistic saver', () => {
         beforeEach(() => {
             statistic = {};
             sut(statistic);
+            input.stream.next({ device: mockedDevice, event: 'wrong' });
         });
 
         it('will connect to database when sut is invoked', () => {
-            input.stream.next({ device: mockedDevice, event: 'wrong' });
-            expect(MongoClient.connect).to.have.been.called.once;
+            expect(MongoClient.connect).to.have.been.called;
         });
 
         it('won\'t save data in db if event is NOT \'status\'', () => {
-            input.stream.next({ device: mockedDevice, event: 'wrong' });
             expect(caimanSaveStub).not.to.have.been.called.once;
         });
 
