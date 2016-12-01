@@ -2,8 +2,8 @@ import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import app from '../../index';
 
-describe('## Switcher Statistics API', () => {
-    const BASE_URL = '/api/switcher-statistics?';
+describe('## Servo Statistics API', () => {
+    const BASE_URL = '/api/servo-statistics?';
     const FULL_URL = `${BASE_URL}period=day&sensor=SENSOR`;
 
     beforeEach((done)=>{
@@ -14,18 +14,14 @@ describe('## Switcher Statistics API', () => {
         request(app)
             .get(BASE_URL)
             .expect(httpStatus.BAD_REQUEST)
-            .then(() => {
-                done();
-             });
+            .then(() => done());
     });
 
     it('should return responce with 200 status when all data is provided', (done) => {
         request(app)
             .get(FULL_URL)
             .expect(httpStatus.OK)
-            .then(() => {
-                done();
-             });
+            .then(() => done());
     });
 
     it('should return array with two elements', (done) => {
