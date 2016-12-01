@@ -1,6 +1,5 @@
 import proxyquire from 'proxyquire';
 import Rx from 'rxjs/Rx';
-import Promise from 'bluebird';
 
 describe('# New device handler', () => {
     let input,
@@ -9,7 +8,6 @@ describe('# New device handler', () => {
         sut,
         mockedDevice,
         findStub,
-        saveAsyncSpy,
         mockValue;
 
 
@@ -21,11 +19,6 @@ describe('# New device handler', () => {
         output = {
             write: env.spy()
         };
-
-        saveAsyncSpy = env.spy(function() {
-            console.log(arguments);
-            return Promise.resolve();
-        });
 
         findStub = env.spy();
 
@@ -65,7 +58,7 @@ describe('# New device handler', () => {
             expect(findStub).to.have.been.called.once;
         });
 
-        it('will add to output stream event if event device is unique', function () {
+        it('will add to output stream event if event device is unique', () => {
             findDeviceCallback('error', []);
             expect(output.write).to.have.been.calledWith({
                 device: mockedDevice,
@@ -73,27 +66,13 @@ describe('# New device handler', () => {
             });
         });
 
-        it('will NOT add to output stream event if event device is NOT unique', function () {
+        it('will NOT add to output stream event if event device is NOT unique', () => {
             let records = [{
-                mqttId: mockedDevice,
-                saveAsync: saveAsyncSpy
+                mqttId: mockedDevice
             }];
+
             findDeviceCallback('error', records);
             expect(output.write).not.to.have.been.called;
         });
-
-        it('will save devices value if such exists in db', function () {
-            saveAsyncSpy = env.spy(function() {
-                return Promise.resolve();
-            });
-            let records = [{
-                mqttId: mockedDevice,
-                saveAsync: saveAsyncSpy
-            }];
-
-            findDeviceCallback('error', records);
-            expect(saveAsyncSpy).to.have.been.called;
-        });
-
     });
 });
