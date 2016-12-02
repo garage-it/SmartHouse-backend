@@ -11,7 +11,7 @@ const exec = require('child_process').exec;
 const plugins = gulpLoadPlugins();
 
 const paths = {
-    js: ['./src/**/*.js', '!./src/**/*.test.js'],
+    js: ['./src/**/*.js', '!./src/**/*.test.*'],
     dbPath: './db'
 };
 

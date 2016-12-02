@@ -137,7 +137,7 @@
     ],
     "exclude": [
       "node_modules",
-      "**/*.test.js",
+      "**/*.test.*",
       "test/",
       "dist/",
       "coverage/",
