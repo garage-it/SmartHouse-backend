@@ -1,5 +1,4 @@
 import proxyquire from 'proxyquire';
-import '../../test/config/mongo';
 import mongoose from 'mongoose';
 
 describe('# Scenario Model', () => {
