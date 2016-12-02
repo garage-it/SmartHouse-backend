@@ -7,4 +7,6 @@ const
     load = require('./load');
 
 const SRC_PATH = path.join(__dirname, '../src');
-load(SRC_PATH);
+const TEST_PATTERN = '.test.js';
+
+load(SRC_PATH, TEST_PATTERN);

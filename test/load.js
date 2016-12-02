@@ -4,10 +4,8 @@ const
     glob = require('glob'),
     path = require('path');
 
-const TESTS_PATTERN = '/**/*.test.js';
-
-module.exports = function load(sourceDir) {
+module.exports = function load(sourceDir, testPattern) {
     require('./config');
-    const SOURCE_TESTS_PATTERN = path.join(sourceDir, TESTS_PATTERN);
+    const SOURCE_TESTS_PATTERN = path.join(sourceDir, `/**/*${testPattern}`);
     glob.sync(SOURCE_TESTS_PATTERN).forEach(spec => require(spec));
 };
