@@ -1,7 +1,6 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import app from '../../index';
-import '../../../test/config/mongo';
 import mongoose from 'mongoose';
 import ScenarioModel from '../../scenarios/scenario.model';
 

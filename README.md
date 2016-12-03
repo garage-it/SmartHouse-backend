@@ -28,13 +28,33 @@ npm run api
 ```
 
 ### Execute tests:
-```sh
-# run tests
-npm test
 
-# run tests with coverage
+```sh
+# run unit and integration tests
+npm test
+```
+
+```sh
+# run all tests with coverage
 npm run test-coverage
 ```
+
+```sh
+# run only unit tests
+npm run test:unit
+ 
+# watch mode
+npm run test-watch:unit 
+```
+
+```sh
+# run only integration tests
+npm run test:integration
+ 
+# watch mode
+npm run test-watch:integration 
+```
+
 
 ### Other tasks:
 ```sh
