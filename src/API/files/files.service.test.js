@@ -33,7 +33,7 @@ describe('files service', () => {
         });
 
         it('should clean files folder content', () => {
-            del.should.calledWith(path.join(config.filesPath,'/**'));
+            del.should.calledWith(path.join(config.filesPath,'**'));
         });
 
         it('should delegate delete response handling', () => {
