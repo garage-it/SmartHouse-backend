@@ -4,6 +4,7 @@ import Rx from 'rxjs/Rx';
 describe('# Save last device value', () => {
     let sut,
         input,
+        output,
         Sensor,
         mockDevice,
         mockValue;
@@ -11,6 +12,9 @@ describe('# Save last device value', () => {
     beforeEach(() => {
         input = {
             stream: new Rx.Subject()
+        };
+        output = {
+          stream: new Rx.Subject()
         };
 
         mockValue = 'mock-value';
@@ -25,13 +29,14 @@ describe('# Save last device value', () => {
 
         sut = proxyquire('./saveDeviceLastValue', {
             '../data-streams/input': input,
+            '../data-streams/output': output,
             '../API/sensors/sensor.model': Sensor
         });
 
         sut();
     });
 
-    describe('new data comes', () => {
+    describe('new data comes to input stream', () => {
         let onDeviceFound, saveAsync;
 
         beforeEach(() => {
@@ -70,4 +75,24 @@ describe('# Save last device value', () => {
             });
         });
     });
+
+    describe('new data comes to output stream', () => {
+        let onDeviceFound, saveAsync, records;
+
+        beforeEach(() => {
+            saveAsync = env.stub();
+            output.stream.next({ device: mockDevice, event: 'status', value: mockValue });
+            onDeviceFound = Sensor.find.getCall(0).args[1];
+            records = [{
+                someKey: 'someValue',
+                saveAsync
+            }];
+            onDeviceFound(null, records);
+        });
+
+        it('should set last sensor value', () => {
+            records[0].value.should.equal(mockValue);
+        });
+    });
+
 });
