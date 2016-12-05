@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import app from '../../index';
 
 describe('## Servo Statistics API', () => {
-    const BASE_URL = '/api/servo-statistics?';
+    const BASE_URL = '/api/switcher-statistics?';
     const FULL_URL = `${BASE_URL}period=day&sensor=SENSOR`;
 
     beforeEach((done)=>{
