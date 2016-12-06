@@ -4,11 +4,12 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import sensorHooks from './sensor.hooks';
 
+const Schema = mongoose.Schema;
 /**
  * Sensor Schema
  */
 
-const SensorSchema = new mongoose.Schema({
+const SensorSchema = new Schema({
     description: {
         type: String
     },
@@ -32,10 +33,12 @@ const SensorSchema = new mongoose.Schema({
         required: true
     },
     value: {
-        type: Number
+        type: Schema.Types.Mixed,
+        required: false
     },
     valueUpdated: {
-        type: Date
+        type: Date,
+        required: false
     }
 });
 

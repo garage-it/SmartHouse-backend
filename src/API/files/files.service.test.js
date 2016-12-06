@@ -1,4 +1,5 @@
 const proxyquire = require('proxyquire').noCallThru();
+const path = require('path');
 
 describe('files service', () => {
 
@@ -32,7 +33,7 @@ describe('files service', () => {
         });
 
         it('should clean files folder content', () => {
-            del.should.calledWith(`${config.filesPath}/**`);
+            del.should.calledWith(path.join(config.filesPath,'**'));
         });
 
         it('should delegate delete response handling', () => {
@@ -45,7 +46,7 @@ describe('files service', () => {
     describe('resolve file path', () => {
 
         it('should resolve file path relative to config', () => {
-            sut.resolveFilePath(fileName).should.equal(`${config.filesPath}/${fileName}`);
+            sut.resolveFilePath(fileName).should.equal(path.join(config.filesPath, fileName));
         });
 
     });
@@ -61,7 +62,7 @@ describe('files service', () => {
             it('should delete file', () => {
                 return sut.tryDeleteFile(fileName)
                     .then(() => {
-                        del.should.calledWith(`${config.filesPath}/${fileName}`);
+                        del.should.calledWith(path.join(config.filesPath, fileName));
                     });
             });
 
