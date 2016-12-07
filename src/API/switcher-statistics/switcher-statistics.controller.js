@@ -22,10 +22,10 @@ function query(req, res, next) {
     }
 
     const data = [{
-        name: 'Time ON',
+        name: 'ON',
         value: Math.floor((Math.random() * 100) + 1)
     }, {
-        name: 'Time OFF',
+        name: 'OFF',
         value: Math.floor((Math.random() * 100) + 1)
     }];
 
