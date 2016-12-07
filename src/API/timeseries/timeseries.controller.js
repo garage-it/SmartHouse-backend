@@ -1,6 +1,6 @@
 import APIError from '../helpers/APIError';
 import httpStatus from 'http-status';
-import moment from 'moment';
+import timeSeriesService from './timeseries.service';
 
 const PERIOD_TO_INTERVAL = {
     'day': 60,
@@ -22,45 +22,23 @@ function query(req, res, next) {
     }
 
     const {sensor, period} = req.query;
-    const stepMin = PERIOD_TO_INTERVAL[period];
-    const from = moment();
-    const to = from.clone();
-
-    // Period
-    switch (period) {
-    case 'day':
-        from.subtract(1, 'day');
-        break;
-    case 'week':
-        from.subtract(7, 'day');
-        break;
-    case 'month':
-        from.subtract(1, 'month');
-        break;
-    case 'year':
-        from.subtract(1, 'year');
-        break;
-    }
-
+    const devices = timeSeriesService.getDevicesStatistic();
+    
     const data = [];
-    let current = to.clone();
 
-    while (current >= from) {
-        data.push({
-            date: current.toString(),
-            value: Math.floor(Math.random()*100)
-        });
-        current = current.subtract(stepMin, 'minutes');
-    }
+    devices[sensor].getCollection(new Date(), period).each( (err, item) => {
+        if(item) {
+            data.push({
+                date: item.startDate,
+                value: item.data.n
+            });
 
-    data.reverse();
-
-    res.json({
-        from,
-        to,
-        sensor,
-        stepMin,
-        data
+        } else {
+            res.json({
+                sensor,
+                data
+            });
+        }
     });
 }
 

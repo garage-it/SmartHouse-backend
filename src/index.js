@@ -14,7 +14,7 @@ import Debugger from 'debug';
 const debug = Debugger('SH_BE:main');
 import trackDeviceConnection from  './devices/deviceConnected';
 import handleUnknownDeviceData from  './devices/newDeviceHandler';
-import saveStatisticToDB from './devices/saveStatisticToDB';
+import timeSeriesService from './API/timeseries/timeseries.service';
 import saveDeviceLastValue from './devices/saveDeviceLastValue';
 
 // promisify mongoose
@@ -55,8 +55,7 @@ if (config.plugAndPlay) {
     handleUnknownDeviceData();
 }
 
-const statisticSavers = {};
-saveStatisticToDB(statisticSavers);
+timeSeriesService.saveStatisticToDB();
 
 saveDeviceLastValue();
 
