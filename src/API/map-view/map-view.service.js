@@ -6,6 +6,7 @@ import mapViewDtoConverter from './map-view-dto.converter';
 const mapViewService = {
     getById,
     create,
+    query,
     updatePicture
 };
 
@@ -18,6 +19,10 @@ function getById(id) {
             model: SensorModel
         })
         .then((mapView) => new MapViewModel(mapView));
+}
+
+function query() {
+    return MapViewModel.findAsync({});
 }
 
 function create(createDto) {

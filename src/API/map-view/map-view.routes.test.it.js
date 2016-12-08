@@ -127,7 +127,6 @@ describe('/api/map-view', () => {
 
         describe('GET /', () => {
 
-
             beforeEach(() => {
                 sut = request(app)
                     .get('/api/map-view/' + mapView.id )
@@ -181,4 +180,40 @@ describe('/api/map-view', () => {
 
     });
 
+    describe('GET /', () => {
+
+        let mapViewId1, mapViewId2;
+
+        beforeEach('create map view', () => {
+            return Promise.all([
+                mapViewService.create({
+                    name: 'name',
+                    description: 'desc',
+                    active: true
+                }).then((createdMapView) => mapViewId1 = createdMapView._id),
+                mapViewService.create({
+                    name: 'name',
+                    description: 'desc',
+                    active: true
+                }).then((createdMapView) => mapViewId2 = createdMapView._id)
+            ]);
+        });
+
+        beforeEach(() => {
+            sut = request(app)
+                .get('/api/map-view')
+                .expect(OK)
+                .then(({ body }) => body);
+        });
+
+        it('should respond with array that include map views', () => {
+            return sut
+                .then(([storedMapView1, storedMapView2]) => {
+                    var dbSavedIds = [mapViewId1.toString(), mapViewId2.toString()].sort();
+                    var responceIdsList = [storedMapView1._id, storedMapView2._id].sort();
+
+                    dbSavedIds.should.be.deep.equal(responceIdsList);
+                });
+        });
+    });
 });
