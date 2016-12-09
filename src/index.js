@@ -32,8 +32,7 @@ if (config.seedDB) {
     debug('populating seed data');
     seed.populateUsers();
     seed.populateScenarios();
-    seed.populateSensors()
-        .then(seed.populateDashboard);
+    seed.populateSensors();
 }
 
 // Create websocket server

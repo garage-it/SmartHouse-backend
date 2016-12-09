@@ -1,16 +1,30 @@
-import Dashboard from './dashboard.model.js';
+import DashboardModel from './dashboard.model';
+import dashboardService from './dashboard.service';
+
+export default {
+    create,
+    update,
+    query
+};
+
+function create(req, { send }, next) {
+    const dashboardView = req.body;
+    dashboardService.create(dashboardView)
+        .then(send)
+        .catch(next);
+}
 
 function update(req, res) {
-    Dashboard.findOneAndUpdateAsync({}, req.body, { new: true })
+    DashboardModel.findOneAndUpdateAsync({}, req.body, { new: true })
         .then(dashboard => {
-            Dashboard.populate(dashboard, getDevicePopulationConfig(), (err, result) => {
+            DashboardModel.populate(dashboard, getDevicePopulationConfig(), (err, result) => {
                 res.json(result);
             });
         });
 }
 
 function query(req, res) {
-    Dashboard.findOne({})
+    DashboardModel.findOne({})
         .populate(getDevicePopulationConfig())
         .then(result => {
             res.json(result);
@@ -24,4 +38,3 @@ function getDevicePopulationConfig() {
     };
 }
 
-export default { update, query };

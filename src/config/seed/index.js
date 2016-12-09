@@ -7,7 +7,6 @@
 
 import { populateScenarios } from './scenarios';
 import { populateDevices } from './devices';
-import { populateDashboard } from './dashboard';
 import { populateUsers } from './users';
 
-export { populateDevices as populateSensors, populateScenarios, populateDashboard, populateUsers };
+export { populateDevices as populateSensors, populateScenarios, populateUsers };
