@@ -2,6 +2,7 @@ import MapViewModel from './map-view.model';
 import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
 import mapViewDtoConverter from './map-view-dto.converter';
+import viewService from '../view/view.service';
 
 const mapViewService = {
     getById,
@@ -23,7 +24,10 @@ function getById(id) {
 function create(createDto) {
     return new MapViewModel(mapViewDtoConverter.create(createDto))
         .save()
-        .then(onActionCompleted);
+        .then((mapView) => {
+            viewService.create({mapView});
+            return mapView;
+        });
 }
 
 function updatePicture(id, newName) {

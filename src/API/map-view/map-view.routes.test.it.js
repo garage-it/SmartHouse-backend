@@ -6,6 +6,7 @@ import app from '../../index';
 import filesService from '../files/files.service';
 import mapViewService from './map-view.service';
 import SensorModel from '../sensors/sensor.model';
+import ViewModel from '../view/view.model';
 
 Promise.promisifyAll(fs);
 
@@ -98,7 +99,7 @@ describe('/api/map-view', () => {
 
             it('should link sensors', () => {
                 return sut.then(({ sensor }) => {
-                    sensor._id.should.equal(sensors[0].sensor);
+                    sensor.should.equal(sensors[0].sensor);
                 });
             });
 
@@ -108,6 +109,24 @@ describe('/api/map-view', () => {
                 });
             });
 
+        });
+
+        describe('view', () => {
+            let view;
+
+            beforeEach(() => {
+                sut = sut.then((mapView) => {
+                    return ViewModel
+                        .find({ mapView: mapView._id })
+                        .then(view => view);
+                });
+            });
+
+            it('should create view with ref on map-view', () => {
+                sut.then(view => {
+                    view.length.should.equal(1);
+                });
+            });
         });
 
     });

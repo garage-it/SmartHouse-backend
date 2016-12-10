@@ -4,6 +4,9 @@ import dashboardCtrl from './dashboard.controller.js';
 const router = express.Router();// eslint-disable-line new-cap
 
 router.route('/')
+
+    .post(dashboardCtrl.create)
+
     /** GET /api/dashboard - Get dashboard */
     .get(dashboardCtrl.query)
 

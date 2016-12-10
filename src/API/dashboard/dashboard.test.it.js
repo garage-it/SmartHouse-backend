@@ -1,13 +1,18 @@
 import request from 'supertest-as-promised';
-import httpStatus from 'http-status';
+import { OK } from 'http-status';
 import app from '../../index';
 import DashboardModel from './dashboard.model';
 import SensorModel from '../sensors/sensor.model';
 
 describe('## Dashboard APIs', () => {
 
+    let sut;
     let device;
     let deviceId;
+
+    beforeEach(() => {
+        sut = request(app);
+    });
 
     beforeEach(done => {
 
@@ -30,12 +35,52 @@ describe('## Dashboard APIs', () => {
 
     });
 
+    describe('# POST /api/dashboard/', () => {
+        let body;
+        let dashboard;
+
+        beforeEach(() => {
+            body = {
+                devices: []
+            };
+
+            sut = sut.post('/api/dashboard')
+            .send(body)
+            .expect(OK)
+            .then(({ body }) => body);
+        });
+
+        it('should create view', () => {
+            return sut.then((view) => {
+                console.log(view);
+                view.should.be.an('object');
+            });
+        });
+
+        it('should create view with ref on dashboard', () => {
+            return sut.then((view) => {
+                view['dashboard'].should.be.a('string');
+            });
+        });
+
+        it('should create dashboard', () => {
+            sut = sut.then((view) => {
+                return DashboardModel
+                    .find({ _id: view.dashboard })
+                    .then(dashboard => dashboard);
+            });
+            return sut.then((dashboard) => {
+                dashboard.length.should.equal(1);
+            });
+        });
+    });
+
     describe('# GET /api/dashboard/', () => {
 
         it('should get dashboard', done => {
             request(app)
                 .get('/api/dashboard')
-                .expect(httpStatus.OK)
+                .expect(OK)
                 .then(res => {
                     expect(res.body).to.be.an('object');
                     done();
@@ -54,7 +99,7 @@ describe('## Dashboard APIs', () => {
         it('should filter unpopulated sensors', done => {
             request(app)
                 .get('/api/dashboard')
-                .expect(httpStatus.OK)
+                .expect(OK)
                 .then(res => {
                     expect(res.body.devices.length).equals(1);
                     done();
@@ -68,7 +113,7 @@ describe('## Dashboard APIs', () => {
             request(app)
                 .put('/api/dashboard')
                 .send({devices: []})
-                .expect(httpStatus.OK)
+                .expect(OK)
                 .then(res => {
                     expect(res.body.devices).to.deep.equal([]);
                     done();
