@@ -15,15 +15,19 @@ export default mapViewService;
 
 function getById(id) {
     return MapViewModel.findById(id)
-        .populate({
-            path: 'sensors.sensor',
-            model: SensorModel
-        })
+        .populate(getSensorPopulationConfig())
         .then((mapView) => new MapViewModel(mapView));
 }
 
 function query() {
-    return MapViewModel.findAsync({});
+    return MapViewModel.find().populate(getSensorPopulationConfig());
+}
+
+function getSensorPopulationConfig() {
+    return {
+        path: 'sensors.sensor',
+        model: SensorModel
+    };
 }
 
 function create(createDto) {
