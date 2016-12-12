@@ -5,12 +5,18 @@ import mapViewDtoConverter from './map-view-dto.converter';
 import viewService from '../view/view.service';
 
 const mapViewService = {
+    getAll,
     getById,
     create,
     updatePicture
 };
 
 export default mapViewService;
+
+function getAll() {
+    return MapViewModel.find({})
+        .then((mapViews) => mapViews.map(mapView => new MapViewModel(mapView)));
+}
 
 function getById(id) {
     return MapViewModel.findById(id)

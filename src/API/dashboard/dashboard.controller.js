@@ -24,7 +24,7 @@ function update(req, res) {
 }
 
 function query(req, res) {
-    DashboardModel.findOne({})
+    DashboardModel.find({})
         .populate(getDevicePopulationConfig())
         .then(result => {
             res.json(result);

@@ -3,10 +3,17 @@ import fileUploadMiddleware from '../files/file-upload.middleware';
 import mapViewService from './map-view.service';
 
 export default {
+    query,
     getById,
     create,
     uploadPicture: compose(fileUploadMiddleware, onFileUploaded)
 };
+
+function query(req, { send }, next) {
+    mapViewService.getAll()
+        .then(send)
+        .catch(next);
+}
 
 function getById(req, { send }, next) {
 
