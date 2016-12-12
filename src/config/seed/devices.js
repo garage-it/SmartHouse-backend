@@ -36,6 +36,13 @@ devices.push(new sensorModel({
     servo: true
 }));
 
+devices.push(new sensorModel({
+    description: 'switcher',
+    type: 'some other type',
+    metrics: 'boolean',
+    mqttId: 'switcher'
+}));
+
 function populateDevices() {
     return sensorModel.find({}).remove(function() {
         sensorModel.create(...devices);
