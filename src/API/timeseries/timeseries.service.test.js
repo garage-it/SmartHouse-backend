@@ -33,17 +33,24 @@ describe('# Device statistic saver', () => {
             connect: env.stub().callsArg(1)
         };
 
-        sut = proxyquire('./saveStatisticToDB', {
-            '../data-streams/input': input,
+        sut = proxyquire('./timeseries.service', {
+            '../../data-streams/input': input,
             'mongodb': { MongoClient },
             'caiman': { Caiman }
         });
     });
 
-    describe('new data comes', () => {
+    it('will get devices statistic', () => {
+        const device = 'device';
+        sut.saveStatisticToDB();
+        input.stream.next({ device, value: 'value', event: 'status' });
+
+        expect(sut.getDevicesStatistic()[device]).to.be.an.instanceof(Caiman);
+    });
+
+    describe('when new data comes', () => {
         beforeEach(() => {
-            statistic = {};
-            sut(statistic);
+            sut.saveStatisticToDB();
             input.stream.next({ device: mockedDevice, event: 'wrong' });
         });
 
@@ -65,8 +72,8 @@ describe('# Device statistic saver', () => {
             });
 
 
-            it('will create new statistic saver on statisticSavers object', () => {
-                expect(statistic).to.have.property(mockedDevice);
+            it('will create new statistic saver', () => {
+                expect(sut.getDevicesStatistic()).to.have.property(mockedDevice);
             });
 
             it('will call save function from caiman', () => {
@@ -75,7 +82,7 @@ describe('# Device statistic saver', () => {
         });
     });
 
-    describe('comes data for existing device', () => {
+    describe('when data comes for existing device', () => {
 
         beforeEach(() => {
             statistic = {
@@ -83,14 +90,12 @@ describe('# Device statistic saver', () => {
                     save: env.stub()
                 }
             };
-            sut(statistic);
+            sut.saveStatisticToDB(statistic);
             input.stream.next({ device: mockedDevice, event: 'status' });
         });
 
         it('will use existing caiman saver to save data to db', () => {
-            expect(statistic[mockedDevice].save).to.have.been.called.once;
+            expect(sut.getDevicesStatistic()[mockedDevice].save).to.have.been.called.once;
         });
     });
-
-
 });
