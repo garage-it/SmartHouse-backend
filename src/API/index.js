@@ -9,6 +9,7 @@ import switcherStatisticsRoutes from './switcher-statistics/switcher-statistics.
 import user from './user/user.routes';
 import auth from './auth/auth.routes';
 import filesRoutes from './files/files.routes';
+import viewRoutes from './view/view.routes';
 import mapViewRoutes from './map-view/map-view.routes';
 import responseBindMiddleware from './middleware/response-bind.middleware';
 
@@ -30,6 +31,7 @@ router.use('/switcher-statistics', switcherStatisticsRoutes);
 router.use('/user', user);
 router.use('/auth', auth);
 router.use('/files', filesRoutes);
+router.use('/views', viewRoutes);
 router.use('/map-view', mapViewRoutes);
 
 

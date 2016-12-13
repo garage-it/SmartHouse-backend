@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const ViewSchema = new mongoose.Schema({
     dashboard: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'DashboardModel'
+        ref: 'Dashboard'
     },
     mapView: {
         type: mongoose.Schema.Types.ObjectId,
