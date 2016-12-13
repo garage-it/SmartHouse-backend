@@ -31,7 +31,7 @@ router.use('/switcher-statistics', switcherStatisticsRoutes);
 router.use('/user', user);
 router.use('/auth', auth);
 router.use('/files', filesRoutes);
-router.use('/view', viewRoutes);
+router.use('/views', viewRoutes);
 router.use('/map-view', mapViewRoutes);
 
 
