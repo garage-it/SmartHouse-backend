@@ -6,7 +6,7 @@ describe('# GET /view', () => {
 
     it('should return array of view objects', done => {
         request(app)
-            .get('/api/view')
+            .get('/api/views')
             .expect(OK)
             .then(res => {
                 expect(res.body).to.be.a('array');                
