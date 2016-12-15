@@ -63,7 +63,6 @@ app.use('/', pageRoutes);
 // mount API routes on /api path
 app.use('/api', apiRoutes);
 
-
 // fallback for work with HTML5 History API
 // should be defined after back-end routes (like /api)
 if (config.staticPath) {
