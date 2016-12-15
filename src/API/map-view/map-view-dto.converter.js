@@ -7,9 +7,9 @@ const mapViewDtoConverter = {
 
 export default mapViewDtoConverter;
 
-function create({ name, description, active, sensors }) {
+function create({ name, description, active, defaultView, sensors }) {
     return _.omitBy(
-        { name, description, active, sensors },
+        { name, description, active, default: defaultView, sensors },
         (value) => _.isUndefined(value)
     );
 }
