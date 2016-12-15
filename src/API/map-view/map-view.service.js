@@ -27,6 +27,8 @@ function query() {
 }
 
 function create(createDto) {
+    createDto.defaultView = createDto.default; // TODO Should be moved into view model after TG-431 implemented
+    console.log('_____________', createDto);
     return new MapViewModel(mapViewDtoConverter.create(createDto))
         .save()
         .then((mapView) => {

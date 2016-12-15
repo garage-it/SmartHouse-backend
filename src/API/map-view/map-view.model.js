@@ -46,5 +46,10 @@ export default moongose.model('MapView', new moongose.Schema({
         default: false,
         required: true
     },
+    default:{
+        type: Boolean,
+        default: false,
+        required: false
+    },
     sensors: [SensorPositionSchema]
 }));
