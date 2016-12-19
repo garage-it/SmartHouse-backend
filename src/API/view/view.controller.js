@@ -1,39 +1,31 @@
 import ViewModel from './view.model';
+import viewService from './view.service';
+
+import       MapViewModel from '../map-view/map-view.model';
+import DashboardViewModel from '../dashboard-view/dashboard-view.model';
+import        SensorModel from '../sensors/sensor.model';
 
 export default {
     query,
-    getById
+    create,
+    get
 };
 
-function query(req, res) {
-    ViewModel.find()
-      .populate(getViewPopulationConfig())
-      .then(result => {
-          res.json(result);
-      });
-}
-
-function getById(req, { send }, next) {
+function get(req, { send }, next) {
     const { id } = req.params;
-
-    ViewModel.findById(id)
-        .populate(getViewPopulationConfig())
+    viewService.getById(id)
         .then(send)
         .catch(next);
 }
 
-function getViewPopulationConfig() {
-    return [{
-        path: 'mapView',
-        populate: {
-            path: 'sensors.sensor',
-            model: 'Sensor'
-        }
-    }, {
-        path: 'dashboard',
-        populate: {
-            path: 'devices',
-            model: 'Sensor'
-        }
-    }];
+function query(req, res, next) {
+    viewService.getAll()
+        .then(result => res.json(result))
+        .catch(next);
+}
+
+function create(req, res, next) {
+    viewService.create(req.body)
+        .then(view => res.json(view))
+        .catch(next);
 }

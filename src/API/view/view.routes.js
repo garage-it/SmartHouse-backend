@@ -5,10 +5,15 @@ const router = express.Router();// eslint-disable-line new-cap
 
 router.route('/')
 
-    .get(viewCtrl.query);
+    /** GET /api/view - Get list of all views */
+    .get(viewCtrl.query)
+
+    /** Create /api/view - Add new view */
+    .post(viewCtrl.create);
 
 router.route('/:id')
 
-    .get(viewCtrl.getById);
+    /** GET /api/view - Get view */
+    .get(viewCtrl.get);
 
 export default router;
