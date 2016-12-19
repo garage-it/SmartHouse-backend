@@ -7,4 +7,8 @@ router.route('/')
 
     .get(viewCtrl.query);
 
+router.route('/:id')
+
+    .get(viewCtrl.getById);
+
 export default router;
