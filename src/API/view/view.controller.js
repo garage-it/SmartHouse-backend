@@ -1,9 +1,4 @@
-import ViewModel from './view.model';
 import viewService from './view.service';
-
-import MapViewModel from '../map-view/map-view.model';
-import DashboardViewModel from '../dashboard-view/dashboard-view.model';
-import SensorModel from '../sensors/sensor.model';
 
 export default {
     query,
