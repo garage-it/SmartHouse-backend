@@ -8,6 +8,7 @@ import        SensorModel from '../sensors/sensor.model';
 
 const viewService = {
     getById,
+    getAll,
     create
 };
 

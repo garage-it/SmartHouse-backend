@@ -1,7 +1,6 @@
 import MapViewModel from './map-view.model';
 import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
-import viewService from '../view/view.service';
 
 const mapViewService = {
     create,
