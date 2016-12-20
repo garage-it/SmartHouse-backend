@@ -1,10 +1,10 @@
-import       mapViewService from '../map-view/map-view.service';
+import mapViewService from '../map-view/map-view.service';
 import dashboardViewService from '../dashboard-view/dashboard-view.service';
 
-import          ViewModel from '../view/view.model';
-import       MapViewModel from '../map-view/map-view.model';
+import ViewModel from '../view/view.model';
+import MapViewModel from '../map-view/map-view.model';
 import DashboardViewModel from '../dashboard-view/dashboard-view.model';
-import        SensorModel from '../sensors/sensor.model';
+import SensorModel from '../sensors/sensor.model';
 
 const viewService = {
     getById,

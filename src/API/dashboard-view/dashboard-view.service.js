@@ -1,5 +1,5 @@
 import DashboardViewModel from './dashboard-view.model';
-import        SensorModel from '../sensors/sensor.model';
+import SensorModel from '../sensors/sensor.model';
 
 const dashboardViewService = {
     create
