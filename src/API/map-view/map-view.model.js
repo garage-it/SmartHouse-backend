@@ -1,7 +1,6 @@
 import moongose from 'mongoose';
 import SensorModel from '../sensors/sensor.model';
 
-
 const PositionSchema = {
     x: {
         type: Number,
@@ -31,25 +30,10 @@ export default moongose.model('MapView', new moongose.Schema({
         default: '',
         required: false
     },
-    name: {
-        type: String,
-        default: '',
-        required: true
-    },
-    description: {
-        type: String,
-        default: '',
-        required: true
-    },
     active: {
         type: Boolean,
         default: false,
         required: true
     },
-    default:{
-        type: Boolean,
-        default: false,
-        required: false
-    },
-    sensors: [SensorPositionSchema]
+    sensors: [ SensorPositionSchema ]
 }));

@@ -2,7 +2,7 @@ import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import app from '../../index';
 import SensorModel from './sensor.model';
-import DashboardModel from '../dashboard/dashboard.model';
+import DashboardViewModel from '../dashboard-view/dashboard-view.model';
 
 describe('## Sensor APIs', () => {
 
@@ -37,7 +37,7 @@ describe('## Sensor APIs', () => {
             mqttId: 'humidity'
         }));
 
-        DashboardModel
+        DashboardViewModel
             .create({devices: []})
             .then(() => SensorModel.create(...raw_devices))
             .then(()=>{
@@ -188,7 +188,7 @@ describe('## Sensor APIs', () => {
         });
 
         function compareDevicesBetweenDashboard(done) {
-            DashboardModel.findOne({})
+            DashboardViewModel.findOne({})
                 .then(data => {
                     expect(data.devices
                         .map(item => item.toString())
