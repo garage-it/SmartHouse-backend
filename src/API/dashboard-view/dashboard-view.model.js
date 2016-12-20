@@ -4,6 +4,7 @@ import SensorModel from '../sensors/sensor.model';
 const DashboardViewSchema = new mongoose.Schema({
     active: {
         type: Boolean,
+        default: false,
         required: true
     },
     devices: [{

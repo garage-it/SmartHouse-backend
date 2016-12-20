@@ -11,19 +11,19 @@ const ViewSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    default: {
+    defaultSubview: {
         type: String,
         required: true
     },
     dashboardSubview: {
         type: mongoose.Schema.Types.ObjectId,
         ref: DashboardViewModel,
-        required: true
+        required: false
     },
     mapSubview: {
         type: mongoose.Schema.Types.ObjectId,
         ref: MapViewModel,
-        required: true
+        required: false
     }
 });
 
