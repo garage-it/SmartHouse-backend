@@ -3,6 +3,7 @@ import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
 
 const mapViewService = {
+    getById,
     create,
     updatePicture
 };

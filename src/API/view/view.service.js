@@ -9,7 +9,8 @@ import SensorModel from '../sensors/sensor.model';
 const viewService = {
     getById,
     getAll,
-    create
+    create,
+    update
 };
 
 export default viewService;
@@ -55,6 +56,17 @@ function create(createDto) {
 
         return new ViewModel(createDto).save();
     }).then(onActionCompleted);
+}
+
+function update(updateDto) {
+    const mapView = updateDto.mapSubview,
+        dashboardView = updateDto.dashboardSubview;
+
+    return Promise.all([
+        MapViewModel.findByIdAndUpdate(mapView._id, mapView).exec(),
+        DashboardViewModel.findByIdAndUpdate(dashboardView._id, dashboardView).exec(),
+        ViewModel.findByIdAndUpdate(updateDto._id, updateDto).exec()
+    ]).then((values) => onActionCompleted(values[2]));
 }
 
 function onActionCompleted({ id }) {

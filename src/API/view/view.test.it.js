@@ -135,7 +135,7 @@ describe('/api/views', () => {
                 .catch(done);
         });
 
-        it('should return 404 error when provided id does not exist', done => {
+        it('should return an error when provided id does not exist', done => {
             request(app)
                 .get('/api/views/invalid_id')
                 .then(res => {
@@ -145,4 +145,76 @@ describe('/api/views', () => {
                 .catch(done);
         });
     });
+
+    describe('# POST /views/:id', () => {
+
+        let view;
+
+        beforeEach('create views', () => {
+            return Promise.resolve(
+                viewService.create({
+                    name: 'name',
+                    description: 'desc',
+                    defaultSubview: 'mapSubview',
+                    "dashboardSubview": {
+                        "active": true,
+                        "devices": [ sensorId ]
+                    },
+                    "mapSubview": {
+                        "active": true,
+                        "sensors": [
+                            {
+                                "position": {
+                                    "x": 100,
+                                    "y": 134
+                                },
+                                "sensor": sensorId
+                            }
+                        ]
+                    }
+                }).then(createdView => view = createdView));
+        });
+
+        it('should update the view model', done => {
+            view.name += "[changed]";
+            request(app)
+                .post(`/api/views/${view._id}`)
+                .send(view)
+                .expect(OK)
+                .then(res => {
+                    expect(res.body.name).to.be.equal(view.name);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should update the dashboard subview model', done => {
+            view.dashboardSubview.devices = [];
+
+            request(app)
+                .post(`/api/views/${view._id}`)
+                .send(view)
+                .expect(OK)
+                .then(res => {
+                    expect(res.body.dashboardSubview.devices.length).to.be.equal(0);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should update the map subview model', done => {
+            view.mapSubview.sensors = [];
+
+            request(app)
+                .post(`/api/views/${view._id}`)
+                .send(view)
+                .expect(OK)
+                .then(res => {
+                    expect(res.body.mapSubview.sensors.length).to.be.equal(0);
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
 });
