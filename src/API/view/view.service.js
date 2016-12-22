@@ -59,14 +59,18 @@ function create(createDto) {
 }
 
 function update(updateDto) {
-    const mapView = updateDto.mapSubview,
-        dashboardView = updateDto.dashboardSubview;
+    var viewId = updateDto._id;
+    delete updateDto._id;
 
     return Promise.all([
-        MapViewModel.findByIdAndUpdate(mapView._id, mapView).exec(),
-        DashboardViewModel.findByIdAndUpdate(dashboardView._id, dashboardView).exec(),
-        ViewModel.findByIdAndUpdate(updateDto._id, updateDto).exec()
-    ]).then((values) => onActionCompleted(values[2]));
+        mapViewService.update(updateDto.mapSubview),
+        dashboardViewService.update(updateDto.dashboardSubview)
+    ]).then(values => {
+        updateDto.mapSubview = values[0].id;
+        updateDto.dashboardSubview = values[1].id;
+
+        return ViewModel.update({ '_id': viewId }, { $set: updateDto });
+    }).then(() => getById(viewId));
 }
 
 function onActionCompleted({ id }) {
