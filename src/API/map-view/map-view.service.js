@@ -1,14 +1,12 @@
 import MapViewModel from './map-view.model';
 import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
-import mapViewDtoConverter from './map-view-dto.converter';
-import viewService from '../view/view.service';
 
 const mapViewService = {
     getById,
     create,
-    query,
-    updatePicture
+    updatePicture,
+    update
 };
 
 export default mapViewService;
@@ -19,10 +17,6 @@ function getById(id) {
         .then((mapView) => new MapViewModel(mapView));
 }
 
-function query() {
-    return MapViewModel.find().populate(getSensorPopulationConfig());
-}
-
 function getSensorPopulationConfig() {
     return {
         path: 'sensors.sensor',
@@ -31,30 +25,34 @@ function getSensorPopulationConfig() {
 }
 
 function create(createDto) {
-    createDto.defaultView = createDto.default; // TODO Should be moved into view model after TG-431 implemented
-    return new MapViewModel(mapViewDtoConverter.create(createDto))
+    return new MapViewModel(createDto)
         .save()
-        .then((mapView) => {
-            viewService.create({mapView});
-            return mapView;
-        });
+        .then(onActionCompleted);
 }
 
 function updatePicture(id, newName) {
 
-    return mapViewService.getById(id)
+    return getById(id)
         .then(onReceived)
         .then(onActionCompleted);
-
 
     function onReceived(mapViewModel) {
         return filesService.tryDeleteFile(mapViewModel.pictureName)
             .then(onOldPictureRemoved);
 
         function onOldPictureRemoved() {
-            return MapViewModel.findByIdAndUpdate(id,  mapViewDtoConverter.pictureUpdate(newName));
+            return MapViewModel.findByIdAndUpdate(id, { pictureName: newName });
         }
     }
+}
+
+function update(model) {
+    var id = model._id;
+    delete model._id;
+
+    return MapViewModel
+        .update({ '_id': id }, { $set: model })
+        .then(() => getById(id));
 }
 
 function onActionCompleted({ id }) {
