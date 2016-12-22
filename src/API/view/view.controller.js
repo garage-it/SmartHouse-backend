@@ -3,7 +3,8 @@ import viewService from './view.service';
 export default {
     query,
     create,
-    get
+    get,
+    update
 };
 
 function get(req, { send }, next) {
@@ -21,6 +22,12 @@ function query(req, res, next) {
 
 function create(req, res, next) {
     viewService.create(req.body)
+        .then(view => res.json(view))
+        .catch(next);
+}
+
+function update(req, res, next) {
+    viewService.update(req.body)
         .then(view => res.json(view))
         .catch(next);
 }

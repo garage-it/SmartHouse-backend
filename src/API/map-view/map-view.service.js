@@ -3,8 +3,10 @@ import SensorModel from '../sensors/sensor.model';
 import filesService from '../files/files.service';
 
 const mapViewService = {
+    getById,
     create,
-    updatePicture
+    updatePicture,
+    update
 };
 
 export default mapViewService;
@@ -42,6 +44,15 @@ function updatePicture(id, newName) {
             return MapViewModel.findByIdAndUpdate(id, { pictureName: newName });
         }
     }
+}
+
+function update(model) {
+    var id = model._id;
+    delete model._id;
+
+    return MapViewModel
+        .update({ '_id': id }, { $set: model })
+        .then(() => getById(id));
 }
 
 function onActionCompleted({ id }) {
