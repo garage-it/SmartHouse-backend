@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import app from '../../index';
 import timeSeriesService from './timeseries.service';
 import input from '../../data-streams/input';
+import Sensor from '../sensors/sensor.model';
 
 
 describe('## Timeseries API', () => {
@@ -10,7 +11,17 @@ describe('## Timeseries API', () => {
     beforeEach((done)=>{
         timeSeriesService.saveStatisticToDB();
         input.write({ device: 'SENSOR', value: 50, event: 'status' });
-        done();
+
+        const sensor = new Sensor({
+            metrics: 'KG',
+            mqttId: 'SENSOR'
+        });
+
+        sensor.saveAsync()
+            .then(() => {
+                done();
+            })
+            .error(done);
 
     });
 
@@ -39,6 +50,7 @@ describe('## Timeseries API', () => {
       .then((res) => {
           expect(res.body.sensor).to.exist;
           expect(res.body.data).to.exist;
+          expect(res.body.measurementUnit).to.exist;
           done();
        });
     });
@@ -49,6 +61,7 @@ describe('## Timeseries API', () => {
       .expect(httpStatus.OK)
       .then((res) => {
           expect(res.body.sensor).to.equal('SENSOR');
+          expect(res.body.measurementUnit).to.equal('KG');
           done();
        });
     });
