@@ -5,8 +5,8 @@ import moment from 'moment';
 import Sensor from '../sensors/sensor.model';
 
 const CHILD_PERIODS = {
+    'hour': 'minute',
     'day': 'hour',
-    'week': 'day',
     'month': 'day',
     'year': 'month'
 };
