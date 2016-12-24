@@ -5,7 +5,6 @@ export default {
     host: '0.0.0.0',
     seedDB: !! process.env.EXEC_MOCK,
     staticPath: process.env.PATH_FRONTENT_DIST,
-    plugAndPlay: true,
     mqtt: {
         port: process.env.MQTT_PORT,
         hostname: process.env.MQTT_HOST_NAME,

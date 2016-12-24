@@ -12,8 +12,6 @@ import './scenarios';
 
 import Debugger from 'debug';
 const debug = Debugger('SH_BE:main');
-import trackDeviceConnection from  './devices/deviceConnected';
-import handleUnknownDeviceData from  './devices/newDeviceHandler';
 import timeSeriesService from './API/timeseries/timeseries.service';
 import saveDeviceLastValue from './devices/saveDeviceLastValue';
 
@@ -46,13 +44,6 @@ server.listen(config.port, config.host, () => {
     console.log(`Server started on \x1b[36m port:${config.port} (${config.env}) \x1b[0m`);
     /* eslint-enable no-console */
 });
-
-trackDeviceConnection();
-
-// Enable Plug-n-Play
-if (config.plugAndPlay) {
-    handleUnknownDeviceData();
-}
 
 timeSeriesService.saveStatisticToDB();
 

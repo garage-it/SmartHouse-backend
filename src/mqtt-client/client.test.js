@@ -93,54 +93,6 @@ describe('# MQTT client', () => {
             expect(input.write).to.have.been.calledWith(mqttEventData);
         });
 
-        describe('when it\'s device-info event', () => {
-            let topic, mockMessage, mqttEventData, clock2;
-            beforeEach(function () {
-                let device = 'faked';
-                topic = `/smart-home/out/${device}`;
-                mockMessage = JSON.stringify({type: 'sensor'});
-                mqttEventData = {
-                    device,
-                    event: 'device-info',
-                    value: JSON.parse(mockMessage)
-                };
-                clock2 = sinon.useFakeTimers();
-            });
-            afterEach(function(){
-                clock2.restore();
-            });
-
-            it('will parse and write event to inner stream', () => {
-                client.publish(topic, mockMessage);
-                expect(input.write).to.have.been.calledWith(mqttEventData);
-            });
-
-            it('will NOT publish new device-info to mqtt if there is no queue', () => {
-                client.publish(topic, mockMessage);
-                expect(client.publish).not.to.have.been.calledWith('/smart-home/out/device-info');
-            });
-
-            it('will publish new device-info to mqtt if there is queue', () => {
-                config = {event: 'device-info', device: 'faked'};
-                config2 = {event: 'device-info', device: 'faked_too'};
-                let publishFn = outputStreamStub.subscribe.lastCall.args[0];
-                publishFn(config);
-                publishFn(config2);
-                client.publish(topic, mockMessage);
-                expect(client.publish.getCall(2).args).to.eql(['/smart-home/in/device-info', 'faked_too']);
-            });
-            it('will clear queue after timeout', (done) => {
-                config = {event: 'device-info', device: 'faked'};
-                config2 = {event: 'device-info', device: 'faked_too'};
-                let publishFn = outputStreamStub.subscribe.lastCall.args[0];
-                publishFn(config);
-                clock2.tick(60 * 1000);
-                publishFn(config2);
-                expect(client.publish.getCall(1).args).to.eql(['/smart-home/in/device-info', 'faked_too']);
-                done();
-            });
-        });
-
         context('when its INPUT topic', () => {
             let publishFn;
             let config;
@@ -161,23 +113,6 @@ describe('# MQTT client', () => {
 
                 it('will publish event', () => {
                     expect(client.publish).to.have.been.calledWith(`/smart-home/in/${config.device}`, config.value);
-                });
-            });
-
-            context('and device-info event came', () => {
-                beforeEach(() => {
-                    config = {event: 'device-info', device: 'mock'};
-                    publishFn(config);
-                });
-
-                it('will publish event if there is no event in handling ', () => {
-                    expect(client.publish).to.have.been.calledWith('/smart-home/in/device-info', config.device);
-                });
-
-                it('will NOT publish event if there is event in handling', () => {
-                    config = {event: 'device-info', device: 'mock2'};
-                    publishFn(config);
-                    expect(client.publish).not.to.have.been.calledWith('/smart-home/in/device-info', config.device);
                 });
             });
 
