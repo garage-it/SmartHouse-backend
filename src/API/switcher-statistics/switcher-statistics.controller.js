@@ -4,8 +4,8 @@ import httpStatus from 'http-status';
 //TODO: should be moved to constant and reused in timeseries.
 //Correct constant would have hour, day, month and year properties
 const PERIOD_TO_INTERVAL = {
+    'hour': 60,
     'day': 60,
-    'week': 60*24,
     'month': 60*24,
     'year': 60*24*30
 };

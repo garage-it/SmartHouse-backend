@@ -12,9 +12,7 @@ import './scenarios';
 
 import Debugger from 'debug';
 const debug = Debugger('SH_BE:main');
-import trackDeviceConnection from  './devices/deviceConnected';
-import handleUnknownDeviceData from  './devices/newDeviceHandler';
-import saveStatisticToDB from './devices/saveStatisticToDB';
+import timeSeriesService from './API/timeseries/timeseries.service';
 import saveDeviceLastValue from './devices/saveDeviceLastValue';
 
 // promisify mongoose
@@ -32,8 +30,7 @@ if (config.seedDB) {
     debug('populating seed data');
     seed.populateUsers();
     seed.populateScenarios();
-    seed.populateSensors()
-        .then(seed.populateDashboard);
+    seed.populateSensors();
 }
 
 // Create websocket server
@@ -48,15 +45,7 @@ server.listen(config.port, config.host, () => {
     /* eslint-enable no-console */
 });
 
-trackDeviceConnection();
-
-// Enable Plug-n-Play
-if (config.plugAndPlay) {
-    handleUnknownDeviceData();
-}
-
-const statisticSavers = {};
-saveStatisticToDB(statisticSavers);
+timeSeriesService.saveStatisticToDB();
 
 saveDeviceLastValue();
 

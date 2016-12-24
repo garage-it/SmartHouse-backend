@@ -51,6 +51,7 @@ if (config.env === 'development') {
     }));
 }
 
+
 if (config.staticPath) {
     /* eslint-disable no-console */
     console.log('Serve static files from: \x1b[36m' + config.staticPath + '\x1b[0m');

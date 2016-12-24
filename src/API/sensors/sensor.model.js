@@ -16,6 +16,9 @@ const SensorSchema = new Schema({
     type: {
         type: String
     },
+    subType: {
+        type: String
+    },
     executor: {
         type: Boolean,
         default: false

@@ -1,4 +1,4 @@
-import Dashboard from '../dashboard/dashboard.model';
+import DashboardView from '../dashboard-view/dashboard-view.model';
 
 export default {createHooks};
 
@@ -11,13 +11,13 @@ function createHooks(sensorSchema) {
 
     sensorSchema.post('save', function(sensor, next) {
         if (this.wasNew) {
-            Dashboard
+            DashboardView
                 .findOneAndUpdate({}, {$push: {devices: sensor._id}}, next);
         }
     });
 
     sensorSchema.post('remove', (sensor, next) => {
-        Dashboard
+        DashboardView
             .findOneAndUpdate({}, {$pull: {devices: sensor._id}}, next);
     });
 }
