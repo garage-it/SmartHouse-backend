@@ -1,27 +1,22 @@
-import {DEVICE_INFO, DEVICE_STATUS} from './event-type';
-import inputEvent from './event';
+import {DEVICE_STATUS} from './event-type';
 
 export default function convertMqttMessageToEvent(topic, rawMessage) {
-    const message = tryParseMessage(rawMessage);
-    const eventType = getMessageEventType(message);
+    const message = rawMessage.toString();
+    const eventType = DEVICE_STATUS;
     const deviceName = getTopicDeviceName(topic);
-    return inputEvent(eventType, deviceName, message);
-}
 
-function tryParseMessage(rawMessage) {
-    try {
-        return JSON.parse(rawMessage);
-    } catch (e) {
-        return rawMessage;
-    }
+    return buildEventModel(eventType, deviceName, message);
 }
 
 function getTopicDeviceName(topic) {
     return topic.split('/').pop();
 }
 
-function getMessageEventType(message) {
-    return typeof message === 'object'
-        ? DEVICE_INFO
-        : DEVICE_STATUS;
+function buildEventModel(eventName, deviceName, eventData) {
+    return {
+        event: eventName,
+        device: deviceName,
+        value: eventData
+    };
 }
+
