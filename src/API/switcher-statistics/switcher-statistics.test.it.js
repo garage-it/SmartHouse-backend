@@ -17,7 +17,7 @@ describe('## Servo Statistics API', () => {
             .then(() => done());
     });
 
-    it('should return responce with 200 status when all data is provided', (done) => {
+    it('should return response with 200 status when all data is provided', (done) => {
         request(app)
             .get(FULL_URL)
             .expect(httpStatus.OK)
