@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "private": false,
   "engines": {
-    "node": "5.11.x",
-    "npm": "3.3.x"
+    "node": ">=5.11.x",
+    "npm": ">=3.3.x"
   },
   "scripts": {
     "start": "gulp serve",
