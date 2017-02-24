@@ -9,7 +9,7 @@ Promise.promisifyAll(MongoClient);
 const debug = Debugger('SH_BE:new-device-handler');
 const STATUS_EVENT = 'status';
 const STRATEGY = 'averages';
-const periods = ['month', 'day', 'hour', 'minute', 'second'];
+const periods = ['month', 'day', 'hour'];
 const devicesStatistic = {};
 const options = {
     driver: {
